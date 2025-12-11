@@ -1,0 +1,42 @@
+---
+import '../styles/global.css';
+
+interface Props {
+	title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="description" content="Somnomid - Clínica de sueño" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+		<title>{title}</title>
+	</head>
+	<body class="font-['Poppins'] bg-slate-50 flex flex-col min-h-screen">
+		
+		<main class="grow">
+			<slot />
+		</main>
+
+		<footer class="bg-[#3F74FB] text-white py-6 mt-auto">
+            <div class="container mx-auto flex flex-col items-center gap-4">
+                <div class="flex gap-6 text-xl">
+                    <a href="https://www.facebook.com" target="_blank" class="hover:text-gray-200 transition"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://www.youtube.com" target="_blank" class="hover:text-gray-200 transition"><i class="fab fa-youtube"></i></a>
+                    <a href="https://www.whatsapp.com" target="_blank" class="hover:text-gray-200 transition"><i class="fab fa-whatsapp"></i></a>
+                </div>
+                <div class="text-sm opacity-90">
+                    © Dr. Jesus Moo Estrella
+                </div>
+                <img src="/img/logo.jpg" alt="SOMNOMID-LOGO" class="w-24 h-auto rounded-md bg-white p-1" loading="lazy">
+            </div>
+        </footer>
+	</body>
+</html>
