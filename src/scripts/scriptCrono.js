@@ -8,7 +8,6 @@ document.getElementById('submit-btn').addEventListener('click', function(event) 
     const horaActual = document.getElementById('hora').value;
     const horaDeseada = document.getElementById('horaDespertar').value;
 
-    // --- MODIFICACIÓN VISUAL 1: Modal con clases Tailwind ---
     function mostrarModal(mensaje) {
         const modal = document.getElementById('modal');
         const modalMessage = document.getElementById('modal-message');
@@ -50,7 +49,7 @@ document.getElementById('submit-btn').addEventListener('click', function(event) 
     }
 
     // ---------------------------------------------------------
-    //  LÓGICA DE CÁLCULO INTACTA (NO TOCAR)
+    //  LÓGICA DE CÁLCULO (NO TOCAR)
     // ---------------------------------------------------------
     const rangosDeSueño = {
         '0-3': { idealMin: 14, idealMax: 17 },
@@ -131,10 +130,6 @@ document.getElementById('submit-btn').addEventListener('click', function(event) 
         dias.push({ dia: `Día ${dia}`, hora: convertirMinutosAHora(minutosDeseados) });
         tituloTexto = 'Usted debe levantarse a las siguientes horas:';
     }
-
-    // ---------------------------------------------------------
-    // --- MODIFICACIÓN VISUAL ---
-    // ---------------------------------------------------------
     
     const tituloCrono = document.getElementById('titulo-crono');
     tituloCrono.innerHTML = tituloTexto;
@@ -168,5 +163,42 @@ document.getElementById('submit-btn').addEventListener('click', function(event) 
         `;
         
         cronoContainer.appendChild(card);
+    });
+});
+
+function showToast(message) {
+    const toast = document.getElementById('toast');
+    const toastMsg = document.getElementById('toast-message');
+    
+    // Setear mensaje
+    toastMsg.textContent = message;
+    
+    // Mostrar (Quitamos opacidad 0 y el desplazamiento)
+    toast.classList.remove('opacity-0', 'translate-y-10');
+    
+    // Ocultar después de 3.5 segundos
+    setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-10');
+    }, 3500);
+}
+
+document.querySelectorAll('input[type="time"]').forEach(input => {
+    input.addEventListener('change', function() {
+        if (!this.value) return;
+        
+        const originalValue = this.value;
+        const [h, m] = this.value.split(':');
+        let min = parseInt(m);
+        
+        // Lógica de redondeo
+        if (min < 15) min = '00';
+        else if (min < 45) min = '30';
+
+        const newValue = `${h}:${min}`;
+
+        if (originalValue !== newValue) {
+            this.value = newValue;
+            showToast("Horario ajustado a intervalos de 30 min");
+        }
     });
 });

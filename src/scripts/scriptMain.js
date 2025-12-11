@@ -1,14 +1,32 @@
-// src/scripts/scriptMain.js
-
 document.getElementById('edad-hora').addEventListener('submit', function(event) {
     event.preventDefault();
     
     // Obtener valores del formulario
     const edad = parseInt(document.getElementById('edad').value);
     const horaDespertar = document.getElementById('hora').value;
-    
-    // Validación básica para evitar errores si los campos están vacíos
-    if (!edad || !horaDespertar) return;
+
+    // --- LÓGICA DEL MODAL ---
+    const modal = document.getElementById('modal-info');
+    const closeModalBtn = document.getElementById('close-modal-btn');
+
+    // Función para cerrar modal
+    const cerrarModal = () => {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    };
+
+    // Event listeners para cerrar
+    closeModalBtn.onclick = cerrarModal;
+    modal.onclick = (e) => {
+        if (e.target === modal) cerrarModal();
+    };
+
+    // Validación: Si faltan datos, mostramos el modal
+    if (!edad || !horaDespertar) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        return;
+    }
     
     // Convertir la hora de despertar a formato Date
     const [hora, minutos] = horaDespertar.split(':').map(Number);
@@ -16,7 +34,7 @@ document.getElementById('edad-hora').addEventListener('submit', function(event) 
     despertar.setHours(hora);
     despertar.setMinutes(minutos);
     
-    // Diccionario con rangos de sueño (Tu data original intacta)
+    // Diccionario con rangos de sueño
     const rangosDeSueño = {
         '0': { idealMin: 12, idealMax: 17, posibleMin: 10, posibleMax: 19 },
         '1-2': { idealMin: 11, idealMax: 14, posibleMin: 9, posibleMax: 16 },
@@ -86,14 +104,10 @@ document.getElementById('edad-hora').addEventListener('submit', function(event) 
     const horaPosibleMax = calcularHoraAcostarse(posibleMin); 
     const horaMediaPosible = calcularHoraMedia(posibleMin, posibleMax);
 
-    // --- ACTUALIZACIÓN DE TEXTOS (Lógica Original) ---
-    // Restauramos el formato exacto que tenías, manteniendo solo las clases CSS para negrita/color en el pie si es necesario.
     
     document.getElementById('mensaje-ideal').innerText = `Hora ideal: entre ${horaIdealMin} y ${horaIdealMax}. Sugerencia: ${horaMediaIdeal}`;
     document.getElementById('mensaje-cerca').innerText = `Hora cerca del rango ideal: entre ${horaPosibleMin} y ${horaPosibleMax}. Sugerencia: ${horaMediaPosible}`;
     document.getElementById('mensaje-fuera').innerText = `Hora fuera del rango: antes de ${horaPosibleMin} o después de ${horaPosibleMax}`;
     
-    // El pie usa innerHTML en tu original para poner spans con clase "variablesPie"
-    // Mantendremos esa estructura.
     document.getElementById('pie-semaforo').innerHTML = `Las horas sugeridas de sueño para <span class="font-bold text-[#3F74FB]">${grupo}</span> es entre <span class="font-bold text-[#3F74FB]">${idealMin}</span> y <span class="font-bold text-[#3F74FB]">${idealMax}</span>, idealmente <span class="font-bold text-[#3F74FB]">${horaMediaIdeal}</span>`;
 });

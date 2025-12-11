@@ -1,0 +1,574 @@
+---
+import Layout from "../layouts/Layout.astro"
+import SintomaGroup from "../components/SintomaGroup.astro"
+---
+
+
+<Layout title="Registro de Pacientes">
+
+    <main class="max-w-7xl mx-auto pt-6 md:pt-10 pb-28 px-4">
+        <div class="flex flex-col items-center justify-center mb-8">
+            <h1 class="text-4xl md:text-6xl font-extrabold text-center leading-tight max-lg:max-w-xs max-md:pt-15">Somno-Lab</h1>
+		</div>
+
+        <form method="POST">
+            <div class="flex flex-col items-center justify-center space-y-12">
+                
+                <section class="w-full max-w-4xl px-2 md:px-8 bg-white p-8 rounded-4xl border border-slate-100 shadow-[0_10px_30px_rgba(0,0,0,0.03)]">
+                    <h2 class="text-2xl md:text-3xl pb-2 mb-6 border-b border-somno text-center text-somno w-fit mx-auto px-10">SocioDemográficos</h2>
+                    <div class="flex flex-col space-y-4">
+                        <div class="flex flex-col">
+                            <label for="nombre" class="text-lg font-medium text-slate-800">Nombre completo:</label>
+                            <input type="text" id="nombre" name="nombre" required class="mt-1 p-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 font-medium focus:ring-2 focus:ring-somno focus:bg-white transition-all outline-none">
+                        </div>
+
+                        <div class="flex flex-col md:flex-row gap-4 md:gap-7">
+                            <div class="flex grow flex-col md:w-1/2"> 
+                                <label for="fecha_nacimiento" class="text-lg font-medium text-slate-800">Fecha de Nacimiento:</label>
+                                <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" required class="mt-1 p-3 border border-slate-200 bg-slate-50 rounded-xl focus:outline-none focus:ring-2 focus:ring-somno text-slate-700 transition-all" style="color-scheme: light;">
+                            </div>
+                            <div class="flex grow flex-col md:w-1/2"> 
+                                <label for="genero" class="text-lg font-medium text-slate-800">Género:</label>
+                                <select id="genero" name="genero" required class="mt-1 p-3 border border-slate-200 bg-slate-50 rounded-xl focus:outline-none focus:ring-2 focus:ring-somno text-slate-700 transition-all appearance-none">
+                                    <option class="bg-slate-50 text-slate-400" value="" disabled selected>Seleccionar</option>
+                                    <option class="bg-slate-50" value="masculino">Masculino</option>
+                                    <option class="bg-slate-50" value="femenino">Femenino</option>
+                                    <option class="bg-slate-50" value="otro">Otro</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col md:flex-row gap-4 md:gap-7">
+                            <div class="flex grow flex-col">
+                                <label for="ocupacion" class="text-lg font-medium text-slate-800">Ocupación:</label>
+                                <input type="text" id="ocupacion" name="ocupacion" class="mt-1 p-3 border border-slate-200 bg-slate-50 rounded-xl focus:outline-none focus:ring-2 focus:ring-somno text-slate-700 transition-all">
+                            </div>
+                            <div class="flex grow flex-col">
+                                <label for="escolaridad" class="text-lg font-medium text-slate-800">Escolaridad:</label>
+                                <input type="text" id="escolaridad" name="escolaridad" class="mt-1 p-3 border border-slate-200 bg-slate-50 rounded-xl focus:outline-none focus:ring-2 focus:ring-somno text-slate-700 transition-all">
+                            </div>
+                        </div>
+                        
+                        <div class="flex flex-col md:flex-row gap-4 md:gap-7">
+                            <div class="flex grow flex-col md:w-1/3">
+                                <label for="referencia" class="text-lg font-medium text-slate-800">¿Quién lo refiere?</label>
+                                <input type="text" id="referencia" name="referencia" required class="mt-1 p-3 border border-slate-200 bg-slate-50 rounded-xl focus:outline-none focus:ring-2 focus:ring-somno text-slate-700 transition-all">
+                            </div>
+                            <div class="flex grow flex-col">
+                                <label for="motivo" class="text-lg font-medium text-slate-800">Motivo de la consulta</label>
+                                <input type="text" id="motivo" name="motivo" required class="mt-1 p-3 border border-slate-200 bg-slate-50 rounded-xl focus:outline-none focus:ring-2 focus:ring-somno text-slate-700 transition-all">
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="w-full max-w-4xl px-2 md:px-8 bg-white p-8 rounded-4xl border border-slate-100 shadow-[0_10px_30px_rgba(0,0,0,0.03)]">
+                    <h2 class="text-2xl md:text-3xl pb-2 mb-6 border-b border-somno text-center text-somno w-fit mx-auto px-10">Antropométricos</h2>
+                    <div class="flex flex-col space-y-4">
+                        <div class="flex flex-col md:flex-row gap-4 md:gap-7">
+                            <div class="flex grow flex-col md:w-1/2">
+                                <label for="lateralidad" class="text-lg font-medium text-slate-800">Lateralidad:</label>
+                                <select id="lateralidad" name="lateralidad" class="mt-1 p-3 border border-slate-200 bg-slate-50 rounded-xl focus:outline-none focus:ring-2 focus:ring-somno text-slate-700 transition-all appearance-none">
+                                    <option class="bg-slate-50 text-gray-400" value="" disabled selected>Seleccionar</option>
+                                    <option class="bg-slate-50" value="diestro">Diestro</option>
+                                    <option class="bg-slate-50" value="zurdo">Zurdo</option>
+                                    <option class="bg-slate-50" value="ambidiestro">Ambidiestro</option>
+                                </select>
+                            </div>
+                            <div class="flex grow flex-col md:w-1/2">
+                                <label for="peso" class="text-lg font-medium text-slate-800">Peso (kg):</label>
+                                <input type="number" id="peso" name="peso" step="0.1" min="0" class="mt-1 p-3 border border-slate-200 bg-slate-50 rounded-xl focus:outline-none focus:ring-2 focus:ring-somno text-slate-700 transition-all" placeholder="Ej. 70.5">
+                            </div>
+                            <div class="flex grow flex-col md:w-1/2">
+                                <label for="altura" class="text-lg font-medium text-slate-800">Altura (m):</label>
+                                <input type="number" id="altura" name="altura" step="0.01" min="0" class="mt-1 p-3 border border-slate-200 bg-slate-50 rounded-xl focus:outline-none focus:ring-2 focus:ring-somno text-slate-700 transition-all" placeholder="Ej. 1.75">
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="w-full max-w-4xl px-2 md:px-8 bg-white p-8 rounded-4xl border border-slate-100 shadow-[0_10px_30px_rgba(0,0,0,0.03)]">
+                    <h2 class="text-2xl md:text-3xl pb-2 mb-6 border-b border-somno text-center text-somno w-fit mx-auto px-10">Hábitos y patrones</h2>
+                    <div class="flex flex-col space-y-6">
+                        <div class="flex flex-col">
+                            <label class="text-lg font-medium text-slate-800 mb-2">¿Dónde duerme?</label>
+                            <div class="flex flex-wrap gap-6 p-3 border border-slate-200 bg-slate-50 rounded-lg">
+                                <label class="flex items-center gap-2 cursor-pointer hover:text-somno transition"><input type="radio" name="donde_duerme" value="cama" class="accent-somno w-4 h-4"> Cama</label>
+                                <label class="flex items-center gap-2 cursor-pointer hover:text-somno transition"><input type="radio" name="donde_duerme" value="hamaca" class="accent-somno w-4 h-4"> Hamaca</label>
+                                <label class="flex items-center gap-2 cursor-pointer hover:text-somno transition"><input type="radio" name="donde_duerme" value="ambas" class="accent-somno w-4 h-4"> Ambas</label>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col md:flex-row gap-4 md:gap-7">
+                            <div class="flex grow flex-col">
+                                <label for="hora_dormir" class="text-lg font-medium text-slate-800">Hora de dormir:</label>
+                                <input type="time" id="hora_dormir" name="hora_dormir" class="mt-1 p-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 font-medium focus:ring-2 focus:ring-somno focus:bg-white outline-none transition-all" style="color-scheme: light;">
+                            </div>
+                            <div class="flex grow flex-col">
+                                <label for="hora_levantarse" class="text-lg font-medium text-slate-800">Hora de levantarse:</label>
+                                <input type="time" id="hora_levantarse" name="hora_levantarse" class="mt-1 p-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 font-medium focus:ring-2 focus:ring-somno focus:bg-white outline-none transition-all" style="color-scheme: light;">
+                            </div>
+                            <div class="flex grow flex-col">
+                                <label for="tiempo_dormir" class="text-lg font-medium text-slate-800">Tiempo promedio en quedarse dormido:</label>
+                                <input type="text" id="tiempo_dormir" name="tiempo_dormir" class="mt-1 p-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 font-medium focus:ring-2 focus:ring-somno focus:bg-white outline-none transition-all" style="color-scheme: light;" placeholder="Ej. 30 min">
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col space-y-2 p-4 border border-slate-200 bg-slate-50 rounded-xl focus:outline-none focus:ring-2 focus:ring-somno text-slate-700 transition-all">
+                            <label class="text-lg font-medium text-slate-800">¿Se despierta por las noches?</label>
+                            <div class="flex gap-6">
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="despierta_noche" value="si" class="accent-somno trigger-condicional" data-target="div_que_despierta"> Sí</label>
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="despierta_noche" value="no" class="accent-somno trigger-condicional" data-target="div_que_despierta"> No</label>
+                            </div>
+                            
+                            <div id="div_que_despierta" class="hidden mt-3 animate-fade-in-down">
+                                <label for="que_despierta" class="text-sm font-medium text-slate-800 block mb-1">¿Qué lo despierta?</label>
+                                <input type="text" id="que_despierta" name="que_despierta" class="w-full p-2 border border-slate-200 bg-slate-50 rounded-lg focus:outline-none focus:ring-1 focus:ring-somno text-slate-700 placeholder-gray-500" placeholder="Ej. Ruido, ganas de orinar...">
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col space-y-2 p-4 border border-slate-200 bg-slate-50 rounded-xl focus:outline-none focus:ring-2 focus:ring-somno text-slate-700 transition-all">
+                            <label class="text-lg font-medium text-slate-800 mb-2">¿Padece somnolencia?</label>
+                            <div class="flex gap-6">
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="somnolencia" value="si" class="accent-somno"> Sí</label>
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="somnolencia" value="no" class="accent-somno"> No</label>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col space-y-2 p-4 border border-slate-200 bg-slate-50 rounded-xl focus:outline-none focus:ring-2 focus:ring-somno text-slate-700 transition-all">
+                            <label class="text-lg font-medium text-slate-800">¿Toma siestas?</label>
+                            <div class="flex gap-6">
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="siesta" value="si" class="accent-somno trigger-condicional" data-target="div_datos_siesta"> Sí</label>
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="siesta" value="no" class="accent-somno trigger-condicional" data-target="div_datos_siesta"> No</label>
+                            </div>
+
+                            <div id="div_datos_siesta" class="hidden grid grid-cols-1 md:grid-cols-2 gap-4 mt-3 animate-fade-in-down">
+                                <div>
+                                    <label for="dias_siesta" class="text-sm font-medium text-somno block mb-1">¿Cuántos días a la semana?</label>
+                                    <input type="number" id="dias_siesta" name="dias_siesta" min="1" max="7" class="w-full p-2 border border-somno/30 bg-somno/10 rounded-lg focus:outline-none focus:ring-1 focus:ring-somno text-white">
+                                </div>
+                                <div>
+                                    <label for="tiempo_siesta" class="text-sm font-medium text-somno block mb-1">Duración:</label>
+                                    <input type="text" id="tiempo_siesta" name="tiempo_siesta" class="w-full p-2 border border-somno/30 bg-somno/10 rounded-lg focus:outline-none focus:ring-1 focus:ring-somno text-white" placeholder="Ej. 1 hora">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col space-y-2 p-4 border border-slate-200 bg-slate-50 rounded-xl focus:outline-none focus:ring-2 focus:ring-somno text-slate-700 transition-all">
+                            <label class="text-lg font-medium text-slate-800">¿Realiza ejercicio?</label>
+                            <div class="flex gap-6">
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="ejercicio" value="si" class="accent-somno trigger-condicional" data-target="div_horas_ejercicio"> Sí</label>
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="ejercicio" value="no" class="accent-somno trigger-condicional" data-target="div_horas_ejercicio"> No</label>
+                            </div>
+
+                            <div id="div_horas_ejercicio" class="hidden mt-3 animate-fade-in-down">
+                                <label for="horas_ejercicio" class="text-sm font-medium text-somno block mb-1">Horas a la semana (HH:MM):</label>
+                                <input type="text" id="horas_ejercicio" name="horas_ejercicio" class="w-full md:w-1/2 p-2 border border-somno/30 bg-somno/10 rounded-lg focus:outline-none focus:ring-1 focus:ring-somno text-white" placeholder="Ej. 2:30">
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="w-full max-w-4xl px-2 md:px-8 bg-white p-8 rounded-4xl border border-slate-100 shadow-[0_10px_30px_rgba(0,0,0,0.03)]">
+                    <h2 class="text-2xl md:text-3xl pb-2 mb-6 border-b border-somno text-center text-somno w-fit mx-auto px-10">Consumo de sustancias</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="flex flex-col space-y-2 p-4 border border-slate-200 rounded-xl bg-slate-50">
+                            <label class="text-lg font-medium text-slate-800">¿Fuma?</label>
+                            <div class="flex gap-6">
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="fuma" value="si" class="accent-somno trigger-condicional" data-target="div_consumo_fuma"> Sí</label>
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="fuma" value="no" class="accent-somno trigger-condicional" data-target="div_consumo_fuma"> No</label>
+                            </div>
+                            <div id="div_consumo_fuma" class="hidden mt-3 animate-fade-in-down">
+                                <label for="cigarros_semana" class="text-sm font-medium text-somno block mb-1">Cigarros a la semana:</label>
+                                <input type="number" id="cigarros_semana" name="cigarros_semana" min="0" class="w-full p-2 border border-somno/30 bg-somno/10 rounded-lg focus:outline-none focus:ring-1 focus:ring-somno text-white">
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col space-y-2 p-4 border border-slate-200 rounded-xl bg-slate-50">
+                            <label class="text-lg font-medium text-slate-800">¿Consume alcohol?</label>
+                            <div class="flex gap-6">
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="alcohol" value="si" class="accent-somno trigger-condicional" data-target="div_consumo_alcohol"> Sí</label>
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="alcohol" value="no" class="accent-somno  trigger-condicional" data-target="div_consumo_alcohol"> No</label>
+                            </div>
+                            <div id="div_consumo_alcohol" class="hidden mt-3 animate-fade-in-down">
+                                <label for="cervezas_semana" class="text-sm font-medium text-somno block mb-1">Cervezas/Copas a la semana:</label>
+                                <input type="number" id="cervezas_semana" name="cervezas_semana" min="0" class="w-full p-2 border border-somno/30 bg-somno/10 rounded-lg focus:outline-none focus:ring-1 focus:ring-somno text-white">
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col space-y-2 p-4 border border-slate-200 rounded-xl bg-slate-50">
+                            <label class="text-lg font-medium text-slate-800">¿Consume café?</label>
+                            <div class="flex gap-6">
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="cafe" value="si" class="accent-somno trigger-condicional" data-target="div_consumo_cafe"> Sí</label>
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="cafe" value="no" class="accent-somno trigger-condicional" data-target="div_consumo_cafe"> No</label>
+                            </div>
+                            <div id="div_consumo_cafe" class="hidden mt-3 animate-fade-in-down">
+                                <label for="tazas_cafe_semana" class="text-sm font-medium text-somno block mb-1">Tazas a la semana:</label>
+                                <input type="number" id="tazas_cafe_semana" name="tazas_cafe_semana" min="0" class="w-full p-2 border border-somno/30 bg-somno/10 rounded-lg focus:outline-none focus:ring-1 focus:ring-somno text-white">
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col space-y-2 p-4 border border-slate-200 rounded-xl bg-slate-50">
+                            <label class="text-lg font-medium text-slate-800">¿Consume té?</label>
+                            <div class="flex gap-6">
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="te" value="si" class="accent-somno trigger-condicional" data-target="div_consumo_te"> Sí</label>
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="te" value="no" class="accent-somno trigger-condicional" data-target="div_consumo_te"> No</label>
+                            </div>
+                            <div id="div_consumo_te" class="hidden mt-3 animate-fade-in-down">
+                                <label for="tazas_te_semana" class="text-sm font-medium text-somno block mb-1">Tazas a la semana:</label>
+                                <input type="number" id="tazas_te_semana" name="tazas_te_semana" min="0" class="w-full p-2 border border-somno/30 bg-somno/10 rounded-lg focus:outline-none focus:ring-1 focus:ring-somno text-white">
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="w-full max-w-4xl px-2 md:px-8 bg-white p-8 rounded-4xl border border-slate-100 shadow-[0_10px_30px_rgba(0,0,0,0.03)]">
+                    <h2 class="text-2xl md:text-3xl pb-2 mb-6 border-b border-somno text-center text-somno w-fit mx-auto px-10">Diagnósticos previos</h2>
+                    <div class="flex flex-col space-y-4">
+                        <div class="flex flex-col">
+                            <label for="antecedentes" class="text-lg font-medium text-slate-800">Antecedentes familiares</label>
+                            <textarea id="antecedentes" name="antecedentes" rows="4" class="mt-1 p-3 border border-slate-200 bg-slate-50 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y text-slate-800 transition-all"></textarea>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="w-full max-w-4xl px-2 md:px-8 bg-white p-8 rounded-4xl border border-slate-100 shadow-[0_10px_30px_rgba(0,0,0,0.03)]">
+                    <h2 class="text-2xl md:text-3xl pb-2 mb-6 border-b border-somno text-center text-somno w-fit mx-auto px-10">Análisis de síntomas</h2>
+                    
+                    <div id="lista-sintomas" class="space-y-8">
+                        <SintomaGroup numero={1} />
+                    </div>
+
+                    <div class="mt-4 flex justify-end">
+                        <button type="button" id="btn-add-sintoma" class="flex items-center gap-2 text-sm font-medium bg-somno text-white py-4 px-6 rounded-xl hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-500/30 transition-all duration-300 transform active:scale-[0.98] hover:cursor-pointer">
+                            <span class="text-xl leading-none">+</span> Agregar otro síntoma
+                        </button>
+                    </div>
+                </section>
+
+                <section class="w-full max-w-4xl px-2 md:px-8 bg-white p-8 rounded-4xl border border-slate-100 shadow-[0_10px_30px_rgba(0,0,0,0.03)]">
+                    <h2 class="text-2xl md:text-3xl pb-2 mb-6 border-b border-somno text-center text-somno w-fit mx-auto px-10">Alteraciones del sueño</h2>
+                    <div class="flex flex-col space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 border border-slate-200 rounded-xl bg-slate-50">
+                            <label class="flex items-center gap-3 cursor-pointer hover:text-somno transition p-2 rounded-lg hover:bg-white/5">
+                                <input type="radio" name="alteracion_sueno" value="insomnio" class="accent-somno w-4 h-4">
+                                <span>Insomnio</span>
+                            </label>
+                            <label class="flex items-center gap-3 cursor-pointer hover:text-somno transition p-2 rounded-lg hover:bg-white/5">
+                                <input type="radio" name="alteracion_sueno" value="respiracion" class="accent-somno w-4 h-4">
+                                <span>Trastornos de la respiración</span>
+                            </label>
+                            <label class="flex items-center gap-3 cursor-pointer hover:text-somno transition p-2 rounded-lg hover:bg-white/5">
+                                <input type="radio" name="alteracion_sueno" value="ritmo_circadiano" class="accent-somno w-4 h-4">
+                                <span>Ritmo circadiano</span>
+                            </label>
+                            <label class="flex items-center gap-3 cursor-pointer hover:text-somno transition p-2 rounded-lg hover:bg-white/5">
+                                <input type="radio" name="alteracion_sueno" value="movimiento" class="accent-somno w-4 h-4">
+                                <span>Del movimiento</span>
+                            </label>
+                            <label class="flex items-center gap-3 cursor-pointer hover:text-somno transition p-2 rounded-lg hover:bg-white/5">
+                                <input type="radio" name="alteracion_sueno" value="parasomnia" class="accent-somno w-4 h-4">
+                                <span>Parasomnia</span>
+                            </label>
+                            <label class="flex items-center gap-3 cursor-pointer hover:text-somno transition p-2 rounded-lg hover:bg-white/5">
+                                <input type="radio" name="alteracion_sueno" value="hipersomnia" class="accent-somno w-4 h-4">
+                                <span>Hipersomnia</span>
+                            </label>
+                            <label class="flex items-center gap-3 cursor-pointer hover:text-somno transition p-2 rounded-lg hover:bg-white/5">
+                                <input type="radio" name="alteracion_sueno" value="medicas_psiquiatricas" class="accent-somno w-4 h-4">
+                                <span>Asociado a condiciones médicas o psiquiátricas</span>
+                            </label>
+                            <label class="flex items-center gap-3 cursor-pointer hover:text-somno transition p-2 rounded-lg hover:bg-white/5">
+                                <input type="radio" name="alteracion_sueno" value="sustancias" class="accent-somno w-4 h-4">
+                                <span>Uso de sustancias</span>
+                            </label>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="w-full max-w-4xl px-2 md:px-8 bg-white p-8 rounded-4xl border border-slate-100 shadow-[0_10px_30px_rgba(0,0,0,0.03)]">
+                    <h2 class="text-2xl md:text-3xl pb-2 mb-6 border-b border-somno text-center text-somno w-fit mx-auto px-10">Puntajes</h2>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        
+                        <div class="flex flex-col">
+                            <label class="text-sm font-medium text-slate-800 mb-1">Epworth</label>
+                            <input type="number" name="epworth" min="0" class="p-2 border border-slate-200 bg-slate-50 rounded-xl focus:outline-none focus:ring-2 focus:ring-somno text-slate-700 transition-all text-center font-mono">
+                        </div>
+
+                        <div class="flex flex-col">
+                            <label class="text-sm font-medium text-slate-800 mb-1">DBI</label>
+                            <input type="number" name="dbi" min="0" class="p-2 border border-slate-200 bg-slate-50 rounded-xl focus:outline-none focus:ring-2 focus:ring-somno text-slate-700 transition-all text-center font-mono">
+                        </div>
+
+                        <div class="flex flex-col">
+                            <label class="text-sm font-medium text-slate-800 mb-1">Hamilton-D</label>
+                            <input type="number" name="hamilton_d" min="0" class="p-2 border border-slate-200 bg-slate-50 rounded-xl focus:outline-none focus:ring-2 focus:ring-somno text-slate-700 transition-all text-center font-mono">
+                        </div>
+
+                        <div class="flex flex-col">
+                            <label class="text-sm font-medium text-slate-800 mb-1">Hamilton-A</label>
+                            <input type="number" name="hamilton_a" min="0" class="p-2 border border-slate-200 bg-slate-50 rounded-xl focus:outline-none focus:ring-2 focus:ring-somno text-slate-700 transition-all text-center font-mono">
+                        </div>
+
+                        <div class="flex flex-col">
+                            <label class="text-sm font-medium text-slate-800 mb-1">ISI</label>
+                            <input type="number" name="isi" min="0" class="p-2 border border-slate-200 bg-slate-50 rounded-xl focus:outline-none focus:ring-2 focus:ring-somno text-slate-700 transition-all text-center font-mono">
+                        </div>
+
+                        <div class="flex flex-col">
+                            <label class="text-sm font-medium text-slate-800 mb-1">SPQI</label>
+                            <input type="number" name="spqi" min="0" class="p-2 border border-slate-200 bg-slate-50 rounded-xl focus:outline-none focus:ring-2 focus:ring-somno text-slate-700 transition-all text-center font-mono">
+                        </div>
+
+                        <div class="flex flex-col">
+                            <label class="text-sm font-medium text-slate-800 mb-1">STOP Bang</label>
+                            <input type="number" name="stop_bang" min="0" class="p-2 border border-slate-200 bg-slate-50 rounded-xl focus:outline-none focus:ring-2 focus:ring-somno text-slate-700 transition-all text-center font-mono">
+                        </div>
+
+                        <div class="flex flex-col">
+                            <label class="text-sm font-medium text-slate-800 mb-1">Berlin</label>
+                            <input type="number" name="berlin" min="0" class="p-2 border border-slate-200 bg-slate-50 rounded-xl focus:outline-none focus:ring-2 focus:ring-somno text-slate-700 transition-all text-center font-mono">
+                        </div>
+
+                        <div class="flex flex-col col-span-2">
+                            <label class="text-sm font-medium text-slate-800 mb-1">Cuestionario de Insomnio</label>
+                            <input type="number" name="cuestionario_insomnio" min="0" class="p-2 border border-slate-200 bg-slate-50 rounded-xl focus:outline-none focus:ring-2 focus:ring-somno text-slate-700 transition-all text-center font-mono">
+                        </div>
+
+                    </div>
+                </section>
+
+                <div class="pt-10 pb-10">
+                    <button type="submit" class="w-full md:w-auto bg-blue-600 text-white text-lg font-semibold px-8 py-3 rounded-xl hover:bg-blue-500 hover:scale-105 hover:shadow-[0_0_20px_rgba(37,99,235,0.5)] transition duration-300 cursor-pointer active:scale-95">
+                        Registrar Paciente
+                    </button>
+                </div>
+                
+            </div>
+        </form>
+    </main>
+</Layout>
+
+<style>
+    /* Estilos inputs */
+    input[type="date"]::-webkit-calendar-picker-indicator,
+    input[type="time"]::-webkit-calendar-picker-indicator {
+        filter: invert(1);
+        cursor: pointer;
+    }
+    
+    /* Animación para mostrar campos condicionales */
+    @keyframes fadeInDown {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in-down {
+        animation: fadeInDown 0.3s ease-out forwards;
+    }
+    .success-checkmark {
+        width: 80px;
+        height: 115px;
+        margin: 0 auto;
+        
+        .check-icon {
+            width: 80px;
+            height: 80px;
+            position: relative;
+            border-radius: 50%;
+            box-sizing: content-box;
+            border: 4px solid #4CAF50;
+            
+            &::before {
+                top: 3px;
+                left: -2px;
+                width: 30px;
+                transform-origin: 100% 50%;
+                border-radius: 100px 0 0 100px;
+            }
+            
+            &::after {
+                top: 0;
+                left: 30px;
+                width: 60px;
+                transform-origin: 0 50%;
+                border-radius: 0 100px 100px 0;
+                animation: rotate-circle 4.25s ease-in;
+            }
+            
+            &::before, &::after {
+                content: '';
+                height: 100px;
+                position: absolute;
+                background: #111827;
+                transform: rotate(-45deg);
+            }
+            
+            .icon-line {
+                height: 5px;
+                background-color: #4CAF50;
+                display: block;
+                border-radius: 2px;
+                position: absolute;
+                z-index: 10;
+                
+                &.line-tip {
+                    top: 46px;
+                    left: 14px;
+                    width: 25px;
+                    transform: rotate(45deg);
+                    animation: icon-line-tip 0.75s;
+                }
+                
+                &.line-long {
+                    top: 38px;
+                    right: 8px;
+                    width: 47px;
+                    transform: rotate(-45deg);
+                    animation: icon-line-long 0.75s;
+                }
+            }
+            
+            .icon-circle {
+                top: -4px;
+                left: -4px;
+                z-index: 10;
+                width: 80px;
+                height: 80px;
+                border-radius: 50%;
+                position: absolute;
+                box-sizing: content-box;
+                border: 4px solid rgba(76, 175, 80, .5);
+            }
+            
+            .icon-fix {
+                top: 8px;
+                width: 5px;
+                left: 26px;
+                z-index: 1;
+                height: 85px;
+                position: absolute;
+                transform: rotate(-45deg);
+                background-color: #111827;
+            }
+        }
+    }
+
+    @keyframes rotate-circle {
+        0% { transform: rotate(-45deg); }
+        5% { transform: rotate(-45deg); }
+        12% { transform: rotate(-405deg); }
+        100% { transform: rotate(-405deg); }
+    }
+
+    @keyframes icon-line-tip {
+        0% { width: 0; left: 1px; top: 19px; }
+        54% { width: 0; left: 1px; top: 19px; }
+        70% { width: 50px; left: -8px; top: 37px; }
+        84% { width: 17px; left: 21px; top: 48px; }
+        100% { width: 25px; left: 14px; top: 46px; }
+    }
+
+    @keyframes icon-line-long {
+        0% { width: 0; right: 46px; top: 54px; }
+        65% { width: 0; right: 46px; top: 54px; }
+        84% { width: 55px; right: 0px; top: 35px; }
+        100% { width: 47px; right: 8px; top: 38px; }
+    }
+</style>
+
+<script>
+    function initRegistro() {
+        // --- 1. Lógica Condicional (Sí/No) ---
+        const triggers = document.querySelectorAll('.trigger-condicional');
+        triggers.forEach(trigger => {
+            trigger.addEventListener('change', (e) => {
+                const target = e.target as HTMLInputElement; 
+                const targetId = target.dataset.target;
+                const valor = target.value;
+                if (!targetId) return;
+                const targetDiv = document.getElementById(targetId);
+                if (targetDiv) {
+                    if (valor === 'si') {
+                        targetDiv.classList.remove('hidden');
+                        targetDiv.querySelectorAll('input').forEach(i => i.removeAttribute('disabled'));
+                    } else {
+                        targetDiv.classList.add('hidden');
+                        targetDiv.querySelectorAll('input').forEach((i: HTMLInputElement) => {
+                            i.value = '';
+                            i.setAttribute('disabled', 'true');
+                        });
+                    }
+                }
+            });
+        });
+
+        // --- 2. Lógica Dinámica de Síntomas ---
+        const btnAddSintoma = document.getElementById('btn-add-sintoma');
+        const listaSintomas = document.getElementById('lista-sintomas');
+
+        // Función para configurar el botón de eliminar de una tarjeta
+        const setupDeleteButton = (card: HTMLElement) => {
+            const btnDelete = card.querySelector('.btn-delete-sintoma');
+            if (btnDelete) {
+                // Hacemos visible el botón (solo para los clones)
+                btnDelete.classList.remove('hidden');
+                
+                btnDelete.addEventListener('click', () => {
+                    // Verificar si está vacío
+                    const inputs = card.querySelectorAll('input');
+                    let estaVacio = true;
+                    inputs.forEach(input => {
+                        if (input.value.trim() !== '') estaVacio = false;
+                    });
+
+                    if (estaVacio) {
+                        card.remove();
+                        // Re-numerar los títulos
+                        const grupos = document.querySelectorAll('.sintoma-group');
+                        grupos.forEach((grupo, index) => {
+                            const titulo = grupo.querySelector('.sintoma-titulo');
+                            if (titulo) titulo.textContent = `Síntoma ${index + 1}`;
+                        });
+                    } else {
+                        alert('⚠️ Solo puedes eliminar un campo extra si está vacío.');
+                    }
+                });
+            }
+        };
+
+        if (btnAddSintoma && listaSintomas) {
+            btnAddSintoma.addEventListener('click', () => {
+                // Clonar el primer grupo (plantilla)
+                const original = listaSintomas.querySelector('.sintoma-group');
+                if (!original) return;
+
+                const clone = original.cloneNode(true) as HTMLElement;
+                
+                // Limpiar valores del clon
+                clone.querySelectorAll('input').forEach((input: HTMLInputElement) => {
+                    input.value = '';
+                });
+
+                // Configurar botón eliminar para el nuevo clon
+                setupDeleteButton(clone);
+
+                // Actualizar título y añadir
+                const totalSintomas = listaSintomas.querySelectorAll('.sintoma-group').length + 1;
+                const titulo = clone.querySelector('.sintoma-titulo');
+                if (titulo) titulo.textContent = `Síntoma ${totalSintomas}`;
+
+                listaSintomas.appendChild(clone);
+            });
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', initRegistro);
+    
+    // Redirección segura
+    const modalExito = document.querySelector('.success-checkmark');
+    if (modalExito) {
+        setTimeout(() => {
+            window.location.replace("/lista");
+        }, 2500);
+    }
+</script>
