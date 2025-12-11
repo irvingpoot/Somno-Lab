@@ -1,16 +1,24 @@
 ---
 // src/pages/cronograma.astro
 import Layout from '../layouts/Layout.astro';
+import BackButton from '../components/BackButton.astro';
 ---
 
 <Layout title="SOMNOMID - Cronograma">
-    <div class="min-h-screen bg-[#F8FAFC] py-12 px-4 sm:px-6 flex flex-col items-center">
+    <div class="min-h-screen bg-[#F8FAFC] py-12 px-4 sm:px-6 flex flex-col items-center relative overflow-hidden">
         
-        <div class="w-full max-w-5xl space-y-12">
+        <div class="absolute top-0 right-0 -translate-y-1/4 translate-x-1/4 w-[800px] h-[800px] bg-blue-400/10 rounded-full blur-[120px] pointer-events-none"></div>
+        <div class="absolute bottom-0 left-0 translate-y-1/4 -translate-x-1/4 w-[600px] h-[600px] bg-indigo-400/10 rounded-full blur-[100px] pointer-events-none"></div>
+
+        <div class="w-full max-w-5xl space-y-8 relative z-10">
             
+            <div class="flex justify-start px-2 animate-fade-in-down" style="animation-delay: 0.1s;">
+                <BackButton />
+            </div>
+
             <div class="text-center space-y-3 animate-fade-in-down">
                 <h1 class="text-4xl md:text-5xl font-bold text-gray-800 tracking-tight">
-                    Diseña tu <span class="text-[#3F74FB]">Descanso</span>
+                    Cronoterapia del <span class="text-[#3F74FB]">sueño</span>
                 </h1>
                 <p class="text-gray-500 text-lg max-w-2xl mx-auto font-light">
                     Ajuste su reloj biológico paso a paso.
@@ -28,14 +36,14 @@ import Layout from '../layouts/Layout.astro';
                     </div>
 
                     <div class="group">
-                        <label for="horaDespertar" class="block text-sm font-semibold text-gray-600 mb-2 ml-1">Hora Deseada</label>
-                        <input type="time" id="horaDespertar" name="horaDespertar" required
+                        <label for="horaDespertar" class="block text-sm font-semibold text-gray-600 mb-2 ml-1">Hora en la que deseas levantarte</label>
+                        <input type="time" id="horaDespertar" name="horaDespertar" required step="1800"
                             class="w-full bg-gray-50 text-gray-800 text-lg font-medium border-0 rounded-2xl p-4 focus:ring-2 focus:ring-[#3F74FB]/30 focus:bg-white transition-all shadow-sm text-center" />
                     </div>
                     
                     <div class="group">
-                        <label for="hora" class="block text-sm font-semibold text-gray-600 mb-2 ml-1">Hora Actual</label>
-                        <input type="time" id="hora" name="hora" required
+                        <label for="hora" class="block text-sm font-semibold text-gray-600 mb-2 ml-1">Hora que te levantas actualmente</label>
+                        <input type="time" id="hora" name="hora" required step="1800"
                             class="w-full bg-gray-50 text-gray-800 text-lg font-medium border-0 rounded-2xl p-4 focus:ring-2 focus:ring-[#3F74FB]/30 focus:bg-white transition-all shadow-sm text-center" />
                     </div>
                 </form>
@@ -48,9 +56,26 @@ import Layout from '../layouts/Layout.astro';
             </div>
 
             <div class="container-crono space-y-8">
-                <h3 id="titulo-crono" class="text-2xl md:text-3xl font-semibold text-center text-gray-800 min-h-12"></h3>
+                <h3 id="titulo-crono" class="text-2xl md:text-3xl font-semibold text-center text-gray-800 min-h-8"></h3>
                 
-                <div class="crono grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6"></div>
+                <div class="crono grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
+                    <div class="border-2 border-dashed border-slate-200 rounded-3xl p-6 flex flex-col items-center justify-center text-slate-300 min-h-[140px] animate-pulse">
+                        <i class="fas fa-calendar-day text-2xl mb-2 opacity-50"></i>
+                        <span class="text-sm font-medium">Día 1</span>
+                    </div>
+                    <div class="border-2 border-dashed border-slate-200 rounded-3xl p-6 flex flex-col items-center justify-center text-slate-300 min-h-[140px] animate-pulse" style="animation-delay: 0.1s">
+                        <i class="fas fa-calendar-day text-2xl mb-2 opacity-50"></i>
+                        <span class="text-sm font-medium">Día 2</span>
+                    </div>
+                    <div class="border-2 border-dashed border-slate-200 rounded-3xl p-6 flex flex-col items-center justify-center text-slate-300 min-h-[140px] animate-pulse" style="animation-delay: 0.2s">
+                        <i class="fas fa-calendar-day text-2xl mb-2 opacity-50"></i>
+                        <span class="text-sm font-medium">Día 3</span>
+                    </div>
+                    <div class="border-2 border-dashed border-slate-200 rounded-3xl p-6 flex flex-col items-center justify-center text-slate-300 min-h-[140px] animate-pulse" style="animation-delay: 0.3s">
+                        <i class="fas fa-ellipsis-h text-2xl mb-2 opacity-50"></i>
+                        <span class="text-sm font-medium">...</span>
+                    </div>
+                </div>
             </div>
 
         </div>
@@ -58,16 +83,13 @@ import Layout from '../layouts/Layout.astro';
 
     <div id="modal" class="hidden fixed inset-0 z-50 items-center justify-center bg-gray-900/60 backdrop-blur-sm p-4 transition-all duration-300">
         <div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden animate-fade-in-up">
-            
             <div class="p-8 text-center">
                 <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-blue-50 mb-6">
                     <i class="fas fa-info text-2xl text-[#3F74FB]"></i>
                 </div>
-                
                 <h3 class="text-xl font-bold text-gray-900 mb-2">Aviso</h3>
                 <p id="modal-message" class="text-gray-500 text-sm leading-relaxed"></p>
             </div>
-
             <div class="bg-gray-50 px-6 py-4 flex gap-3">
                 <button id="close-modal-btn" class="flex-1 bg-[#3F74FB] text-white font-semibold py-3 px-4 rounded-xl hover:bg-blue-600 transition-colors">
                     Entendido
@@ -78,19 +100,20 @@ import Layout from '../layouts/Layout.astro';
             </div>
         </div>
     </div>
+
+    <div id="toast" class="fixed bottom-8 left-1/2 transform -translate-x-1/2 bg-slate-800/90 backdrop-blur text-white px-6 py-3 rounded-full shadow-2xl shadow-slate-500/20 opacity-0 translate-y-10 transition-all duration-500 pointer-events-none z-50 flex items-center gap-3 border border-slate-700/50">
+        <div class="w-6 h-6 rounded-full bg-[#3F74FB] flex items-center justify-center shrink-0">
+            <i class="fas fa-check text-xs text-white"></i>
+        </div>
+        <span id="toast-message" class="text-sm font-medium tracking-wide">Mensaje del sistema</span>
+    </div>
+
 </Layout>
 
 <script src="../scripts/scriptCrono.js"></script>
 
 <style>
-    @keyframes fadeInUp {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    .animate-fade-in-up {
-        animation: fadeInUp 0.4s ease-out forwards;
-    }
-    .animate-fade-in-down {
-        animation: fadeInUp 0.6s ease-out forwards;
-    }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .animate-fade-in-up { animation: fadeInUp 0.4s ease-out forwards; }
+    .animate-fade-in-down { animation: fadeInUp 0.6s ease-out forwards; }
 </style>

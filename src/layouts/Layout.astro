@@ -9,7 +9,7 @@ const { title } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="es">
+<html lang="es" class="scroll-smooth">
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="description" content="Somnomid - Clínica de sueño" />
@@ -25,7 +25,7 @@ const { title } = Astro.props;
 			<slot />
 		</main>
 
-		<footer class="bg-[#3F74FB] text-white py-6 mt-auto">
+		<footer class="bg-somno text-white py-6 mt-auto">
             <div class="container mx-auto flex flex-col items-center gap-4">
                 <div class="flex gap-6 text-xl">
                     <a href="https://www.facebook.com" target="_blank" class="hover:text-gray-200 transition"><i class="fab fa-facebook-f"></i></a>
@@ -35,7 +35,7 @@ const { title } = Astro.props;
                 <div class="text-sm opacity-90">
                     © Dr. Jesus Moo Estrella
                 </div>
-                <img src="/img/logo.jpg" alt="SOMNOMID-LOGO" class="w-24 h-auto rounded-md bg-white p-1" loading="lazy">
+                <img src="/logoSomno.webp" alt="SOMNOMID-LOGO" class="w-24 h-auto rounded-md p-1" loading="lazy">
             </div>
         </footer>
 	</body>
