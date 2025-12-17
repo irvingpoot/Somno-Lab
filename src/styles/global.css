@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
 @theme {
-    --color-somno: #3F74FB;
+    --color-somno: #3E8CB1;
+    --color-somno-light: #60BDC3;
+    --color-somno-dark: #3A8F98;
+    
 }

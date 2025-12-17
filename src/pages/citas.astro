@@ -1,0 +1,107 @@
+---
+    import Layout from "../layouts/Layout.astro"
+    import Icon from "../components/Icon.astro"
+    import { createClient } from "@supabase/supabase-js"
+    import CitaCard from "../components/CitaCard.astro"
+
+    const supabase = createClient(
+        import.meta.env.PUBLIC_SUPABASE_URL,
+        import.meta.env.SUPABASE_KEY
+    );
+
+    if (Astro.request.method === "POST") {
+        const data = await Astro.request.formData();
+        const citaId = data.get("id_cita");
+        const accion = data.get("accion");
+
+        if (citaId && accion) {
+            const nuevoEstado = accion === 'completar' ? 'completada' : 'cancelada';
+            await supabase.from('citas').update({ estado: nuevoEstado }).eq('id', citaId);
+        }
+    }
+
+    const { data: citasRaw, error } = await supabase
+        .from('citas')
+        .select('id, nombre, fecha_hora, sintoma, telefono, referencia, observaciones, registrado_por_id, motivo')
+        .eq('estado', 'pendiente')
+        .order('fecha_hora', { ascending: true });
+
+    if (error) console.error("Error al obtener citas:", error);
+
+    const citasAgrupadas = (citasRaw || []).reduce((grupos, cita) => {
+        const fechaObj = new Date(cita.fecha_hora);
+        const fechaTitulo = fechaObj.toLocaleDateString('es-MX', { day: 'numeric', month: 'long', timeZone: 'America/Merida' });
+
+        if (!grupos[fechaTitulo]) grupos[fechaTitulo] = [];
+        grupos[fechaTitulo].push(cita);
+        return grupos;
+    }, {} as Record<string, any[]>);
+
+    const gruposDeCitas = Object.entries(citasAgrupadas);
+---
+
+<Layout title="Agenda de Citas">
+    <Icon />
+    <main class="max-w-7xl mx-auto pt-10 pb-28 px-4">
+        
+        <div class="flex flex-col items-center justify-center mb-10">
+            <h1 class="font-black tracking-tighter text-7xl md:text-9xl mb-6">
+                <span class="bg-clip-text text-transparent bg-linear-to-r from-somno-light via-somno to-somno-dark pr-4">
+                    SomnoLab
+                </span>
+            </h1>
+		</div>
+
+        <div class="flex flex-wrap gap-4 justify-center mb-12">
+            <a href="/lista" class="px-6 py-2.5 rounded-lg border border-somno text-somno hover:text-somno-light hover:border-somno-light transition-all text-sm font-medium flex items-center gap-2">
+                Ver Pacientes
+            </a>
+            
+            <a href="/nueva-cita" class="group relative overflow-hidden rounded-lg border border-somno bg-transparent px-6 py-2.5 text-somno shadow-sm transition-all hover:text-white hover:shadow-[0_0_20px_rgba(59,130,246,0.4)] hover:border-somno-light flex items-center justify-center gap-2">
+                <span class="absolute inset-0 w-0 bg-somno transition-all duration-250 ease-out group-hover:w-full"></span>
+                <span class="relative flex items-center gap-2 text-sm font-semibold tracking-wide uppercase">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                    </svg>
+                    Agendar Cita
+                </span>
+            </a>
+        </div>
+
+        <div class="space-y-12 max-w-5xl mx-auto">
+            {gruposDeCitas.length > 0 ? (
+                gruposDeCitas.map(([fechaTitulo, citas]) => (
+                    <section class="relative fade-in">
+                        {/* Encabezado de la fecha */}
+                        <div class="flex items-center gap-4 mb-6 sticky top-0 backdrop-blur-md py-3 z-10 border-b border-somno-dark/30">
+                            <div class="h-2 w-2 rounded-full bg-somno shadow-[0_0_10px_rgba(62,140,177,0.8)]"></div>
+                            <h3 class="text-2xl font-bold text-somno-light capitalize">{fechaTitulo}</h3>
+                        </div>
+
+                        {/* Grid de citas */}
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 ml-0 md:ml-6">
+                            {citas.map((cita) => (
+                                <CitaCard cita={cita} /> 
+                            ))}
+                        </div>
+                    </section>
+                ))
+            ) : (
+                <div class="flex flex-col items-center justify-center py-20 opacity-50">
+                    <p class="text-xl text-slate-500">No hay citas pendientes</p>
+                </div>
+            )}
+        </div>
+        
+    </main>
+</Layout>
+
+<style>
+    .fade-in {
+        animation: fadeIn 0.5s ease-in-out;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>

@@ -5,10 +5,10 @@ import BackButton from '../components/BackButton.astro';
 ---
 
 <Layout title="SOMNOMID - Cronograma">
-    <div class="min-h-screen bg-[#F8FAFC] py-12 px-4 sm:px-6 flex flex-col items-center relative overflow-hidden">
+    <div class="min-h-screen bg-slate-50 py-12 px-4 sm:px-6 flex flex-col items-center relative overflow-hidden">
         
-        <div class="absolute top-0 right-0 -translate-y-1/4 translate-x-1/4 w-[800px] h-[800px] bg-blue-400/10 rounded-full blur-[120px] pointer-events-none"></div>
-        <div class="absolute bottom-0 left-0 translate-y-1/4 -translate-x-1/4 w-[600px] h-[600px] bg-indigo-400/10 rounded-full blur-[100px] pointer-events-none"></div>
+        <div class="absolute top-0 right-0 -translate-y-1/4 translate-x-1/4 w-[800px] h-[800px] bg-somno-dark/10 rounded-full blur-[120px] pointer-events-none"></div>
+        <div class="absolute bottom-0 left-0 translate-y-1/4 -translate-x-1/4 w-[600px] h-[600px] bg-somno/10 rounded-full blur-[100px] pointer-events-none"></div>
 
         <div class="w-full max-w-5xl space-y-8 relative z-10">
             
@@ -18,9 +18,9 @@ import BackButton from '../components/BackButton.astro';
 
             <div class="text-center space-y-3 animate-fade-in-down">
                 <h1 class="text-4xl md:text-5xl font-bold text-gray-800 tracking-tight">
-                    Cronoterapia del <span class="text-[#3F74FB]">sueño</span>
+                    Cronoterapia del <span class="text-somno">sueño</span>
                 </h1>
-                <p class="text-gray-500 text-lg max-w-2xl mx-auto font-light">
+                <p class="text-somno text-lg max-w-2xl mx-auto font-light">
                     Ajuste su reloj biológico paso a paso.
                 </p>
             </div>
@@ -30,26 +30,26 @@ import BackButton from '../components/BackButton.astro';
 
                 <form id="edad-hora" class="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-8 items-end">
                     <div class="group">
-                        <label for="edad" class="block text-sm font-semibold text-gray-600 mb-2 ml-1">Tu Edad</label>
+                        <label for="edad" class="block text-sm font-semibold text-somno-dark mb-2 ml-1">Tu Edad</label>
                         <input type="number" id="edad" name="edad" required placeholder="Ej. 24"
-                            class="w-full bg-gray-50 text-gray-800 text-lg font-medium border-0 rounded-2xl p-4 focus:ring-2 focus:ring-[#3F74FB]/30 focus:bg-white transition-all shadow-sm placeholder-gray-400" />
+                            class="w-full bg-gray-50 text-somno-dark text-lg font-medium border-0 rounded-2xl p-4 focus:ring-2 focus:ring-somno/30 focus:bg-somno-light/30 transition-all shadow-sm placeholder-somno-dark/60" />
                     </div>
 
                     <div class="group">
-                        <label for="horaDespertar" class="block text-sm font-semibold text-gray-600 mb-2 ml-1">Hora en la que deseas levantarte</label>
+                        <label for="horaDespertar" class="block text-sm font-semibold text-somno-dark mb-2 ml-1">Hora en la que deseas levantarte</label>
                         <input type="time" id="horaDespertar" name="horaDespertar" required step="1800"
-                            class="w-full bg-gray-50 text-gray-800 text-lg font-medium border-0 rounded-2xl p-4 focus:ring-2 focus:ring-[#3F74FB]/30 focus:bg-white transition-all shadow-sm text-center" />
+                            class="w-full bg-gray-50 text-somno-dark text-lg font-medium border-0 rounded-2xl p-4 focus:ring-2 focus:ring-somno/30 focus:bg-somno-light/30 transition-all shadow-sm text-center" />
                     </div>
                     
                     <div class="group">
-                        <label for="hora" class="block text-sm font-semibold text-gray-600 mb-2 ml-1">Hora que te levantas actualmente</label>
+                        <label for="hora" class="block text-sm font-semibold text-somno-dark mb-2 ml-1">Hora que te levantas actualmente</label>
                         <input type="time" id="hora" name="hora" required step="1800"
-                            class="w-full bg-gray-50 text-gray-800 text-lg font-medium border-0 rounded-2xl p-4 focus:ring-2 focus:ring-[#3F74FB]/30 focus:bg-white transition-all shadow-sm text-center" />
+                            class="w-full bg-gray-50 text-somno-dark text-lg font-medium border-0 rounded-2xl p-4 focus:ring-2 focus:ring-somno/30 focus:bg-somno-light/30 transition-all shadow-sm text-center" />
                     </div>
                 </form>
 
                 <div class="mt-10 flex justify-center">
-                    <button id="submit-btn" class="bg-[#3F74FB] text-white text-lg font-semibold py-4 px-12 rounded-full shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 hover:bg-blue-600 transition-all transform hover:scale-105 active:scale-95">
+                    <button id="submit-btn" class="bg-somno text-white text-lg font-semibold py-4 px-12 rounded-full shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 hover:bg-somno-light transition-all transform hover:scale-105 active:scale-95">
                         Calcular mi Cronograma
                     </button>
                 </div>

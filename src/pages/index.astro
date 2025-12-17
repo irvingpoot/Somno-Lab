@@ -4,12 +4,12 @@ import Layout from '../layouts/Layout.astro';
 
 <Layout title="Somno-Lab - Inicio">
     <section class="relative min-h-screen flex flex-col justify-center items-center overflow-hidden bg-slate-50">
-        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-125 h-125 bg-blue-400/20 rounded-full blur-[100px] pointer-events-none"></div>
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-125 h-125 bg-somno/20 rounded-full blur-[100px] pointer-events-none"></div>
 
         <div class="relative z-10 max-w-5xl mx-auto flex flex-col items-center text-center px-4 animate-fade-in-up">
             <img src="/logoSomno.webp" alt="Logo Somnomid" class="w-24 md:w-30 h-auto mb-8 rounded-2xl shadow-sm opacity-90 hover:opacity-100 transition-opacity bg-slate-50" />
             <h1 class="font-black tracking-tighter text-7xl md:text-9xl mb-6">
-                <span class="bg-clip-text text-transparent bg-linear-to-r from-slate-800 via-somno to-blue-400 pr-4">
+                <span class="bg-clip-text text-transparent bg-linear-to-r from-somno-light via-somno to-somno-dark pr-4">
                     SomnoLab
                 </span>
             </h1>
@@ -74,7 +74,7 @@ import Layout from '../layouts/Layout.astro';
                                 class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 font-medium focus:ring-2 focus:ring-somno focus:bg-white transition-all outline-none" />
                         </div>
 
-                        <button type="submit" class="mt-4 w-full bg-somno text-white font-bold py-4 px-6 rounded-xl hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-500/30 transition-all duration-300 transform active:scale-[0.98]">
+                        <button type="submit" class="mt-4 w-full bg-somno text-white font-bold py-4 px-6 rounded-xl hover:bg-somno-light hover:shadow-lg hover:shadow-blue-500/30 transition-all duration-300 transform active:scale-[0.98]">
                             Calcular Hora Ideal
                         </button>
                     </form>

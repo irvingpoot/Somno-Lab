@@ -154,10 +154,10 @@ document.getElementById('submit-btn').addEventListener('click', function(event) 
         `;
         
         card.innerHTML = `
-            <div class="text-[#3F74FB] font-bold text-lg mb-2 bg-blue-50 px-4 py-1 rounded-full group-hover:bg-[#3F74FB] group-hover:text-white transition-colors duration-300">
+            <div class="text-somno font-bold text-lg mb-2 bg-blue-50 px-4 py-1 rounded-full group-hover:bg-somno group-hover:text-white transition-colors duration-300">
                 ${item.dia}
             </div>
-            <div class="text-gray-700 font-semibold text-2xl font-mono tracking-tight">
+            <div class="text-slate-800 font-semibold text-2xl font-mono tracking-tight">
                 ${item.hora}
             </div>
         `;
