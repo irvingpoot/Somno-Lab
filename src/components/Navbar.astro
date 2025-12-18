@@ -1,0 +1,116 @@
+---
+const navItems = [
+    { name: 'Quiénes somos', href: '/quienes-somos' }, // Cambiado a ruta absoluta para que funcione desde cualquier página
+    { name: 'Servicios', href: '/#servicios' },
+    { name: 'Cursos', href: '/#cursos' },
+    { name: 'Eventos', href: '/#eventos' },
+    { name: 'Tópicos del sueño', href: '/#topicos' },
+];
+---
+
+<nav id="main-nav" class="fixed top-0 w-full z-50 transition-all duration-300 py-4">
+    <div class="mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16 items-center">
+            
+            <div id="nav-logo" class="shrink-0 flex items-center opacity-0 -translate-x-4 transition-all duration-500 pointer-events-none">
+                <a href="/" class="flex items-center gap-3 group">
+                    <img src="/logoSomno.webp" alt="SomnoLab Logo" class="h-10 w-auto rounded-lg group-hover:scale-105 transition-transform" />
+                    <span class="pr-1 font-black tracking-tighter text-2xl bg-clip-text text-transparent bg-linear-to-r from-somno-light to-somno">
+                        SomnoLab
+                    </span>
+                </a>
+            </div>
+
+            <div class="hidden lg:flex items-center space-x-1">
+                {navItems.map(item => (
+                    <a href={item.href} class="px-4 py-2 text-slate-800 hover:text-slate-50 rounded-full hover:bg-somno transition-all duration-200 font-medium text-sm">
+                        {item.name}
+                    </a>
+                ))}
+            </div>
+
+            <div class="lg:hidden flex items-center">
+                <button id="mobile-menu-button" class="text-slate-600 p-2 rounded-xl bg-white/50 backdrop-blur-md border border-slate-100 shadow-sm focus:outline-none">
+                    <i class="fas fa-bars text-xl" id="menu-icon"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="hidden lg:hidden" id="mobile-menu">
+        <div class="px-4 pt-2 pb-6 space-y-2">
+            {navItems.map(item => (
+                <a href={item.href} class="block px-4 py-3 rounded-2xl text-base font-medium text-slate-600 hover:text-somno hover:bg-slate-50">
+                    {item.name}
+                </a>
+            ))}
+        </div>
+    </div>
+</nav>
+
+<script>
+    const nav = document.getElementById('main-nav');
+    const logo = document.getElementById('nav-logo');
+    const menu = document.getElementById('mobile-menu');
+    const btn = document.getElementById('mobile-menu-button');
+    const icon = document.getElementById('menu-icon');
+    const section = document.getElementById('quienes-somos');
+
+    // Detectar si estamos en el index
+    const isIndex = window.location.pathname === '/' || window.location.pathname === '/index.html';
+
+    function updateNavbar() {
+        const rect = section?.getBoundingClientRect();
+        const isScrolled = window.scrollY > 50;
+        const reachedSection = rect && rect.top <= 100;
+
+        // Si NO es el index, mostrar logo y fondo siempre
+        if (!isIndex) {
+            nav?.classList.add('bg-slate-50', 'py-2');
+            nav?.classList.remove('py-4');
+            logo?.classList.remove('opacity-0', '-translate-x-4', 'pointer-events-none');
+            logo?.classList.add('opacity-100', 'translate-x-0');
+            return;
+        }
+
+        // Lógica original para el index
+        if (isScrolled) {
+            nav?.classList.add('bg-slate-50');
+            nav?.classList.remove('py-4');
+        } else {
+            if (menu?.classList.contains('hidden')) {
+                nav?.classList.remove('bg-slate-50', 'py-2');
+                nav?.classList.add('py-4');
+            }
+        }
+
+        if (reachedSection) {
+            logo?.classList.remove('opacity-0', '-translate-x-4', 'pointer-events-none');
+            logo?.classList.add('opacity-100', 'translate-x-0');
+        } else {
+            logo?.classList.add('opacity-0', '-translate-x-4', 'pointer-events-none');
+            logo?.classList.remove('opacity-100', 'translate-x-0');
+        }
+    }
+
+    // Ejecutar al cargar y al hacer scroll
+    window.addEventListener('scroll', updateNavbar);
+    window.addEventListener('load', updateNavbar);
+    updateNavbar(); // Ejecución inmediata
+
+    // Lógica del Menú Responsivo
+    btn?.addEventListener('click', () => {
+        const isOpening = menu?.classList.contains('hidden');
+        menu?.classList.toggle('hidden');
+
+        if (icon) {
+            icon.className = isOpening ? 'fas fa-times text-xl' : 'fas fa-bars text-xl';
+        }
+
+        if (isOpening) {
+            nav?.classList.add('bg-slate-50');
+        } else if (window.scrollY <= 50 && isIndex) {
+            nav?.classList.remove('bg-slate-50');
+        }
+    });
+</script>

@@ -1,8 +1,10 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
 ---
 
 <Layout title="Somno-Lab - Inicio">
+    <Navbar />
     <section class="relative min-h-screen flex flex-col justify-center items-center overflow-hidden bg-slate-50">
         <div class="absolute top-0 left-1/2 -translate-x-1/2 w-125 h-125 bg-somno/20 rounded-full blur-[100px] pointer-events-none"></div>
 
@@ -13,9 +15,9 @@ import Layout from '../layouts/Layout.astro';
                     SomnoLab
                 </span>
             </h1>
-            <p class="text-xl md:text-2xl text-gray-500 max-w-2xl font-light leading-relaxed mb-12">
+            <p class="text-xl md:text-2xl text-slate-800 max-w-2xl font-light leading-relaxed mb-12">
                 Ciencia aplicada a tu descanso. <br class="hidden md:block"/>
-                <span class="text-gray-400 text-lg">Optimiza tus ciclos de sueño con precisión clínica.</span>
+                <span class="text-slate-500 text-lg">Optimiza tus ciclos de sueño con precisión clínica.</span>
             </p>
             <div class="flex flex-col sm:flex-row gap-5 w-full justify-center">
                 <a href="#calculadora" 
@@ -34,13 +36,77 @@ import Layout from '../layouts/Layout.astro';
             </div>
         </div>
         <div class="absolute bottom-12 animate-bounce-slow">
-            <a href="#calculadora" class="text-slate-300 hover:text-somno transition-colors p-2">
+            <a href="#quienes-somos" class="text-slate-300 hover:text-somno transition-colors p-2">
                 <i class="fas fa-chevron-down text-2xl"></i>
             </a>
         </div>
     </section>
 
-    <div id="calculadora" class="relative min-h-screen w-full bg-slate-50 py-24 px-4 overflow-hidden">
+    <section id="quienes-somos" class="py-24 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                
+                <div class="relative">
+                    <div class="absolute -top-4 -left-4 w-64 h-64 bg-somno/5 rounded-full blur-3xl"></div>
+                    <div class="relative rounded-3xl overflow-hidden shadow-2xl transform hover:scale-[1.02] transition-transform duration-500">
+                        <img 
+                            src="https://images.unsplash.com/photo-1659989693409-5adc97274bed?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
+                            alt="Equipo SomnoLab" 
+                            class="w-full h-[500px] object-cover"
+                        />
+                        <div class="absolute inset-0 bg-linear-to-t from-somno/20 to-transparent"></div>
+                    </div>
+                    <div class="absolute -bottom-6 -right-6 bg-white p-6 rounded-2xl shadow-xl border border-slate-50 animate-bounce-slow">
+                        <p class="text-somno font-black text-4xl">10+</p>
+                        <p class="text-slate-500 text-sm font-medium">Años de experiencia<br/>clínica</p>
+                    </div>
+                </div>
+
+                <div class="space-y-8">
+                    <div class="space-y-4">
+                        <h2 class="text-somno font-bold tracking-wider uppercase text-sm">Nuestra Filosofía</h2>
+                        <h3 class="text-4xl md:text-5xl font-black text-slate-800 tracking-tight leading-tight">
+                            Comprometidos con tu <span class="text-somno-light">descanso</span>
+                        </h3>
+                        <p class="text-lg text-slate-600 leading-relaxed font-light">
+                            En <span class="font-semibold text-somno">SomnoLab</span>, fusionamos la tecnología con protocolos médicos para transformar tu salud a través del sueño, diseñando soluciones personalizadas para tu bienestar.
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="flex gap-4 items-start">
+                            <div class="flex-shrink-0 w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center text-somno border border-slate-100">
+                                <i class="fas fa-microscope text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-800">Precisión Clínica</h4>
+                                <p class="text-sm text-slate-500">Resultados basados en tus reportes médicos.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-4 items-start">
+                            <div class="flex-shrink-0 w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center text-somno border border-slate-100">
+                                <i class="fas fa-user-md text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-800">Atención Humana</h4>
+                                <p class="text-sm text-slate-500">Acompañamiento médico en cada paso.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-4">
+                        <a href="/quienes-somos" class="inline-flex items-center gap-2 text-somno font-bold hover:text-somno-dark transition-colors group">
+                            Conoce más de nosotros
+                            <i class="fas fa-arrow-right text-sm group-hover:translate-x-1 transition-transform"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="calculadora" class="relative min-h-screen w-full bg-slate-50 py-24 px-4 overflow-hidden">
 
         <div class="max-w-7xl mx-auto relative z-10">
             <div class="text-center mb-16 space-y-4">
@@ -112,7 +178,7 @@ import Layout from '../layouts/Layout.astro';
 
             </div>
         </div>
-    </div>
+    </section>
 
     <div id="modal-info" class="hidden fixed inset-0 z-50 items-center justify-center bg-gray-900/60 backdrop-blur-sm p-4 transition-all duration-300">
         <div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden animate-fade-in-up border border-white/20">

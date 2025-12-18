@@ -2,6 +2,7 @@
 import Layout from "../layouts/Layout.astro"
 import Icon from "../components/Icon.astro"
 import { createClient } from "@supabase/supabase-js"
+import BackButton from "../components/BackButton.astro"
 
 const supabase = createClient(
     import.meta.env.PUBLIC_SUPABASE_URL,
@@ -66,6 +67,9 @@ if (Astro.request.method === "POST") {
 
 <Layout title="Agendar Nueva Cita">
     <Icon />
+	<div class="absolute top-8 left-5 xs:p-5 animate-fade-in-down" style="animation-delay: 0.1s;">
+        <BackButton href="/citas" label="Volver a las citas" />
+    </div>
 
     {registroExitoso && (
         <div class="fixed inset-0 bg-black/80 flex items-center justify-center z-50 backdrop-blur-sm transition-opacity duration-300 px-4">
@@ -95,7 +99,7 @@ if (Astro.request.method === "POST") {
 
     <main class="max-w-7xl mx-auto pt-6 md:pt-10 pb-28 px-4">
         <div class="flex flex-col items-center justify-center mb-8">
-            <h1 class="text-4xl md:text-6xl font-extrabold text-center leading-tight">
+            <h1 class="mt-15 lg:mt-0 text-4xl md:text-6xl font-extrabold text-center leading-tight">
                 Agendar <span class="bg-gradient-to-r from-somno-dark via-somno to-somno-light bg-clip-text text-transparent">Cita</span>
             </h1>
 		</div>

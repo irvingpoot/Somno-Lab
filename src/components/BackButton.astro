@@ -1,17 +1,30 @@
 ---
+// src/components/BackButton.astro
 interface Props {
-	href?: string;
-	label?: string;
+    href?: string;
+    label?: string;
+    className?: string; 
+    useHistory?: boolean; 
 }
 
-const { href = '/', label = 'Volver al inicio' } = Astro.props;
+const { 
+    href = '/', 
+    label = 'Volver', 
+    className = '',
+    useHistory = false 
+} = Astro.props;
 ---
 
-<a href={href} 
-    class="inline-flex items-center gap-3 text-somno hover:text-somno-light transition-all duration-300 group font-medium no-underline">
+<button
+    onclick={useHistory ? "history.back()" : `window.location.href='${href}'`}
+    class:list={[
+        "inline-flex items-center gap-3 text-somno hover:text-somno-light transition-all duration-300 group font-medium no-underline bg-transparent border-none cursor-pointer p-0",
+        className
+    ]}
+    >
     <div class="w-10 h-10 bg-white rounded-full shadow-[0_2px_8px_rgba(0,0,0,0.05)] border border-slate-100 flex items-center justify-center group-hover:border-blue-100 group-hover:shadow-md group-hover:scale-105 transition-all">
         <i class="fas fa-arrow-left text-sm transition-transform duration-300 group-hover:-translate-x-0.5"></i>
     </div>
     
     <span class="group-hover:translate-x-1 transition-transform duration-300">{label}</span>
-</a>
+</button>

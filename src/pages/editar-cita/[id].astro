@@ -1,6 +1,8 @@
 ---
 import Layout from "../../layouts/Layout.astro"
 import { createClient } from "@supabase/supabase-js"
+import Icon from "../../components/Icon.astro"
+import BackButton from "../../components/BackButton.astro"
 
 const { id } = Astro.params;
 
@@ -78,10 +80,14 @@ const fechaValue = `${fechaParte}T${horaParte}`;
 ---
 
 <Layout title="Editar Cita">
+    <Icon />
+	<div class="absolute top-8 left-5 xs:p-5 animate-fade-in-down" style="animation-delay: 0.1s;">
+        <BackButton href="/citas" label="Volver a las citas" />
+    </div>
 
     <main class="max-w-7xl mx-auto pt-10 pb-28 px-4">
         <div class="flex flex-col items-center justify-center mb-10">
-            <h1 class="max-md:max-w-xs max-md:pt-10 max-lg:max-w-xl text-4xl md:text-6xl font-extrabold text-balance text-center bg-linear-to-r from-somno-light via-somno to-somno-dark bg-clip-text text-transparent">Editar cita</h1>
+            <h1 class="mt-10 md:mt-0 max-md:max-w-xs max-md:pt-10 max-lg:max-w-xl text-4xl md:text-6xl font-extrabold text-balance text-center bg-linear-to-r from-somno-light via-somno to-somno-dark bg-clip-text text-transparent">Editar cita</h1>
 		</div>
 
         <form method="POST">

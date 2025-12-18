@@ -1,6 +1,8 @@
 ---
 import Layout from "../../layouts/Layout.astro"
 import InfoCard from "../../components/InfoCard.astro"
+import Icon from "../../components/Icon.astro"
+import BackButton from "../../components/BackButton.astro"
 import { createClient } from "@supabase/supabase-js"
 
 const { id } = Astro.params;
@@ -100,6 +102,10 @@ const edadDisplay = paciente.edad || (paciente.fecha_nacimiento ? new Date().get
 ---
 
 <Layout title={`Expediente: ${paciente.nombre}`}>
+    <Icon />
+	<div class="absolute top-8 left-5 xs:p-5 animate-fade-in-down" style="animation-delay: 0.1s;">
+        <BackButton href="/lista" label="Volver a la lista" />
+    </div>
 
     <main class="max-w-6xl mx-auto pt-20 pb-28 px-4">
         

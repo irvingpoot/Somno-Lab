@@ -2,6 +2,8 @@
 import Layout from "../../layouts/Layout.astro"
 import SintomaGroup from "../../components/SintomaGroup.astro"
 import PuntajeExtraGroup from "../../components/PuntajeExtraGroup.astro"
+import BackButton from "../../components/BackButton.astro"
+import Icon from "../../components/Icon.astro"
 import { createClient } from "@supabase/supabase-js"
 
 const { id } = Astro.params;
@@ -162,6 +164,10 @@ const listaExtras = p.pacientes_puntajes_extra || [];
 ---
 
 <Layout title={`Editar: ${p.nombre}`}>
+    <Icon />
+	<div class="absolute top-8 left-5 xs:p-5 animate-fade-in-down" style="animation-delay: 0.1s;">
+        <BackButton useHistory={true} label="Cancelar edición" />
+    </div>
 
     {error && (
         <div class="fixed top-5 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-lg text-white shadow-lg bg-red-600 z-50">{mensaje}</div>
@@ -169,7 +175,7 @@ const listaExtras = p.pacientes_puntajes_extra || [];
 
     <main class="max-w-7xl mx-auto pt-6 md:pt-10 pb-28 px-4">
         <div class="flex flex-col items-center justify-center mb-8">
-            <h1 class="font-black tracking-tighter text-5xl md:text-6xl mb-6">
+            <h1 class="font-black tracking-tighter text-5xl mt-15 lg:mt-0 md:text-6xl mb-6">
                 <span class="bg-clip-text text-transparent bg-linear-to-r from-somno-light via-somno to-somno-dark pr-4">
                     Edición de Paciente
                 </span>

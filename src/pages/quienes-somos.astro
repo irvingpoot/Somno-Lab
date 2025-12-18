@@ -1,0 +1,203 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+
+const valores = [
+    { 
+        title: "Excelencia Médica", 
+        desc: "Protocolos basados en la última evidencia científica internacional.",
+        icon: "fa-certificate"
+    },
+    { 
+        title: "Innovación", 
+        desc: "Uso de tecnología de vanguardia para diagnósticos más precisos.",
+        icon: "fa-microchip"
+    },
+    { 
+        title: "Empatía", 
+        desc: "Entendemos el impacto del sueño en tu vida diaria y salud mental.",
+        icon: "fa-heartbeat"
+    }
+    ];
+
+    const equipo = [
+    {
+        nombre: "Dra. Lucy Hwang",
+        cargo: "Especialista en Medicina del Sueño",
+        imagen: "https://i.pinimg.com/1200x/70/b9/47/70b947987944d42a1f289ba7028ec0f7.jpg",
+        bio: "Más de 15 años de experiencia tratando trastornos respiratorios y de ritmo circadiano."
+    },
+    {
+        nombre: "Dra. Lia Choi",
+        cargo: "Especialista en Medicina del Sueño",
+        imagen: "https://i.pinimg.com/1200x/72/fe/0a/72fe0a336b4e508e273d66ec3100ea54.jpg",
+        bio: "Más de 15 años de experiencia tratando trastornos respiratorios y de ritmo circadiano."
+    },
+    {
+        nombre: "Dra. Joanne Shin",
+        cargo: "Especialista en Medicina del Sueño",
+        imagen: "https://i.pinimg.com/1200x/06/36/ec/0636ece23274b3938f9c88d3e92d40bd.jpg",
+        bio: "Más de 15 años de experiencia tratando trastornos respiratorios y de ritmo circadiano."
+    },
+    {
+        nombre: "Dra. Serenna Lee",
+        cargo: "Especialista en Medicina del Sueño",
+        imagen: "https://i.pinimg.com/1200x/bc/58/a9/bc58a9bc1fb9c1fc191cf6e4410ad925.jpg",
+        bio: "Más de 15 años de experiencia tratando trastornos respiratorios y de ritmo circadiano."
+    },
+    {
+        nombre: "Dra. Hussey Shin",
+        cargo: "Neuróloga y Somnóloga",
+        imagen: "https://i.pinimg.com/736x/8d/fb/ef/8dfbeffe40535cf3f5a7b90d1548a1b4.jpg",
+        bio: "Experta en el diagnóstico de parasomnias e insomnio crónico."
+    }
+    ];
+---
+
+<Layout title="Quiénes Somos | SomnoLab">
+    <Navbar />
+
+    <main class="overflow-hidden">
+        <section class="relative pt-32 pb-20 bg-slate-50">
+            <div class="max-w-7xl mx-auto px-4 text-center relative z-10">
+                <span class="text-somno font-bold uppercase tracking-widest text-sm mb-4 block">Nuestra Historia</span>
+                <h1 class="text-5xl md:text-7xl font-black text-slate-800 tracking-tight mb-8">
+                    Redefiniendo el <span class="text-somno-light">descanso</span> médico.
+                </h1>
+                <p class="text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed font-light">
+                    SomnoLab nació como una respuesta a la necesidad de diagnósticos precisos para los trastornos del sueño. Nuestra misión es mejorar la calidad de vida de nuestros pacientes a través de una atención médica especializada y amable.
+                </p>
+            </div>
+            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full opacity-10 pointer-events-none">
+                <div class="absolute top-20 left-10 w-64 h-64 bg-somno rounded-full blur-[120px]"></div>
+                <div class="absolute bottom-10 right-10 w-96 h-96 bg-somno-light rounded-full blur-[150px]"></div>
+            </div>
+        </section>
+
+        <section class="py-24">
+            <div class="max-w-7xl mx-auto px-4">
+                <div class="grid lg:grid-cols-2 gap-16 items-center">
+                    <div class="relative group">
+                        <img 
+                            src="https://images.unsplash.com/photo-1581056771107-24ca5f033842?q=80&w=800" 
+                            alt="Laboratorio de sueño" 
+                            class="rounded-[3rem] shadow-2xl transition-transform duration-700 group-hover:scale-[1.02]"
+                            loading="lazy"
+                        />
+                        <div class="absolute -bottom-6 -left-6 bg-somno text-white p-8 rounded-3xl shadow-xl">
+                            <i class="fas fa-quote-left text-3xl opacity-30 mb-4"></i>
+                            <p class="text-lg italic font-medium">"Dormir bien es la base de una vida extraordinaria."</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-6">
+                        <h2 class="text-3xl font-bold text-slate-800">Nuestra Filosofía</h2>
+                        <p class="text-slate-600 leading-relaxed">
+                            En SomnoLab no solo tratamos síntomas; analizamos el origen de cada trastorno. Nuestra metodología integra las herramientas ideales para cada caso.
+                        </p>
+                        <div class="space-y-4">
+                            {valores.map(v => (
+                                <div class="flex gap-4 p-4 rounded-2xl border border-slate-100 hover:bg-slate-50 transition-colors">
+                                    <div class="w-12 h-12 rounded-xl bg-somno/10 flex items-center justify-center text-somno">
+                                        <i class={`fas ${v.icon} text-xl`}></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-slate-800">{v.title}</h4>
+                                        <p class="text-sm text-slate-500">{v.desc}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-24 overflow-hidden bg-slate-50">
+            <div class="max-w-7xl mx-auto px-4 text-center mb-16">
+                <h2 class="text-4xl font-black text-slate-800 mb-4 tracking-tight">Especialistas a tu servicio</h2>
+                <p class="text-slate-600 max-w-2xl mx-auto">Nuestro equipo de especialistas certificados en neurociencias.</p>
+            </div>
+
+            <div class="relative pb-7 flex overflow-hidden group">
+                <div class="flex gap-8 animate-infinite-scroll group-hover:[animation-play-state:paused]">
+                    {[...equipo, ...equipo].map((medico) => (
+                        <div class="flex-none w-[350px]">
+                            <div class="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-100 hover:shadow-xl transition-all group/card h-full text-center">
+                                <div class="mb-6 relative inline-block">
+                                    <img 
+                                        src={medico.imagen} 
+                                        alt={medico.nombre} 
+                                        class="w-40 h-40 rounded-full object-cover mx-auto grayscale group-hover/card:grayscale-0 transition-all duration-500 border-4 border-white shadow-md"
+                                    />
+                                    <div class="absolute inset-0 rounded-full border-2 border-somno scale-110 opacity-0 group-hover/card:opacity-100 transition-all"></div>
+                                </div>
+                                <h4 class="text-2xl font-bold text-slate-800">{medico.nombre}</h4>
+                                <p class="text-somno font-semibold mb-4">{medico.cargo}</p>
+                                <p class="text-slate-500 text-sm leading-relaxed">{medico.bio}</p>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </section>
+
+        <section class="py-10">
+            <div class="max-w-5xl mx-auto px-4">
+                <div class="bg-somno rounded-[3rem] p-12 text-center text-white relative overflow-hidden shadow-2xl">
+                    <div class="relative z-10">
+                        <h2 class="text-3xl md:text-5xl font-black mb-6">¿Listo para cambiar tu forma de dormir?</h2>
+                        <p class="text-blue-100 mb-10 text-lg max-w-2xl mx-auto">Consulta sobre nuestros servicios y descubre cómo <span class="text-somno-light">SomnoLab</span> puede mejorar tu calidad de vida.</p>
+                        <div class="flex flex-wrap justify-center gap-4">
+                            <a href="/cronograma" class="px-10 py-4 bg-white text-somno font-bold rounded-full hover:bg-slate-100 transition-all transform hover:scale-105 shadow-lg">
+                                Servicios
+                            </a>
+                            <a href="/#topicos" class="px-10 py-4 bg-somno-light border border-white/20 text-white font-bold rounded-full hover:bg-white/10 transition-all">
+                                Nuestro blog
+                            </a>
+                        </div>
+                    </div>
+                    <div class="absolute -top-20 -right-20 w-80 h-80 bg-white/10 rounded-full blur-3xl"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+</Layout>
+
+
+<style>
+    html {
+        scroll-behavior: smooth;
+    }
+
+    @keyframes infinite-scroll {
+        from { transform: translateX(0); }
+        to { transform: translateX(-50%); }
+    }
+    
+    section::before,
+    section::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        width: 150px;
+        height: 100%;
+        z-index: 2;
+        pointer-events: none;
+    }
+
+    @keyframes infinite-scroll {
+        from { transform: translateX(0); }
+        to { transform: translateX(-50%); }
+    }
+
+    .animate-infinite-scroll {
+        animation: infinite-scroll 50s linear infinite;
+        display: flex;
+        width: max-content;
+    }
+
+    .group:hover .animate-infinite-scroll {
+        animation-play-state: paused;
+    }
+</style>

@@ -2,13 +2,14 @@
 import Layout from "../layouts/Layout.astro"
 import Icon from "../components/Icon.astro"
 import { createClient } from '@supabase/supabase-js';
+import BackButton from "../components/BackButton.astro"
 
 const supabase = createClient(
 	import.meta.env.PUBLIC_SUPABASE_URL,
 	import.meta.env.SUPABASE_KEY
 );
 
-// Recuperamos lo que el usuario escribió en la URL
+// Recupera lo que el usuario escribió en la URL
 const busqueda = Astro.url.searchParams.get('q') || '';
 
 // Construimos la consulta base
@@ -31,9 +32,12 @@ if (error) console.error("Error cargando pacientes:", error);
 
 <Layout title="Pacientes - Laboratorio del Sueño">
 	<Icon />
+	<div class="absolute top-8 left-5 xs:p-5 animate-fade-in-down" style="animation-delay: 0.1s;">
+        <BackButton href="/citas" label="Volver a las citas" />
+    </div>
     <main class="max-w-7xl mx-auto pt-10 pb-28 px-4">
 		<div class="flex flex-col items-center justify-center mb-10">
-            <h1 class="font-black tracking-tighter text-7xl md:text-8xl mb-6">
+            <h1 class="font-black tracking-tighter text-7xl mt-15 lg:mt-0 md:text-8xl mb-6">
                 <span class="bg-clip-text text-transparent bg-linear-to-r from-somno-light via-somno to-somno-dark pr-4">
                     SomnoLab
                 </span>
