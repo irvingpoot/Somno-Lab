@@ -1,6 +1,5 @@
 ---
 import Layout from "../../layouts/Layout.astro"
-import ReturnButton from "../../components/ReturnButton.astro"
 import SintomaGroup from "../../components/SintomaGroup.astro"
 import PuntajeExtraGroup from "../../components/PuntajeExtraGroup.astro"
 import { createClient } from "@supabase/supabase-js"
@@ -163,7 +162,6 @@ const listaExtras = p.pacientes_puntajes_extra || [];
 ---
 
 <Layout title={`Editar: ${p.nombre}`}>
-    <ReturnButton href={`/paciente/${id}`} text="Cancelar y Volver" />
 
     {error && (
         <div class="fixed top-5 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-lg text-white shadow-lg bg-red-600 z-50">{mensaje}</div>
@@ -171,9 +169,13 @@ const listaExtras = p.pacientes_puntajes_extra || [];
 
     <main class="max-w-7xl mx-auto pt-6 md:pt-10 pb-28 px-4">
         <div class="flex flex-col items-center justify-center mb-8">
-            <h1 class="text-3xl md:text-5xl font-extrabold text-center">Editar Expediente</h1>
-            <p class="text-blue-400 mt-2 font-bold">{p.nombre}</p>
-        </div>
+            <h1 class="font-black tracking-tighter text-5xl md:text-6xl mb-6">
+                <span class="bg-clip-text text-transparent bg-linear-to-r from-somno-light via-somno to-somno-dark pr-4">
+                    Edición de Paciente
+                </span>
+            </h1>
+            <p class="text-xl text-somno-dark font-bold"> ● Editando a: <span class="text-somno-light">{p.nombre}</span> ●</p>
+		</div>
 
         <form method="POST">
             <div class="flex flex-col items-center justify-center space-y-12">
@@ -182,16 +184,16 @@ const listaExtras = p.pacientes_puntajes_extra || [];
                     <h2 class="section-title">SocioDemográficos</h2>
                     <div class="flex flex-col space-y-4">
                         <div class="flex flex-col">
-                            <label class="label">Nombre completo:</label>
+                            <label class="text-lg font-medium text-somno-dark">Nombre completo:</label>
                             <input type="text" name="nombre" value={p.nombre} required class="input">
                         </div>
                         <div class="flex flex-col md:flex-row gap-4 md:gap-7">
                             <div class="flex grow flex-col md:w-1/2"> 
-                                <label class="label">Fecha de Nacimiento:</label>
+                                <label class="text-lg font-medium text-somno-dark">Fecha de Nacimiento:</label>
                                 <input type="date" name="fecha_nacimiento" value={p.fecha_nacimiento} required class="input" style="color-scheme: dark;">
                             </div>
                             <div class="flex grow flex-col md:w-1/2"> 
-                                <label class="label">Género:</label>
+                                <label class="text-lg font-medium text-somno-dark">Género:</label>
                                 <select name="genero" class="input appearance-none">
                                     <option class="bg-gray-900" value="masculino" selected={p.genero === 'masculino'}>Masculino</option>
                                     <option class="bg-gray-900" value="femenino" selected={p.genero === 'femenino'}>Femenino</option>
@@ -201,11 +203,11 @@ const listaExtras = p.pacientes_puntajes_extra || [];
                         </div>
                         <div class="flex flex-col md:flex-row gap-4 md:gap-7">
                             <div class="flex grow flex-col">
-                                <label class="label">Ocupación:</label>
+                                <label class="text-lg font-medium text-somno-dark">Ocupación:</label>
                                 <input type="text" name="ocupacion" value={p.ocupacion} class="input">
                             </div>
                             <div class="flex grow flex-col">
-                                <label class="label">Escolaridad:</label>
+                                <label class="text-lg font-medium text-somno-dark">Escolaridad:</label>
                                 <select name="escolaridad" class="input appearance-none">
                                     {["Primaria", "Secundaria", "Preparatoria", "Licenciatura", "Maestría", "Doctorado"].map(opt => (
                                         <option class="bg-gray-900" value={opt} selected={p.escolaridad === opt}>{opt}</option>
@@ -215,11 +217,11 @@ const listaExtras = p.pacientes_puntajes_extra || [];
                         </div>
                         <div class="flex flex-col md:flex-row gap-4 md:gap-7">
                             <div class="flex grow flex-col md:w-1/3">
-                                <label class="label">¿Quién lo refiere?</label>
+                                <label class="text-lg font-medium text-somno-dark">¿Quién lo refiere?</label>
                                 <input type="text" name="referencia" value={p.referencia} required class="input">
                             </div>
                             <div class="flex grow flex-col">
-                                <label class="label">Motivo de la consulta</label>
+                                <label class="text-lg font-medium text-somno-dark">Motivo de la consulta</label>
                                 <input type="text" name="motivo" value={p.motivo} required class="input">
                             </div>
                         </div>
@@ -230,7 +232,7 @@ const listaExtras = p.pacientes_puntajes_extra || [];
                     <h2 class="section-title">Antropométricos</h2>
                     <div class="flex flex-col md:flex-row gap-4 md:gap-7">
                         <div class="flex grow flex-col md:w-1/2">
-                            <label class="label">Lateralidad:</label>
+                            <label class="text-lg font-medium text-somno-dark">Lateralidad:</label>
                             <select name="lateralidad" class="input appearance-none">
                                 <option class="bg-gray-900" value="diestro" selected={p.lateralidad === 'diestro'}>Diestro</option>
                                 <option class="bg-gray-900" value="zurdo" selected={p.lateralidad === 'zurdo'}>Zurdo</option>
@@ -238,11 +240,11 @@ const listaExtras = p.pacientes_puntajes_extra || [];
                             </select>
                         </div>
                         <div class="flex grow flex-col md:w-1/2">
-                            <label class="label">Peso (kg):</label>
+                            <label class="text-lg font-medium text-somno-dark">Peso (kg):</label>
                             <input type="number" name="peso" step="0.1" value={p.peso} class="input">
                         </div>
                         <div class="flex grow flex-col md:w-1/2">
-                            <label class="label">Altura (m):</label>
+                            <label class="text-lg font-medium text-somno-dark">Altura (m):</label>
                             <input type="number" name="altura" step="0.01" value={p.altura} class="input">
                         </div>
                     </div>
@@ -252,35 +254,35 @@ const listaExtras = p.pacientes_puntajes_extra || [];
                     <h2 class="section-title">Hábitos y patrones</h2>
                     <div class="flex flex-col space-y-6">
                         <div class="flex flex-col">
-                            <label class="label mb-2">¿Dónde duerme?</label>
-                            <div class="flex flex-wrap gap-6 p-3 border border-gray-700 bg-gray-900/50 rounded-lg">
+                            <label class="text-lg font-medium text-somno-dark mb-2">¿Dónde duerme?</label>
+                            <div class="flex flex-wrap gap-6 p-3 border border-somno-dark bg-somno-light/50 rounded-lg">
                                 {['cama', 'hamaca', 'ambas'].map(val => (
-                                    <label class="flex items-center gap-2 cursor-pointer hover:text-blue-400 transition">
-                                        <input type="radio" name="donde_duerme" value={val} checked={p.donde_duerme === val} class="accent-blue-500 w-4 h-4 uppercase"> <span class="capitalize">{val}</span>
+                                    <label class="flex items-center gap-2 cursor-pointer hover:text-somno-dark transition">
+                                        <input type="radio" name="donde_duerme" value={val} checked={p.donde_duerme === val} class="accent-somno-dark w-4 h-4 uppercase"/> <span class="capitalize">{val}</span>
                                     </label>
                                 ))}
                             </div>
                         </div>
                         <div class="flex flex-col md:flex-row gap-4 md:gap-7">
                             <div class="flex grow flex-col">
-                                <label class="label">Hora de dormir:</label>
+                                <label class="text-lg font-medium text-somno-dark">Hora de dormir:</label>
                                 <input type="time" name="hora_dormir" value={p.hora_dormir} class="input" style="color-scheme: dark;">
                             </div>
                             <div class="flex grow flex-col">
-                                <label class="label">Hora de levantarse:</label>
+                                <label class="text-lg font-medium text-somno-dark">Hora de levantarse:</label>
                                 <input type="time" name="hora_levantarse" value={p.hora_levantarse} class="input" style="color-scheme: dark;">
                             </div>
                             <div class="flex grow flex-col">
-                                <label class="label">Tiempo en dormir:</label>
+                                <label class="text-lg font-medium text-somno-dark">Tiempo en dormir:</label>
                                 <input type="text" name="tiempo_dormir" value={p.tiempo_dormir} class="input">
                             </div>
                         </div>
 
                         <div class="cond-block">
-                            <label class="label">¿Se despierta por las noches?</label>
+                            <label class="text-lg font-medium text-somno-dark">¿Se despierta por las noches?</label>
                             <div class="flex gap-6">
-                                <label class="flex items-center gap-2"><input type="radio" name="despierta_noche" value="si" checked={p.despierta_noche === 'si'} class="accent-blue-500 trigger-condicional" data-target="div_que_despierta"> Sí</label>
-                                <label class="flex items-center gap-2"><input type="radio" name="despierta_noche" value="no" checked={p.despierta_noche !== 'si'} class="accent-blue-500 trigger-condicional" data-target="div_que_despierta"> No</label>
+                                <label class="flex items-center gap-2"><input type="radio" name="despierta_noche" value="si" checked={p.despierta_noche === 'si'} class="accent-somno-dark trigger-condicional" data-target="div_que_despierta"> Sí</label>
+                                <label class="flex items-center gap-2"><input type="radio" name="despierta_noche" value="no" checked={p.despierta_noche !== 'si'} class="accent-somno-dark trigger-condicional" data-target="div_que_despierta"> No</label>
                             </div>
                             <div id="div_que_despierta" class={p.despierta_noche === 'si' ? "mt-3" : "hidden mt-3"}>
                                 <label class="sub-label">¿Qué lo despierta?</label>
@@ -289,18 +291,18 @@ const listaExtras = p.pacientes_puntajes_extra || [];
                         </div>
 
                         <div class="cond-block">
-                            <label class="label">¿Padece somnolencia?</label>
+                            <label class="text-lg font-medium text-somno-dark">¿Padece somnolencia?</label>
                             <div class="flex gap-6">
-                                <label class="flex items-center gap-2"><input type="radio" name="somnolencia" value="si" checked={p.somnolencia === 'si'} class="accent-blue-500"> Sí</label>
-                                <label class="flex items-center gap-2"><input type="radio" name="somnolencia" value="no" checked={p.somnolencia !== 'si'} class="accent-blue-500"> No</label>
+                                <label class="flex items-center gap-2"><input type="radio" name="somnolencia" value="si" checked={p.somnolencia === 'si'} class="accent-somno-dark"> Sí</label>
+                                <label class="flex items-center gap-2"><input type="radio" name="somnolencia" value="no" checked={p.somnolencia !== 'si'} class="accent-somno-dark"> No</label>
                             </div>
                         </div>
 
                         <div class="cond-block">
-                            <label class="label">¿Toma siestas?</label>
+                            <label class="text-lg font-medium text-somno-dark">¿Toma siestas?</label>
                             <div class="flex gap-6">
-                                <label class="flex items-center gap-2"><input type="radio" name="siesta" value="si" checked={p.siesta === 'si'} class="accent-blue-500 trigger-condicional" data-target="div_datos_siesta"> Sí</label>
-                                <label class="flex items-center gap-2"><input type="radio" name="siesta" value="no" checked={p.siesta !== 'si'} class="accent-blue-500 trigger-condicional" data-target="div_datos_siesta"> No</label>
+                                <label class="flex items-center gap-2"><input type="radio" name="siesta" value="si" checked={p.siesta === 'si'} class="accent-somno-dark trigger-condicional" data-target="div_datos_siesta"> Sí</label>
+                                <label class="flex items-center gap-2"><input type="radio" name="siesta" value="no" checked={p.siesta !== 'si'} class="accent-somno-dark trigger-condicional" data-target="div_datos_siesta"> No</label>
                             </div>
                             <div id="div_datos_siesta" class={p.siesta === 'si' ? "grid grid-cols-2 gap-4 mt-3" : "hidden grid grid-cols-2 gap-4 mt-3"}>
                                 <div><label class="sub-label">Días/semana</label><input type="number" name="dias_siesta" value={p.dias_siesta} class="input-sub"></div>
@@ -309,13 +311,13 @@ const listaExtras = p.pacientes_puntajes_extra || [];
                         </div>
 
                         <div class="cond-block">
-                            <label class="label">¿Realiza ejercicio?</label>
+                            <label class="text-lg font-medium text-somno-dark">¿Realiza ejercicio?</label>
                             <div class="flex gap-6">
-                                <label class="flex items-center gap-2"><input type="radio" name="ejercicio" value="si" checked={p.ejercicio === 'si'} class="accent-blue-500 trigger-condicional" data-target="div_horas_ejercicio"> Sí</label>
-                                <label class="flex items-center gap-2"><input type="radio" name="ejercicio" value="no" checked={p.ejercicio !== 'si'} class="accent-blue-500 trigger-condicional" data-target="div_horas_ejercicio"> No</label>
+                                <label class="flex items-center gap-2"><input type="radio" name="ejercicio" value="si" checked={p.ejercicio === 'si'} class="accent-somno-dark trigger-condicional" data-target="div_horas_ejercicio"> Sí</label>
+                                <label class="flex items-center gap-2"><input type="radio" name="ejercicio" value="no" checked={p.ejercicio !== 'si'} class="accent-somno-dark trigger-condicional" data-target="div_horas_ejercicio"> No</label>
                             </div>
                             <div id="div_horas_ejercicio" class={p.ejercicio === 'si' ? "mt-3" : "hidden mt-3"}>
-                                <label class="sub-label">Horas/semana</label><input type="text" name="horas_ejercicio" value={p.horas_ejercicio} class="input-sub md:w-1/2">
+                                <text-lg font-medium text-somno-dark class="sub-label">Horas/semana</text-lg><input type="text" name="horas_ejercicio" value={p.horas_ejercicio} class="input-sub md:w-1/2">
                             </div>
                         </div>
                     </div>
@@ -326,37 +328,37 @@ const listaExtras = p.pacientes_puntajes_extra || [];
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {/* Fuma */}
                         <div class="cond-block">
-                            <label class="label">¿Fuma?</label>
+                            <label class="text-lg font-medium text-somno-dark">¿Fuma?</label>
                             <div class="flex gap-6">
-                                <label class="flex items-center gap-2"><input type="radio" name="fuma" value="si" checked={p.fuma === 'si'} class="accent-blue-500 trigger-condicional" data-target="div_fuma"> Sí</label>
-                                <label class="flex items-center gap-2"><input type="radio" name="fuma" value="no" checked={p.fuma !== 'si'} class="accent-blue-500 trigger-condicional" data-target="div_fuma"> No</label>
+                                <label class="flex items-center gap-2"><input type="radio" name="fuma" value="si" checked={p.fuma === 'si'} class="accent-somno-dark trigger-condicional" data-target="div_fuma"> Sí</label>
+                                <label class="flex items-center gap-2"><input type="radio" name="fuma" value="no" checked={p.fuma !== 'si'} class="accent-somno-dark trigger-condicional" data-target="div_fuma"> No</label>
                             </div>
-                            <div id="div_fuma" class={p.fuma === 'si' ? "mt-3" : "hidden mt-3"}><label class="sub-label">Cigarros/semana</label><input type="number" name="cigarros_semana" value={p.cigarros_semana} class="input-sub"></div>
+                            <div id="div_fuma" class={p.fuma === 'si' ? "mt-3" : "hidden mt-3"}><text-lg font-medium text-somno-dark class="sub-label">Cigarros/semana</text-lg><input type="number" name="cigarros_semana" value={p.cigarros_semana} class="input-sub"></div>
                         </div>
                         {/* Alcohol */}
                         <div class="cond-block">
-                            <label class="label">¿Alcohol?</label>
+                            <label class="text-lg font-medium text-somno-dark">¿Alcohol?</label>
                             <div class="flex gap-6">
-                                <label class="flex items-center gap-2"><input type="radio" name="alcohol" value="si" checked={p.alcohol === 'si'} class="accent-blue-500 trigger-condicional" data-target="div_alcohol"> Sí</label>
-                                <label class="flex items-center gap-2"><input type="radio" name="alcohol" value="no" checked={p.alcohol !== 'si'} class="accent-blue-500 trigger-condicional" data-target="div_alcohol"> No</label>
+                                <label class="flex items-center gap-2"><input type="radio" name="alcohol" value="si" checked={p.alcohol === 'si'} class="accent-somno-dark trigger-condicional" data-target="div_alcohol"> Sí</label>
+                                <label class="flex items-center gap-2"><input type="radio" name="alcohol" value="no" checked={p.alcohol !== 'si'} class="accent-somno-dark trigger-condicional" data-target="div_alcohol"> No</label>
                             </div>
                             <div id="div_alcohol" class={p.alcohol === 'si' ? "mt-3" : "hidden mt-3"}><label class="sub-label">Cervezas/semana</label><input type="number" name="cervezas_semana" value={p.cervezas_semana} class="input-sub"></div>
                         </div>
                         {/* Cafe */}
                         <div class="cond-block">
-                            <label class="label">¿Café?</label>
+                            <label class="text-lg font-medium text-somno-dark">¿Café?</label>
                             <div class="flex gap-6">
-                                <label class="flex items-center gap-2"><input type="radio" name="cafe" value="si" checked={p.cafe === 'si'} class="accent-blue-500 trigger-condicional" data-target="div_cafe"> Sí</label>
-                                <label class="flex items-center gap-2"><input type="radio" name="cafe" value="no" checked={p.cafe !== 'si'} class="accent-blue-500 trigger-condicional" data-target="div_cafe"> No</label>
+                                <label class="flex items-center gap-2"><input type="radio" name="cafe" value="si" checked={p.cafe === 'si'} class="accent-somno-dark trigger-condicional" data-target="div_cafe"> Sí</label>
+                                <label class="flex items-center gap-2"><input type="radio" name="cafe" value="no" checked={p.cafe !== 'si'} class="accent-somno-dark trigger-condicional" data-target="div_cafe"> No</label>
                             </div>
                             <div id="div_cafe" class={p.cafe === 'si' ? "mt-3" : "hidden mt-3"}><label class="sub-label">Tazas/semana</label><input type="number" name="tazas_cafe_semana" value={p.tazas_cafe_semana} class="input-sub"></div>
                         </div>
                         {/* Te */}
                         <div class="cond-block">
-                            <label class="label">¿Té?</label>
+                            <label class="text-lg font-medium text-somno-dark">¿Té?</label>
                             <div class="flex gap-6">
-                                <label class="flex items-center gap-2"><input type="radio" name="te" value="si" checked={p.te === 'si'} class="accent-blue-500 trigger-condicional" data-target="div_te"> Sí</label>
-                                <label class="flex items-center gap-2"><input type="radio" name="te" value="no" checked={p.te !== 'si'} class="accent-blue-500 trigger-condicional" data-target="div_te"> No</label>
+                                <label class="flex items-center gap-2"><input type="radio" name="te" value="si" checked={p.te === 'si'} class="accent-somno-dark trigger-condicional" data-target="div_te"> Sí</label>
+                                <label class="flex items-center gap-2"><input type="radio" name="te" value="no" checked={p.te !== 'si'} class="accent-somno-dark trigger-condicional" data-target="div_te"> No</label>
                             </div>
                             <div id="div_te" class={p.te === 'si' ? "mt-3" : "hidden mt-3"}><label class="sub-label">Tazas/semana</label><input type="number" name="tazas_te_semana" value={p.tazas_te_semana} class="input-sub"></div>
                         </div>
@@ -365,18 +367,21 @@ const listaExtras = p.pacientes_puntajes_extra || [];
 
                 <section class="w-full max-w-4xl px-2 md:px-0">
                     <h2 class="section-title">Diagnósticos previos</h2>
-                    <textarea name="antecedentes" rows="4" class="input resize-y">{p.antecedentes}</textarea>
+                    <div class="flex flex-col">
+                        <label for="antecedentes" class="text-lg font-medium text-somno-dark">Antecedentes familiares</label>
+                        <textarea name="antecedentes" rows="4" class="input resize-y">{p.antecedentes}</textarea>
+                    </div>
                 </section>
 
                 <section class="w-full max-w-4xl px-2 md:px-0">
                     <h2 class="section-title">Análisis de síntomas</h2>
                     <div id="lista-sintomas" class="space-y-8">
-                        {listaSintomas.map((s, idx) => (
+                        {listaSintomas.map((s:any, idx:any) => (
                             <SintomaGroup numero={idx + 1} data={s} />
                         ))}
                     </div>
                     <div class="mt-4 flex justify-end">
-                        <button type="button" id="btn-add-sintoma" class="flex items-center gap-2 text-sm font-medium text-blue-400 hover:text-white border border-blue-500/30 hover:bg-blue-600/20 px-4 py-2 rounded-lg cursor-pointer">
+                        <button type="button" id="btn-add-sintoma" class="flex items-center gap-2 text-sm font-medium text-somno-dark hover:text-white transition-colors border border-somno-dark/30 hover:bg-somno-dark px-4 py-2 rounded-lg cursor-pointer">
                             <span class="text-xl leading-none">+</span> Agregar otro síntoma
                         </button>
                     </div>
@@ -384,10 +389,10 @@ const listaExtras = p.pacientes_puntajes_extra || [];
 
                 <section class="w-full max-w-4xl px-2 md:px-0">
                     <h2 class="section-title">Alteraciones del sueño</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 border border-gray-700/50 rounded-xl bg-gray-800/20">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 border border-somno-dark rounded-xl bg-somno-light/50">
                         {['insomnio', 'respiracion', 'ritmo_circadiano', 'movimiento', 'parasomnia', 'hipersomnia', 'medicas_psiquiatricas', 'sustancias'].map(val => (
-                            <label class="flex items-center gap-3 cursor-pointer hover:text-blue-400 p-2 rounded-lg hover:bg-white/5">
-                                <input type="radio" name="alteracion_sueno" value={val} checked={p.alteracion_sueno === val} class="accent-blue-500 w-4 h-4">
+                            <label class="flex items-center gap-3 cursor-pointer hover:text-somno-dark p-2 rounded-lg hover:bg-white/5">
+                                <input type="radio" name="alteracion_sueno" value={val} checked={p.alteracion_sueno === val} class="accent-somno-dark w-4 h-4"/>
                                 <span class="capitalize">{val.replace('_', ' ')}</span>
                             </label>
                         ))}
@@ -399,26 +404,26 @@ const listaExtras = p.pacientes_puntajes_extra || [];
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                         {['epworth', 'dbi', 'hamilton_d', 'hamilton_a', 'isi', 'spqi', 'stop_bang', 'berlin'].map(score => (
                             <div class="flex flex-col">
-                                <label class="label capitalize">{score.replace('_', '-')}</label>
-                                <input type="number" name={score} value={p[score]} class="input text-center font-mono">
+                                <label class="text-lg font-medium text-somno-dark capitalize">{score.replace('_', '-')}</label>
+                                <input type="number" name={score} value={p[score]} class="input text-center font-mono"/>
                             </div>
                         ))}
                         <div class="flex flex-col col-span-2">
-                            <label class="label">Cuest. Insomnio</label>
-                            <input type="number" name="cuestionario_insomnio" value={p.cuestionario_insomnio} class="input text-center font-mono">
+                            <label class="text-lg font-medium text-somno-dark">Cuest. Insomnio</label>
+                            <input type="number" name="cuestionario_insomnio" value={p.cuestionario_insomnio} class="input text-center font-mono"/>
                         </div>
                     </div>
 
                     <div class="border-t border-gray-800 pt-6">
-                        <h3 class="text-lg font-medium text-gray-300 mb-4">Otros Puntajes</h3>
+                        <h3 class="text-lg font-medium text-somno-dark mb-4">Otros Puntajes</h3>
                         <div id="lista-puntajes-extra" class="space-y-4">
                             <PuntajeExtraGroup className="puntaje-extra-template hidden" />
-                            {listaExtras.map(extra => (
+                            {listaExtras.map((extra: any) => (
                                 <PuntajeExtraGroup className="puntaje-extra-item" data={extra} />
                             ))}
                         </div>
                         <div class="mt-4">
-                            <button type="button" id="btn-add-puntaje" class="flex items-center gap-2 text-sm font-medium text-blue-400 hover:text-white border border-blue-500/30 hover:bg-blue-600/20 px-4 py-2 rounded-lg cursor-pointer">
+                            <button type="button" id="btn-add-puntaje" class="flex items-center gap-2 text-sm font-medium text-somno-dark hover:text-white transition-colors border border-somno-dark hover:bg-somno-dark px-4 py-2 rounded-lg cursor-pointer">
                                 <span class="text-xl leading-none">+</span> Agregar otro puntaje
                             </button>
                         </div>
@@ -426,7 +431,7 @@ const listaExtras = p.pacientes_puntajes_extra || [];
                 </section>
 
                 <div class="pt-10 pb-10">
-                    <button type="submit" class="w-full md:w-auto bg-blue-600 text-white text-lg font-semibold px-8 py-3 rounded-xl hover:bg-blue-500 cursor-pointer shadow-[0_0_20px_rgba(37,99,235,0.5)]">
+                    <button type="submit" class="w-full md:w-auto bg-somno text-white text-lg font-semibold px-8 py-3 rounded-xl hover:bg-somno-light hover:scale-105 hover:shadow-[0_0_20px_rgba(37,99,235,0.5)] transition duration-300 cursor-pointer active:scale-95">
                         Guardar Cambios
                     </button>
                 </div>
@@ -437,12 +442,11 @@ const listaExtras = p.pacientes_puntajes_extra || [];
 
 <style>
     @reference "../../styles/global.css";
-    .section-title { @apply text-2xl md:text-3xl pb-2 mb-6 border-b border-white/50 text-center text-gray-200 w-fit mx-auto px-10; }
-    .label { @apply text-lg font-medium text-gray-300; }
-    .sub-label { @apply text-sm font-medium text-blue-300 block mb-1; }
-    .input { @apply mt-1 p-3 border border-gray-700 bg-gray-900/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white transition-all w-full; }
-    .input-sub { @apply w-full p-2 border border-blue-500/30 bg-blue-900/10 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 text-white; }
-    .cond-block { @apply flex flex-col space-y-2 p-4 border border-gray-700/50 rounded-xl bg-gray-800/20; }
+    .section-title { @apply text-2xl md:text-3xl pb-2 mb-6 border-b border-somno-dark text-center text-somno-dark w-fit mx-auto px-10; }
+    .sub-label { @apply text-sm font-medium text-somno-dark block mb-1; }
+    .input { @apply mt-1 p-3 border border-somno-dark bg-somno-light/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-somno-dark text-somno-dark transition-all w-full; }
+    .input-sub { @apply w-full p-2 border border-somno-dark/30 bg-somno-dark/30 rounded-lg focus:outline-none focus:ring-1 focus:ring-somno-dark text-somno-dark; }
+    .cond-block { @apply flex flex-col space-y-2 p-4 border border-somno-dark rounded-xl bg-somno-light/50; }
 </style>
 
 <script>

@@ -106,22 +106,22 @@ const edadDisplay = paciente.edad || (paciente.fecha_nacimiento ? new Date().get
         <div class="border-b-2 border-white/10 pb-6 mb-10 flex flex-col md:flex-row justify-between items-end gap-4">
             <div>
                 
-                <p class="text-blue-400 text-sm font-bold uppercase tracking-widest mb-2">Expediente Clínico</p>
-                <h1 class="text-4xl md:text-5xl font-extrabold capitalize text-white">{paciente.nombre}</h1>
-                <div class="flex gap-4 mt-2 text-gray-400 text-sm items-center">
+                <p class="text-slate-800 text-sm font-bold uppercase tracking-widest mb-2">Expediente Clínico</p>
+                <h1 class="text-4xl md:text-5xl font-extrabold capitalize text-somno">{paciente.nombre}</h1>
+                <div class="flex gap-4 mt-2 text-slate-800 text-sm items-center">
                     <span>ID: #{paciente.id}</span>
                     <span>•</span>
                     <span>Registrado: {formatDate(paciente.created_at)}</span>
                     <span>•</span>
-                    <a href={`/editar-paciente/${paciente.id}`} class="text-blue-400 hover:text-blue-300 flex items-center gap-1 transition-colors">
+                    <a href={`/editar-paciente/${paciente.id}`} class="text-somno-dark hover:text-somno-light flex items-center gap-1 transition-colors">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" /></svg>
                         Editar Expediente Completo
                     </a>
                 </div>
             </div>
             <div class="text-right">
-                <span class="block text-gray-500 text-xs uppercase tracking-wider mb-1">Registrado por</span>
-                <span class="bg-gray-800 px-3 py-1 rounded-full text-sm text-gray-300 border border-gray-700">
+                <span class="block text-somno font-bold text-xs uppercase tracking-wider mb-1">Registrado por</span>
+                <span class="bg-somno px-3 py-1 rounded-full text-sm text-slate-50 border border-somno/50">
                     {paciente.registrado_por || "Sistema"}
                 </span>
             </div>
@@ -136,9 +136,9 @@ const edadDisplay = paciente.edad || (paciente.fecha_nacimiento ? new Date().get
                     <div><span class="label">Ocupación</span><p class="value">{paciente.ocupacion || "—"}</p></div>
                     <div><span class="label">Escolaridad</span><p class="value">{paciente.escolaridad || "—"}</p></div>
                     <div><span class="label">Referido por</span><p class="value">{paciente.referencia}</p></div>
-                    <div class="md:col-span-3 bg-gray-800/30 p-4 rounded-lg border border-gray-700/50">
+                    <div class="md:col-span-3 bg-somno-dark/30 p-4 rounded-lg border border-somno-dark">
                         <span class="label mb-1 block">Motivo de consulta</span>
-                        <p class="text-white leading-relaxed">{paciente.motivo}</p>
+                        <p class="text-slate-800 leading-relaxed">{paciente.motivo}</p>
                     </div>
                 </div>
             </InfoCard>
@@ -165,9 +165,9 @@ const edadDisplay = paciente.edad || (paciente.fecha_nacimiento ? new Date().get
 
             <InfoCard title="Hábitos y Patrones de Sueño">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="bg-gray-800/30 p-3 rounded-lg text-center"><span class="label block">Horario Sueño</span><p class="text-xl font-mono text-white mt-1">{formatTime(paciente.hora_dormir)} - {formatTime(paciente.hora_levantarse)}</p></div>
-                    <div class="bg-gray-800/30 p-3 rounded-lg text-center"><span class="label block">Tiempo en dormir</span><p class="text-xl text-white mt-1">{paciente.tiempo_dormir || "—"}</p></div>
-                    <div class="bg-gray-800/30 p-3 rounded-lg text-center"><span class="label block">Lugar</span><p class="text-xl text-white mt-1 capitalize">{paciente.donde_duerme || "—"}</p></div>
+                    <div class="bg-somno-dark/30 p-3 rounded-lg text-center"><span class="label block">Horario Sueño</span><p class="text-xl font-mono text-slate-800 mt-1">{formatTime(paciente.hora_dormir)} - {formatTime(paciente.hora_levantarse)}</p></div>
+                    <div class="bg-somno-dark/30 p-3 rounded-lg text-center"><span class="label block">Tiempo en dormir</span><p class="text-xl text-slate-800 mt-1">{paciente.tiempo_dormir || "—"}</p></div>
+                    <div class="bg-somno-dark/30 p-3 rounded-lg text-center"><span class="label block">Lugar</span><p class="text-xl text-slate-800 mt-1 capitalize">{paciente.donde_duerme || "—"}</p></div>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                     <div><span class="label">Despertares nocturnos</span><p class="value capitalize">{paciente.despierta_noche === 'si' ? `Sí (${paciente.que_despierta || 'Causa no esp.'})` : 'No'}</p></div>
@@ -181,41 +181,41 @@ const edadDisplay = paciente.edad || (paciente.fecha_nacimiento ? new Date().get
                 {paciente.pacientes_sintomas && paciente.pacientes_sintomas.length > 0 ? (
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {paciente.pacientes_sintomas.map((s: any, index: number) => (
-                            <div class="bg-gray-800/40 border border-gray-700 p-4 rounded-xl relative group hover:border-blue-500/50 transition-colors">
-                                <div class="absolute -top-2 -right-2 bg-blue-600 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">#{index + 1}</div>
-                                <h4 class="text-lg font-bold text-white mb-2 capitalize">{s.sintoma}</h4>
+                            <div class="bg-somno-dark/30 border border-somno-dark/50 p-4 rounded-xl relative group hover:border-somno-dark transition-colors">
+                                <div class="absolute -top-2 -right-2 bg-somno-dark text-slate-800 text-[10px] px-2 py-0.5 rounded-full font-bold">#{index + 1}</div>
+                                <h4 class="text-lg font-bold text-slate-800 mb-2 capitalize">{s.sintoma}</h4>
                                 <div class="space-y-1 text-sm">
-                                    <p><span class="text-gray-500">Temporalidad:</span> <span class="text-gray-300">{s.temporalidad}</span></p>
-                                    <p><span class="text-gray-500">Frecuencia:</span> <span class="text-gray-300">{s.frecuencia}</span></p>
-                                    <p><span class="text-gray-500">Gravedad:</span> <span class="text-gray-300">{s.gravedad}</span></p>
+                                    <p><span class="text-somno-dark font-bold">Temporalidad:</span> <span class="text-slate-800">{s.temporalidad}</span></p>
+                                    <p><span class="text-somno-dark font-bold">Frecuencia:</span> <span class="text-slate-800">{s.frecuencia}</span></p>
+                                    <p><span class="text-somno-dark font-bold">Gravedad:</span> <span class="text-slate-800">{s.gravedad}</span></p>
                                 </div>
                             </div>
                         ))}
                     </div>
                 ) : (
-                    <div class="text-gray-500 italic">No hay síntomas registrados.</div>
+                    <div class="text-slate-400 italic">No hay síntomas registrados.</div>
                 )}
             </InfoCard>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <InfoCard title="Alteraciones del Sueño">
-                    <div class="flex items-center gap-3 p-4 bg-gray-800/30 rounded-xl border border-gray-700/50">
-                        <div class="p-2 bg-red-500/10 rounded-lg text-red-400">
+                    <div class="flex items-center gap-3 p-4 bg-somno-dark/30 rounded-xl border border-gray-700/50">
+                        <div class="p-2 bg-red-500/10 rounded-lg text-red-500">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" /></svg>
                         </div>
-                        <div><span class="label">Diagnóstico Preliminar</span><p class="text-xl font-medium text-white capitalize">{paciente.alteracion_sueno ? paciente.alteracion_sueno.replace(/_/g, ' ') : "Ninguno seleccionado"}</p></div>
+                        <div><span class="label">Diagnóstico Preliminar</span><p class="text-xl font-medium text-slate-800 capitalize">{paciente.alteracion_sueno ? paciente.alteracion_sueno.replace(/_/g, ' ') : "Ninguno seleccionado"}</p></div>
                     </div>
                 </InfoCard>
                 <InfoCard title="Diagnósticos Previos">
                     <span class="label mb-2 block">Antecedentes Familiares y Personales</span>
-                    <div class="bg-gray-800/50 p-4 rounded-lg border border-gray-700/50 min-h-[100px]"><p class="text-gray-300 italic leading-relaxed text-sm">{paciente.antecedentes || 'No se han registrado antecedentes.'}</p></div>
+                    <div class="bg-somno-dark/30 p-4 rounded-lg border border-somno-dark min-h-[100px]"><p class="text-slate-800 italic leading-relaxed text-sm">{paciente.antecedentes || 'No se han registrado antecedentes.'}</p></div>
                 </InfoCard>
             </div>
 
             <InfoCard title="Puntajes y Escalas">
                 <div class="flex justify-between items-center mb-6">
-                    <p class="text-gray-400 text-sm">Resultados de cuestionarios aplicados.</p>
-                    <button onclick="document.getElementById('modal-puntajes').showModal()" class="text-xs bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-2">
+                    <p class="text-somno-dark text-sm">Resultados de cuestionarios aplicados.</p>
+                    <button onclick="document.getElementById('modal-puntajes').showModal()" class="text-xs bg-somno-dark hover:bg-somno-light text-white px-3 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3 h-3"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" /></svg>
                         Gestionar Puntajes
                     </button>
@@ -260,9 +260,9 @@ const edadDisplay = paciente.edad || (paciente.fecha_nacimiento ? new Date().get
         </div>
     </main>
 
-    <dialog id="modal-puntajes" class="m-auto bg-gray-900 border border-gray-700 rounded-2xl p-6 shadow-2xl backdrop:backdrop-blur-sm w-full max-w-lg text-left">
+    <dialog id="modal-puntajes" class="m-auto bg-slate-950/80 border border-somno-dark rounded-2xl p-6 shadow-2xl backdrop:backdrop-blur-sm w-full max-w-lg text-left">
         <div class="flex justify-between items-center mb-6">
-            <h3 class="text-xl font-bold text-white">Actualizar Puntajes</h3>
+            <h3 class="text-xl font-bold text-somno-dark">Actualizar Puntajes</h3>
             <button onclick="document.getElementById('modal-puntajes').close()" class="text-gray-500 hover:text-white cursor-pointer">✕</button>
         </div>
         
@@ -270,19 +270,19 @@ const edadDisplay = paciente.edad || (paciente.fecha_nacimiento ? new Date().get
             <input type="hidden" name="action" value="update_scores">
             
             <div class="grid grid-cols-2 gap-4">
-                <label class="flex flex-col"><span class="text-xs text-gray-400 mb-1">Epworth</span><input type="number" name="epworth" value={paciente.epworth} class="score-input"></label>
-                <label class="flex flex-col"><span class="text-xs text-gray-400 mb-1">DBI</span><input type="number" name="dbi" value={paciente.dbi} class="score-input"></label>
-                <label class="flex flex-col"><span class="text-xs text-gray-400 mb-1">Hamilton-D</span><input type="number" name="hamilton_d" value={paciente.hamilton_d} class="score-input"></label>
-                <label class="flex flex-col"><span class="text-xs text-gray-400 mb-1">Hamilton-A</span><input type="number" name="hamilton_a" value={paciente.hamilton_a} class="score-input"></label>
-                <label class="flex flex-col"><span class="text-xs text-gray-400 mb-1">ISI</span><input type="number" name="isi" value={paciente.isi} class="score-input"></label>
-                <label class="flex flex-col"><span class="text-xs text-gray-400 mb-1">SPQI</span><input type="number" name="spqi" value={paciente.spqi} class="score-input"></label>
-                <label class="flex flex-col"><span class="text-xs text-gray-400 mb-1">STOP Bang</span><input type="number" name="stop_bang" value={paciente.stop_bang} class="score-input"></label>
-                <label class="flex flex-col"><span class="text-xs text-gray-400 mb-1">Berlin</span><input type="number" name="berlin" value={paciente.berlin} class="score-input"></label>
-                <label class="flex flex-col col-span-2"><span class="text-xs text-gray-400 mb-1">Cuestionario Insomnio (Lab)</span><input type="number" name="cuestionario_insomnio" value={paciente.cuestionario_insomnio} class="score-input"></label>
+                <label class="flex flex-col"><span class="text-xs text-somno-dark mb-1">Epworth</span><input type="number" name="epworth" value={paciente.epworth} class="score-input"></label>
+                <label class="flex flex-col"><span class="text-xs text-somno-dark mb-1">DBI</span><input type="number" name="dbi" value={paciente.dbi} class="score-input"></label>
+                <label class="flex flex-col"><span class="text-xs text-somno-dark mb-1">Hamilton-D</span><input type="number" name="hamilton_d" value={paciente.hamilton_d} class="score-input"></label>
+                <label class="flex flex-col"><span class="text-xs text-somno-dark mb-1">Hamilton-A</span><input type="number" name="hamilton_a" value={paciente.hamilton_a} class="score-input"></label>
+                <label class="flex flex-col"><span class="text-xs text-somno-dark mb-1">ISI</span><input type="number" name="isi" value={paciente.isi} class="score-input"></label>
+                <label class="flex flex-col"><span class="text-xs text-somno-dark mb-1">SPQI</span><input type="number" name="spqi" value={paciente.spqi} class="score-input"></label>
+                <label class="flex flex-col"><span class="text-xs text-somno-dark mb-1">STOP Bang</span><input type="number" name="stop_bang" value={paciente.stop_bang} class="score-input"></label>
+                <label class="flex flex-col"><span class="text-xs text-somno-dark mb-1">Berlin</span><input type="number" name="berlin" value={paciente.berlin} class="score-input"></label>
+                <label class="flex flex-col col-span-2"><span class="text-xs text-somno-dark mb-1">Cuestionario Insomnio (Lab)</span><input type="number" name="cuestionario_insomnio" value={paciente.cuestionario_insomnio} class="score-input"></label>
             </div>
 
-            <div class="border-t border-gray-700 pt-4">
-                <h4 class="text-sm font-bold text-white mb-3">Otros Puntajes</h4>
+            <div class="border-t border-somno-dark pt-4">
+                <h4 class="text-sm font-bold text-somno-dark mb-3">Otros Puntajes</h4>
                 
                 <div id="modal-extras-container" class="space-y-3">
                     {paciente.pacientes_puntajes_extra && paciente.pacientes_puntajes_extra.map((extra: any) => (
@@ -296,14 +296,14 @@ const edadDisplay = paciente.edad || (paciente.fecha_nacimiento ? new Date().get
                     ))}
                 </div>
 
-                <button type="button" id="btn-add-extra-modal" class="mt-3 text-xs flex items-center gap-1 text-blue-400 hover:text-blue-300">
+                <button type="button" id="btn-add-extra-modal" class="mt-3 text-xs flex items-center gap-1 text-somno-dark hover:text-somno-light cursor-pointer">
                     <span class="text-lg leading-none">+</span> Agregar otro
                 </button>
             </div>
 
             <div class="pt-4 flex gap-3 justify-end border-t border-gray-700/50">
-                <button type="button" onclick="document.getElementById('modal-puntajes').close()" class="px-4 py-2 rounded-lg border border-gray-600 text-gray-300 hover:text-white cursor-pointer">Cancelar</button>
-                <button type="submit" class="px-6 py-2 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-500 cursor-pointer">Guardar Cambios</button>
+                <button type="button" onclick="document.getElementById('modal-puntajes').close()" class="px-4 py-2 rounded-lg border border-gray-600 text-gray-300 hover:text-white hover:border-white cursor-pointer">Cancelar</button>
+                <button type="submit" class="px-6 py-2 rounded-lg bg-somno-dark text-white font-medium hover:bg-somno-light cursor-pointer">Guardar Cambios</button>
             </div>
         </form>
     </dialog>
@@ -339,22 +339,22 @@ const edadDisplay = paciente.edad || (paciente.fecha_nacimiento ? new Date().get
     @reference "../../styles/global.css";
 
     .label {
-        @apply block text-gray-500 text-xs uppercase tracking-wider font-bold mb-1;
+        @apply block text-somno-dark text-xs uppercase tracking-wider font-bold mb-1;
     }
     .value {
-        @apply text-lg text-white font-medium;
+        @apply text-lg text-slate-800 font-medium;
     }
     .score-card {
-        @apply bg-gray-800/50 border border-gray-700 rounded-lg p-3 flex flex-col items-center justify-center text-center;
+        @apply bg-somno-dark/30 border border-somno-dark rounded-lg p-3 flex flex-col items-center justify-center text-center;
     }
     .score-label {
-        @apply text-[10px] uppercase text-gray-500 font-bold mb-1;
+        @apply text-[10px] uppercase text-somno-dark font-bold mb-1;
     }
     .score-val {
-        @apply text-2xl font-mono text-blue-300 font-bold;
+        @apply text-2xl font-mono text-slate-800 font-bold;
     }
     .score-input {
-        @apply bg-gray-800 border border-gray-600 rounded p-2 text-white focus:border-blue-500 focus:outline-none text-center;
+        @apply bg-somno-dark/30 border border-somno-dark/50 rounded p-2 text-white focus:border-somno-dark focus:outline-none text-center;
     }
     
     dialog::backdrop {
@@ -385,8 +385,8 @@ const edadDisplay = paciente.edad || (paciente.fecha_nacimiento ? new Date().get
                 const row = document.createElement('div');
                 row.className = 'flex gap-2 items-center extra-row';
                 row.innerHTML = `
-                    <input type="text" name="extra_prueba_nombre" placeholder="Nombre prueba" class="bg-gray-800 border border-gray-600 rounded p-2 text-white focus:border-blue-500 focus:outline-none text-left w-full text-sm">
-                    <input type="number" name="extra_prueba_valor" placeholder="Ptos" class="bg-gray-800 border border-gray-600 rounded p-2 text-white focus:border-blue-500 focus:outline-none text-center w-24 text-sm">
+                    <input type="text" name="extra_prueba_nombre" placeholder="Nombre prueba" class="bg-somno-dark/30 border border-somno-dark/50 rounded p-2 text-white focus:border-somno-dark focus:outline-none text-left w-full text-sm">
+                    <input type="number" name="extra_prueba_valor" placeholder="Ptos" class="bg-somno-dark/30 border border-somno-dark/50 rounded p-2 text-white focus:border-somno-dark focus:outline-none text-center w-24 text-sm">
                     <button type="button" class="text-red-400 hover:text-red-300 p-2 btn-remove-extra">✕</button>
                 `;
                 container.appendChild(row);

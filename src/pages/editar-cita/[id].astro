@@ -81,7 +81,7 @@ const fechaValue = `${fechaParte}T${horaParte}`;
 
     <main class="max-w-7xl mx-auto pt-10 pb-28 px-4">
         <div class="flex flex-col items-center justify-center mb-10">
-            <h1 class="max-md:max-w-xs max-md:pt-10 max-lg:max-w-xl text-4xl md:text-6xl font-extrabold text-balance text-center">Editar <span class="bg-gradient-to-r from-blue-500 via-blue-300 to-blue-600 bg-clip-text text-transparent drop-shadow-[0_0_15px_rgba(59,130,246,0.5)]">cita</span></h1>
+            <h1 class="max-md:max-w-xs max-md:pt-10 max-lg:max-w-xl text-4xl md:text-6xl font-extrabold text-balance text-center bg-linear-to-r from-somno-light via-somno to-somno-dark bg-clip-text text-transparent">Editar cita</h1>
 		</div>
 
         <form method="POST">
@@ -89,60 +89,60 @@ const fechaValue = `${fechaParte}T${horaParte}`;
                 
                 <div class="flex flex-col space-y-4 w-full max-w-4xl px-2 md:px-0">
                     
-                    <label class="text-lg font-medium text-gray-300">Motivo de la cita:</label>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border border-gray-700 bg-gray-900/50 rounded-xl mb-4">
-                        <label class="flex items-center gap-3 cursor-pointer hover:text-blue-400 transition p-2 rounded">
-                            <input type="radio" name="motivo" value="entrevista" checked={cita.motivo === 'entrevista'} required class="accent-blue-500 w-5 h-5">
+                    <label class="text-lg font-medium text-somno-dark">Motivo de la cita:</label>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border border-somno-dark bg-somno-light/50 rounded-xl mb-4">
+                        <label class="flex items-center gap-3 cursor-pointer text-slate-800 hover:text-somno-dark transition p-2 rounded">
+                            <input type="radio" name="motivo" value="entrevista" checked={cita.motivo === 'entrevista'} required class="accent-somno-dark w-5 h-5">
                             <span class="font-medium">Entrevista Inicial</span>
                         </label>
-                        <label class="flex items-center gap-3 cursor-pointer hover:text-blue-400 transition p-2 rounded">
-                            <input type="radio" name="motivo" value="seguimiento" checked={cita.motivo === 'seguimiento'} required class="accent-blue-500 w-5 h-5">
+                        <label class="flex items-center gap-3 cursor-pointer text-slate-800 hover:text-somno-dark transition p-2 rounded">
+                            <input type="radio" name="motivo" value="seguimiento" checked={cita.motivo === 'seguimiento'} required class="accent-somno-dark w-5 h-5">
                             <span class="font-medium">Seguimiento</span>
                         </label>
-                        <label class="flex items-center gap-3 cursor-pointer hover:text-blue-400 transition p-2 rounded">
-                            <input type="radio" name="motivo" value="tratamiento" checked={cita.motivo === 'tratamiento'} required class="accent-blue-500 w-5 h-5">
+                        <label class="flex items-center gap-3 cursor-pointer text-slate-800 hover:text-somno-dark transition p-2 rounded">
+                            <input type="radio" name="motivo" value="tratamiento" checked={cita.motivo === 'tratamiento'} required class="accent-somno-dark w-5 h-5">
                             <span class="font-medium">Tratamiento</span>
                         </label>
                     </div>
 
                     <div class="flex flex-col md:flex-row gap-4 md:gap-7">
                         <div class="flex grow flex-col">
-                            <label class="text-lg font-medium text-gray-300">Nombre:</label>
-                            <input type="text" name="nombre" value={cita.nombre} required class="mt-1 p-3 border border-gray-700 bg-gray-900/50 rounded-lg focus:ring-2 focus:ring-blue-500 text-white">
+                            <label class="text-lg font-medium text-somno-dark">Nombre:</label>
+                            <input type="text" name="nombre" value={cita.nombre} required class="mt-1 p-3 border border-somno-dark bg-somno-light/50 rounded-lg focus:ring-2 focus:ring-somno-dark text-somno-dark">
                         </div>
 
                         <div class="flex grow flex-col md:w-1/3">
-                            <label class="text-lg font-medium text-gray-300">Teléfono (Opcional):</label>
-                            <input type="tel" name="telefono" value={cita.telefono} class="mt-1 p-3 border border-gray-700 bg-gray-900/50 rounded-lg focus:ring-2 focus:ring-blue-500 text-white">
+                            <label class="text-lg font-medium text-somno-dark">Teléfono (Opcional):</label>
+                            <input type="tel" name="telefono" value={cita.telefono} class="mt-1 p-3 border border-somno-dark bg-somno-light/50 rounded-lg focus:ring-2 focus:ring-somno-dark text-somno-dark">
                         </div>
                     </div>
 
                     <div class="flex flex-col md:flex-row gap-4 md:gap-7">
                         <div class="flex grow flex-col">
-                            <label class="text-lg font-medium text-gray-300">Fecha y Hora:</label>
-                            <input type="datetime-local" name="fecha_hora" value={fechaValue} required class="mt-1 p-3 border border-gray-700 bg-gray-900/50 rounded-lg focus:ring-2 focus:ring-blue-500 text-white" style="color-scheme: dark;">
+                            <label class="text-lg font-medium text-somno-dark">Fecha y Hora:</label>
+                            <input type="datetime-local" name="fecha_hora" value={fechaValue} required class="mt-1 p-3 border border-somno-dark bg-somno-light/50 rounded-lg focus:ring-2 focus:ring-somno-dark text-somno-dark" style="color-scheme: dark;">
                         </div>
                     </div>
 
                     <div class="flex flex-col md:flex-row gap-4 md:gap-7">
                         <div class="flex grow flex-col md:w-1/3">
-                            <label class="text-lg font-medium text-gray-300">Referencia:</label>
-                            <input type="text" name="referencia" value={cita.referencia} required class="mt-1 p-3 border border-gray-700 bg-gray-900/50 rounded-lg focus:ring-2 focus:ring-blue-500 text-white">
+                            <label class="text-lg font-medium text-somno-dark">Referencia:</label>
+                            <input type="text" name="referencia" value={cita.referencia} required class="mt-1 p-3 border border-somno-dark bg-somno-light/50 rounded-lg focus:ring-2 focus:ring-somno-dark text-somno-dark">
                         </div>
                         <div class="flex grow flex-col">
-                            <label class="text-lg font-medium text-gray-300">Síntoma (Opcional):</label>
-                            <input type="text" name="sintoma" value={cita.sintoma} class="mt-1 p-3 border border-gray-700 bg-gray-900/50 rounded-lg focus:ring-2 focus:ring-blue-500 text-white">
+                            <label class="text-lg font-medium text-somno-dark">Síntoma (Opcional):</label>
+                            <input type="text" name="sintoma" value={cita.sintoma} class="mt-1 p-3 border border-somno-dark bg-somno-light/50 rounded-lg focus:ring-2 focus:ring-somno-dark text-somno-dark">
                         </div>
                     </div>
 
                     <div class="flex flex-col mt-4">
-                        <label class="text-lg font-medium text-gray-300">Observaciones:</label>
-                        <textarea name="observaciones" rows="3" class="mt-1 p-3 border border-gray-700 bg-gray-900/50 rounded-lg resize-y text-white">{cita.observaciones}</textarea>
+                        <label class="text-lg font-medium text-somno-dark">Observaciones:</label>
+                        <textarea name="observaciones" rows="3" class="mt-1 p-3 border border-somno-dark bg-somno-light/50 rounded-lg resize-y text-somno-dark">{cita.observaciones}</textarea>
                     </div>
                 </div>
 
                 <div class="pt-10 pb-10 w-full max-w-4xl flex justify-end gap-4">
-                    <button type="submit" class="bg-blue-600 text-white font-semibold px-8 py-3 rounded-xl hover:bg-blue-500 transition duration-300 cursor-pointer">
+                    <button type="submit" class="border border-somno-dark bg-slate-50 text-somno-dark font-semibold px-8 py-3 rounded-xl hover:bg-somno-dark hover:text-slate-50 hover:scale-105 transition transform duration-300 cursor-pointer">
                         Guardar Cambios
                     </button>
                 </div>

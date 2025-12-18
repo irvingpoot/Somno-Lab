@@ -1,6 +1,8 @@
 ---
 import '../styles/global.css';
 
+const year = new Date().getFullYear();
+
 interface Props {
 	title: string;
 	showFooter?: boolean; 
@@ -35,7 +37,7 @@ const { title, showFooter = true } = Astro.props;
 						<a href="https://www.whatsapp.com" target="_blank" class="hover:text-gray-200 transition"><i class="fab fa-whatsapp"></i></a>
 					</div>
 					<div class="text-sm opacity-90">
-						© Dr. Jesus Moo Estrella
+						© {year} SomnoLab. Todos los derechos reservados.
 					</div>
 				</div>
 			</footer>

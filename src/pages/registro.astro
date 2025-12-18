@@ -196,9 +196,9 @@ if (Astro.request.method === "POST") {
 
     <main class="max-w-7xl mx-auto pt-6 md:pt-10 pb-28 px-4">
         <div class="flex flex-col items-center justify-center mb-8">
-            <h1 class="font-black tracking-tighter text-7xl md:text-8xl mb-6">
+            <h1 class="font-black tracking-tighter text-5xl md:text-6xl mb-6">
                 <span class="bg-clip-text text-transparent bg-linear-to-r from-somno-light via-somno to-somno-dark pr-4">
-                    SomnoLab
+                    Registro de Paciente
                 </span>
             </h1>
 		</div>
@@ -217,7 +217,7 @@ if (Astro.request.method === "POST") {
                         <div class="flex flex-col md:flex-row gap-4 md:gap-7">
                             <div class="flex grow flex-col md:w-1/2"> 
                                 <label for="fecha_nacimiento" class="text-lg font-medium text-somno-dark">Fecha de Nacimiento:</label>
-                                <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" required class="mt-1 p-3 border border-somno-dark bg-somno-light/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-somno-dark text-somno-dark transition-all" style="color-scheme: dark;">
+                                <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" required class="mt-1 p-3 border border-somno-dark bg-somno-light/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-somno-dark text-somno-dark transition-all">
                             </div>
                             <div class="flex grow flex-col md:w-1/2"> 
                                 <label for="genero" class="text-lg font-medium text-somno-dark">Género:</label>
@@ -302,11 +302,11 @@ if (Astro.request.method === "POST") {
                         <div class="flex flex-col md:flex-row gap-4 md:gap-7">
                             <div class="flex grow flex-col">
                                 <label for="hora_dormir" class="text-lg font-medium text-somno-dark">Hora de dormir:</label>
-                                <input required type="time" id="hora_dormir" name="hora_dormir" class="mt-1 p-3 border border-somno-dark bg-somno-light/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-somno-dark text-somno-dark transition-all" style="color-scheme: dark;">
+                                <input required type="time" id="hora_dormir" name="hora_dormir" class="mt-1 p-3 border border-somno-dark bg-somno-light/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-somno-dark text-somno-dark transition-all" >
                             </div>
                             <div class="flex grow flex-col">
                                 <label for="hora_levantarse" class="text-lg font-medium text-somno-dark">Hora de levantarse:</label>
-                                <input required type="time" id="hora_levantarse" name="hora_levantarse" class="mt-1 p-3 border border-somno-dark bg-somno-light/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-somno-dark text-somno-dark transition-all" style="color-scheme: dark;">
+                                <input required type="time" id="hora_levantarse" name="hora_levantarse" class="mt-1 p-3 border border-somno-dark bg-somno-light/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-somno-dark text-somno-dark transition-all" >
                             </div>
                             <div class="flex grow flex-col">
                                 <label for="tiempo_dormir" class="text-lg font-medium text-somno-dark">Tiempo promedio en quedarse dormido (min):</label>
@@ -585,7 +585,9 @@ if (Astro.request.method === "POST") {
 </Layout>
 
 <style>
-
+    input[type="date"], input[type="time"]::-webkit-calendar-picker-indicator {
+        cursor: pointer;
+    }
     @keyframes shake {
         0%, 100% { transform: translateX(0); }
         10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
