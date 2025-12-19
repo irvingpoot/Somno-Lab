@@ -12,6 +12,36 @@ const postsIzquierda = gridPosts.slice(0, 2);
 const postCentral = gridPosts[2]; 
 const postsDerecha = gridPosts.slice(3, 5);
 
+const proximosEventos = [
+    {
+        dia: "25",
+        mes: "ENE",
+        titulo: "Masterclass: Sueño y Metabolismo",
+        hora: "19:00 hrs",
+        lugar: "Zoom Live",
+        img: "https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=800",
+        categoria: "Salud Integral"
+    },
+    {
+        dia: "08",
+        mes: "FEB",
+        titulo: "Workshop: Domina tu CPAP",
+        hora: "10:00 AM",
+        lugar: "Auditorio SomnoLab",
+        img: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?q=80&w=800",
+        categoria: "Taller Técnico"
+    },
+    {
+        dia: "15",
+        mes: "MAR",
+        titulo: "Simposio: Futuro del Descanso",
+        hora: "09:00 AM",
+        lugar: "Hotel Hyatt Mérida",
+        img: "https://images.unsplash.com/photo-1544531586-fde5298cdd40?q=80&w=800",
+        categoria: "Conferencia"
+    }
+];
+
 ---
 
 <Layout title="Inicio | Somno-Lab">
@@ -189,6 +219,76 @@ const postsDerecha = gridPosts.slice(3, 5);
                 </div>
 
             </div>
+        </div>
+    </section>
+
+    <section class="py-24 bg-slate-50 relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-px bg-linear-to-r from-transparent via-slate-200 to-transparent"></div>
+
+        <div class="max-w-[1400px] mx-auto px-4 sm:px-6">
+            
+            <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+                <div>
+                    <span class="text-somno font-bold tracking-[0.2em] uppercase text-xs mb-3 block">Eventos SomnoLab</span>
+                    <h2 class="text-3xl md:text-5xl font-black text-slate-800 tracking-tight">
+                        Proximos <span class="text-transparent bg-clip-text bg-linear-to-r from-somno to-somno-light">Eventos</span>
+                    </h2>
+                </div>
+                <a href="/eventos" class="group flex items-center gap-2 text-slate-500 font-bold hover:text-somno transition-colors">
+                    Ver calendario completo 
+                    <i class="fas fa-arrow-right transform group-hover:translate-x-1 transition-transform"></i>
+                </a>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                {proximosEventos.map((evento: any) => (
+                    <a href="/eventos" class="group bg-white rounded-4xl p-3 border border-slate-100 shadow-sm hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
+                        
+                        <div class="relative h-56 rounded-[1.8rem] overflow-hidden mb-5">
+                            <img src={evento.img} alt={evento.titulo} class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                            
+                            <div class="absolute top-4 right-4 bg-white/95 backdrop-blur-md rounded-2xl p-2.5 text-center shadow-lg min-w-[65px]">
+                                <span class="block text-xl font-black text-slate-800 leading-none">{evento.dia}</span>
+                                <span class="block text-[10px] font-bold text-somno uppercase">{evento.mes}</span>
+                            </div>
+
+                            <div class="absolute bottom-4 left-4">
+                                <span class="bg-slate-900/70 backdrop-blur-md text-white text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-wider border border-white/10">
+                                    {evento.categoria}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="px-3 pb-3">
+                            <h3 class="text-xl font-bold text-slate-800 mb-3 leading-tight group-hover:text-somno transition-colors line-clamp-2">
+                                {evento.titulo}
+                            </h3>
+                            
+                            <div class="flex flex-col gap-2 text-sm text-slate-500 border-t border-slate-50 pt-3 mt-auto">
+                                <div class="flex items-center gap-3">
+                                    <span class="w-6 h-6 rounded-full bg-somno/10 flex items-center justify-center text-somno text-xs">
+                                        <i class="far fa-clock"></i>
+                                    </span>
+                                    {evento.hora}
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <span class="w-6 h-6 rounded-full bg-somno/10 flex items-center justify-center text-somno text-xs">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                    </span>
+                                    {evento.lugar}
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                ))}
+            </div>
+            
+            <div class="mt-8 text-center md:hidden">
+                <a href="/eventos" class="inline-block w-full px-8 py-4 bg-slate-100 text-slate-700 font-bold rounded-xl hover:bg-slate-200 transition-colors">
+                    Ver todos los eventos
+                </a>
+            </div>
+
         </div>
     </section>
 
