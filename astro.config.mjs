@@ -3,7 +3,6 @@ import { defineConfig } from 'astro/config';
 import node from "@astrojs/node";
 import clerk from "@clerk/astro";
 import tailwindcss from '@tailwindcss/vite';
-import { dark } from '@clerk/themes';
 import { esMX } from '@clerk/localizations';
 
 // https://astro.build/config

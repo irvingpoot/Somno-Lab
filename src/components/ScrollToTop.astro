@@ -1,0 +1,30 @@
+<button
+    id="to-top-btn"
+    aria-label="Volver arriba"
+    class="fixed bottom-10 right-8 z-50 p-4 bg-white text-somno rounded-full shadow-xl shadow-somno/40 
+            translate-y-20 opacity-0 pointer-events-none transition-all duration-500 ease-out border border-somno
+            hover:bg-[#4da8ad] hover:scale-110 focus:outline-none focus:ring-4 focus:ring-somno/30"
+>
+    <i class="fas fa-arrow-up text-lg"></i>
+</button>
+
+<script>
+    const btn = document.getElementById('to-top-btn');
+
+    // 1. Mostrar/Ocultar botón al hacer scroll
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 300) {
+            btn?.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+        } else {
+            btn?.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+        }
+    });
+
+    // 2. Acción de subir suavemente
+    btn?.addEventListener('click', () => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+</script>

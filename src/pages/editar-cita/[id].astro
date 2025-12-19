@@ -79,7 +79,7 @@ const horaParte = fechaObjCita.toLocaleTimeString('en-GB', {
 const fechaValue = `${fechaParte}T${horaParte}`;
 ---
 
-<Layout title="Editar Cita">
+<Layout title="Editar Cita" showFooter={false}>
     <Icon />
 	<div class="absolute top-8 left-5 xs:p-5 animate-fade-in-down" style="animation-delay: 0.1s;">
         <BackButton href="/citas" label="Volver a las citas" />

@@ -65,7 +65,7 @@ if (Astro.request.method === "POST") {
 }
 ---
 
-<Layout title="Agendar Nueva Cita">
+<Layout title="Agendar Nueva Cita" showFooter={false}>
     <Icon />
 	<div class="absolute top-8 left-5 xs:p-5 animate-fade-in-down" style="animation-delay: 0.1s;">
         <BackButton href="/citas" label="Volver a las citas" />
@@ -100,7 +100,7 @@ if (Astro.request.method === "POST") {
     <main class="max-w-7xl mx-auto pt-6 md:pt-10 pb-28 px-4">
         <div class="flex flex-col items-center justify-center mb-8">
             <h1 class="mt-15 lg:mt-0 text-4xl md:text-6xl font-extrabold text-center leading-tight">
-                Agendar <span class="bg-gradient-to-r from-somno-dark via-somno to-somno-light bg-clip-text text-transparent">Cita</span>
+                Agendar <span class="bg-linear-to-r from-somno-dark via-somno to-somno-light bg-clip-text text-transparent">Cita</span>
             </h1>
 		</div>
 

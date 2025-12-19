@@ -1,9 +1,20 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Navbar from '../components/Navbar.astro';
+
+import { getCollection } from 'astro:content';
+
+const allPosts = await getCollection('blog');
+
+const gridPosts = allPosts.slice(0, 5); 
+
+const postsIzquierda = gridPosts.slice(0, 2);
+const postCentral = gridPosts[2]; 
+const postsDerecha = gridPosts.slice(3, 5);
+
 ---
 
-<Layout title="Somno-Lab - Inicio">
+<Layout title="Inicio | Somno-Lab">
     <Navbar />
     <section class="relative min-h-screen flex flex-col justify-center items-center overflow-hidden bg-slate-50">
         <div class="absolute top-0 left-1/2 -translate-x-1/2 w-125 h-125 bg-somno/20 rounded-full blur-[100px] pointer-events-none"></div>
@@ -53,6 +64,7 @@ import Navbar from '../components/Navbar.astro';
                             src="https://images.unsplash.com/photo-1659989693409-5adc97274bed?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
                             alt="Equipo SomnoLab" 
                             class="w-full h-[500px] object-cover"
+                            loading="lazy"
                         />
                         <div class="absolute inset-0 bg-linear-to-t from-somno/20 to-transparent"></div>
                     </div>
@@ -75,7 +87,7 @@ import Navbar from '../components/Navbar.astro';
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="flex gap-4 items-start">
-                            <div class="flex-shrink-0 w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center text-somno border border-slate-100">
+                            <div class="shrink-0 w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center text-somno border border-slate-100">
                                 <i class="fas fa-microscope text-xl"></i>
                             </div>
                             <div>
@@ -85,7 +97,7 @@ import Navbar from '../components/Navbar.astro';
                         </div>
 
                         <div class="flex gap-4 items-start">
-                            <div class="flex-shrink-0 w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center text-somno border border-slate-100">
+                            <div class="shrink-0 w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center text-somno border border-slate-100">
                                 <i class="fas fa-user-md text-xl"></i>
                             </div>
                             <div>
@@ -121,7 +133,7 @@ import Navbar from '../components/Navbar.astro';
 
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
                 <div class="lg:col-span-5 bg-white p-8 rounded-4xl border border-slate-100 shadow-[0_10px_30px_rgba(0,0,0,0.03)] h-fit sticky top-8">
-                    <img src="/logoSomno.webp" alt="Logo SomnoLab" class="w-20 md:w-24 h-auto mb-8 rounded-2xl opacity-90 absolute right-1 top-1 hover:opacity-100 transition-opacity" />
+                    <img loading="lazy" src="/logoSomno.webp" alt="Logo SomnoLab" class="w-20 md:w-24 h-auto mb-8 rounded-2xl opacity-90 absolute right-1 top-1 hover:opacity-100 transition-opacity" />
                     <div class="mb-8">
                         <h3 class="text-2xl font-bold text-slate-800 mb-2">Comencemos</h3>
                         <p class="text-somno">Ingresa tus datos para calcular tu horario.</p>
@@ -176,6 +188,99 @@ import Navbar from '../components/Navbar.astro';
                     </div>
                 </div>
 
+            </div>
+        </div>
+    </section>
+
+    <section id="somnoblog" class="py-24">
+        <div class="max-w-[1400px] mx-auto px-4 sm:px-6">
+            
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-6xl font-bold text-slate-800 tracking-[0.2em] uppercase mb-4">
+                    Somno<span class="text-transparent bg-clip-text bg-linear-to-r from-somno to-somno-light">Blog</span>
+                </h2>
+                <p class="text-slate-500 max-w-2xl mx-auto text-lg">
+                    Explora nuestra colección de artículos curados por especialistas.
+                </p>
+            </div>
+
+            <div class="flex flex-col lg:flex-row gap-4 h-auto lg:h-[750px] w-full transition-all duration-500">
+                
+                <div class="flex flex-col gap-4 flex-1 lg:hover:grow-[1.5] transition-all duration-700 ease-out">
+                    {postsIzquierda.map((post) => (
+                        <a href={`/blog/${post.data.id}`} class="group relative flex-1 hover:grow-2 transition-all duration-500 rounded-4xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-2xl">
+                            <img loading="lazy" src={post.data.img} alt={post.data.titulo} class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                            <div class="absolute inset-0 bg-linear-to-t from-slate-900/90 via-slate-900/20 to-transparent opacity-80 group-hover:opacity-90 transition-opacity"></div>
+                            
+                            <div class="absolute bottom-0 left-0 p-8 w-full translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                                <span class="inline-block px-3 py-1 bg-somno backdrop-blur-md text-white text-[10px] font-bold uppercase tracking-wider rounded-full mb-3">
+                                    {post.data.categoria}
+                                </span>
+                                <h3 class="text-2xl font-bold text-white mb-2 leading-tight">
+                                    {post.data.titulo}
+                                </h3>
+                                <p class="text-slate-300 text-sm opacity-0 h-0 group-hover:h-auto group-hover:opacity-100 transition-all duration-500 delay-100 line-clamp-2">
+                                    {post.data.resumen}
+                                </p>
+                            </div>
+                        </a>
+                    ))}
+                </div>
+
+                {postCentral && (
+                    <div class="flex flex-col flex-[1.5] lg:hover:grow-[2.5] transition-all duration-700 ease-out gap-4">
+                        <a href={`/blog/${postCentral.data.id}`} class="group relative flex-1 rounded-4xl overflow-hidden border border-slate-100 shadow-lg hover:shadow-2xl transition-all duration-500">
+                            <img loading="lazy" src={postCentral.data.img} alt={postCentral.data.titulo} class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" />
+                            <div class="absolute inset-0 bg-linear-to-b from-transparent via-transparent to-slate-900/90"></div>
+                            
+                            {postCentral.data.destacado && (
+                                <div class="absolute top-8 left-8">
+                                    <span class="bg-somno text-white px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest shadow-lg shadow-somno/30">Destacado</span>
+                                </div>
+                            )}
+
+                            <div class="absolute bottom-0 left-0 p-10 md:p-12 w-full">
+                                <h3 class="text-4xl md:text-5xl font-black text-white mb-4 leading-none transition-colors">
+                                    {postCentral.data.titulo}
+                                </h3>
+                                <p class="text-lg text-slate-200 mb-6 max-w-md opacity-90 line-clamp-3">
+                                    {postCentral.data.resumen}
+                                </p>
+                                <span class="inline-flex items-center gap-3 bg-white text-slate-900 px-6 py-3 rounded-full font-bold text-sm hover:bg-somno hover:text-white transition-all group-hover:scale-105">
+                                    Leer artículo completo <i class="fas fa-arrow-right"></i>
+                                </span>
+                            </div>
+                        </a>
+                    </div>
+                )}
+
+                <div class="flex flex-col gap-4 flex-1 lg:hover:grow-[1.5] transition-all duration-700 ease-out">
+                    {postsDerecha.map((post) => (
+                        <a href={`/blog/${post.data.id}`} class="group relative flex-1 hover:grow-2 transition-all duration-500 rounded-4xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-2xl">
+                            <img loading="lazy" src={post.data.img} alt={post.data.titulo} class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                            <div class="absolute inset-0 bg-linear-to-t from-slate-900/90 via-slate-900/20 to-transparent opacity-80 group-hover:opacity-90 transition-opacity"></div>
+                            
+                            <div class="absolute bottom-0 left-0 p-8 w-full translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                                <span class="inline-block px-3 py-1 bg-somno text-white text-[10px] font-bold uppercase tracking-wider rounded-full mb-3">
+                                    {post.data.categoria}
+                                </span>
+                                <h3 class="text-2xl font-bold text-white mb-2 leading-tight">
+                                    {post.data.titulo}
+                                </h3>
+                                <p class="text-slate-300 text-sm opacity-0 h-0 group-hover:h-auto group-hover:opacity-100 transition-all duration-500 delay-100 line-clamp-2">
+                                    {post.data.resumen}
+                                </p>
+                            </div>
+                        </a>
+                    ))}
+                </div>
+
+            </div>
+
+            <div class="mt-12 text-center">
+                <a href="/blog" class="inline-block w-full md:w-auto px-8 py-4 bg-white text-slate-700 border border-slate-800 rounded-full text-lg font-semibold hover:border-somno hover:text-somno hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+                    Ver todos los artículos
+                </a>
             </div>
         </div>
     </section>

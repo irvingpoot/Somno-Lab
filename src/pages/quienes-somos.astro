@@ -128,6 +128,7 @@ const valores = [
                                     <img 
                                         src={medico.imagen} 
                                         alt={medico.nombre} 
+                                        loading="lazy"
                                         class="w-40 h-40 rounded-full object-cover mx-auto grayscale group-hover/card:grayscale-0 transition-all duration-500 border-4 border-white shadow-md"
                                     />
                                     <div class="absolute inset-0 rounded-full border-2 border-somno scale-110 opacity-0 group-hover/card:opacity-100 transition-all"></div>
@@ -153,7 +154,7 @@ const valores = [
                                 Servicios
                             </a>
                             <a href="/#topicos" class="px-10 py-4 bg-somno-light border border-white/20 text-white font-bold rounded-full hover:bg-white/10 transition-all">
-                                Nuestro blog
+                                SomnoBlog
                             </a>
                         </div>
                     </div>
