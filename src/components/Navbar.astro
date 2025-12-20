@@ -1,4 +1,5 @@
 ---
+import { SignedIn } from '@clerk/astro/components';
 const navItems = [
     { name: 'Quiénes Somos', href: '/quienes-somos' }, // Cambiado a ruta absoluta para que funcione desde cualquier página
     { name: 'Servicios', href: '/servicios' },
@@ -27,6 +28,11 @@ const navItems = [
                         {item.name}
                     </a>
                 ))}
+                <SignedIn>
+                    <a href="/dashboard" class="text-sm font-bold text-somno bg-somno/10 px-4 py-2 rounded-full hover:bg-somno hover:text-white transition-all">
+                        Dashboard
+                    </a>
+                </SignedIn>
             </div>
 
             <div class="lg:hidden flex items-center">
@@ -44,6 +50,11 @@ const navItems = [
                     {item.name}
                 </a>
             ))}
+            <SignedIn>
+                <a href="/dashboard" class="text-sm font-bold text-somno bg-somno/10 px-4 py-2 rounded-full hover:bg-somno hover:text-white transition-all">
+                    <i class="fas fa-columns mr-2"></i> Dashboard
+                </a>
+            </SignedIn>
         </div>
     </div>
 </nav>

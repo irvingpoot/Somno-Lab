@@ -1,64 +1,37 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Navbar from '../components/Navbar.astro';
+import { createClient } from "@supabase/supabase-js";
 
-const eventos = [
-    {
-        id: 1,
-        dia: "25",
-        mes: "ENE",
-        titulo: "Masterclass: Sueño y Metabolismo",
-        categoria: "Salud Integral",
-        hora: "19:00 hrs",
-        lugar: "Zoom Live",
-        precio: "Gratuito",
-        img: "https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=800",
-        destacado: true,
-        descripcion: "En esta masterclass exclusiva, exploraremos la conexión científica entre la calidad del sueño y la capacidad del cuerpo para regular el peso. Descubrirás por qué las dietas fallan si no duermes bien y aprenderás 3 estrategias prácticas para equilibrar tus hormonas (Grelina y Leptina) durante la noche. Ideal para nutriólogos y pacientes."
-    },
-    {
-        id: 2,
-        dia: "08",
-        mes: "FEB",
-        titulo: "Workshop: Domina tu CPAP",
-        categoria: "Taller Técnico",
-        hora: "10:00 AM",
-        lugar: "Auditorio SomnoLab",
-        precio: "$200 MXN",
-        img: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?q=80&w=800",
-        destacado: false,
-        descripcion: "¿Te despiertas con la boca seca o sientes que tu mascarilla se fuga? No abandones tu tratamiento. En este taller práctico, nuestros técnicos respiratorios te enseñarán a ajustar tu equipo correctamente, realizar el mantenimiento de limpieza y elegir la mascarilla perfecta para tu rostro. Trae tu equipo para una revisión gratuita."
-    },
-    {
-        id: 3,
-        dia: "15",
-        mes: "MAR",
-        titulo: "Simposio: El Futuro del Descanso",
-        categoria: "Conferencia",
-        hora: "09:00 AM",
-        lugar: "Hotel Hyatt Mérida",
-        precio: "Entrada Libre",
-        img: "https://images.unsplash.com/photo-1544531586-fde5298cdd40?q=80&w=800",
-        destacado: false,
-        descripcion: "Únete a los líderes de opinión en neurología y neumología en nuestro simposio anual. Discutiremos los últimos avances en tecnología wearable para monitoreo de sueño, nuevos fármacos para el insomnio y el impacto de la luz azul en la salud pública. Habrá sesión de preguntas y respuestas al final."
-    },
-    {
-        id: 4,
-        dia: "20",
-        mes: "ABR",
-        titulo: "Yoga Nidra para Dormir",
-        categoria: "Bienestar",
-        hora: "18:00 PM",
-        lugar: "Jardín SomnoLab",
-        precio: "$150 MXN",
-        img: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?q=80&w=800",
-        destacado: false,
-        descripcion: "Experimenta el 'sueño yóguico'. Una sesión guiada de relajación profunda diseñada para apagar el sistema nervioso simpático (lucha o huida) y activar el parasimpático (descanso y digestión). No se requiere experiencia previa ni flexibilidad, solo ropa cómoda y ganas de descansar."
-    }
-];
+const supabase = createClient(
+    import.meta.env.PUBLIC_SUPABASE_URL,
+    import.meta.env.SUPABASE_KEY
+);
 
-const eventoDestacado = eventos.find(e => e.destacado);
-const eventosRegulares = eventos.filter(e => !e.destacado);
+const { data: eventosRaw, error } = await supabase
+    .from('eventos')
+    .select('*')
+    .order('fecha', { ascending: true });
+
+if (error) console.error("Error al obtener eventos:", error);
+
+const meses = ["ENE", "FEB", "MAR", "ABR", "MAY", "JUN", "JUL", "AGO", "SEP", "OCT", "NOV", "DIC"];
+
+const eventos = (eventosRaw || []).map(e => {
+    const d = new Date(e.fecha + 'T00:00:00'); 
+    return {
+        ...e,
+        dia: d.getDate().toString(),
+        mes: meses[d.getMonth()]
+    };
+});
+
+let eventosDestacados = eventos.filter(e => e.destacado);
+
+if (eventosDestacados.length === 0 && eventos.length > 0) {
+    eventosDestacados.push(eventos[0]);
+}
+
 ---
 
 <Layout title="Eventos | SomnoLab">
@@ -75,44 +48,68 @@ const eventosRegulares = eventos.filter(e => !e.destacado);
         </div>
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 mb-20">
-            {eventoDestacado && (
-                <div class="relative rounded-[2.5rem] overflow-hidden shadow-2xl group h-[500px]">
-                    <img src={eventoDestacado.img} alt={eventoDestacado.titulo} class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" />
-                    <div class="absolute inset-0 bg-linear-to-r from-slate-900 via-slate-900/60 to-transparent"></div>
-                    
-                    <div class="absolute inset-0 p-8 md:p-16 flex flex-col justify-center max-w-2xl">
-                        <span class="inline-block bg-somno text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-6 w-fit animate-pulse">
-                            Evento Destacado
-                        </span>
-                        <h2 class="text-4xl md:text-6xl font-black text-white mb-6 leading-tight">
-                            {eventoDestacado.titulo}
-                        </h2>
-                        <div class="flex flex-wrap gap-6 text-white/90 text-lg font-medium mb-8">
-                            <span class="flex items-center gap-2"><i class="far fa-calendar-alt text-somno"></i> {eventoDestacado.dia} {eventoDestacado.mes}</span>
-                            <span class="flex items-center gap-2"><i class="far fa-clock text-somno"></i> {eventoDestacado.hora}</span>
+            <div class="relative rounded-[2.5rem] overflow-hidden shadow-2xl bg-slate-900 h-[500px] group" id="hero-carousel">
+                {eventosDestacados.map((evento, index) => (
+                    <div 
+                        class={`carousel-slide absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}
+                        data-index={index}
+                    >
+                        <img src={evento.img} alt={evento.titulo} class="absolute inset-0 w-full h-full object-cover transition-transform duration-10000 ease-linear scale-100 group-hover:scale-110" />
+                        <div class="absolute inset-0 bg-linear-to-r from-slate-900 via-slate-900/60 to-transparent"></div>
+                        
+                        <div class="absolute inset-0 p-8 md:p-16 flex flex-col justify-center max-w-2xl z-20">
+                            <span class="inline-block bg-somno text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-6 w-fit animate-pulse">
+                                Evento Destacado
+                            </span>
+                            <h2 class="text-4xl md:text-6xl font-black text-white mb-6 leading-tight drop-shadow-lg">
+                                {evento.titulo}
+                            </h2>
+                            <div class="flex flex-wrap gap-6 text-white/90 text-lg font-medium mb-8">
+                                <span class="flex items-center gap-2"><i class="far fa-calendar-alt text-somno"></i> {evento.dia} {evento.mes}</span>
+                                <span class="flex items-center gap-2"><i class="far fa-clock text-somno"></i> {evento.hora}</span>
+                            </div>
+                            <button onclick={`openModal(${evento.id})`} class="bg-white text-slate-900 px-8 py-4 rounded-full font-bold hover:bg-somno hover:text-white transition-all w-fit shadow-lg transform hover:scale-105">
+                                Ver todos los detalles
+                            </button>
                         </div>
-                        <button 
-                            onclick={`openModal(${eventoDestacado.id})`}
-                            class="bg-white text-slate-900 px-8 py-4 rounded-full font-bold hover:bg-somno hover:text-white transition-all w-fit shadow-lg transform hover:scale-105"
-                        >
-                            Ver todos los detalles
-                        </button>
                     </div>
-                </div>
-            )}
+                ))}
+
+                {eventosDestacados.length > 1 && (
+                    <>
+                        <button id="prev-btn" class="absolute left-4 top-1/2 -translate-y-1/2 z-30 w-12 h-12 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-white hover:text-slate-900 transition-all opacity-0 group-hover:opacity-100">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button id="next-btn" class="absolute right-4 top-1/2 -translate-y-1/2 z-30 w-12 h-12 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-white hover:text-slate-900 transition-all opacity-0 group-hover:opacity-100">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                        <div class="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 flex gap-3">
+                            {eventosDestacados.map((_, i) => (
+                                <button class={`carousel-dot w-3 h-3 rounded-full transition-all ${i === 0 ? 'bg-somno w-8' : 'bg-white/50 hover:bg-white'}`} data-target={i}></button>
+                            ))}
+                        </div>
+                    </>
+                )}
+            </div>
         </div>
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6">
             <h3 class="text-2xl font-bold text-slate-800 mb-8 pl-4 border-l-4 border-somno">Calendario General</h3>
             
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {eventosRegulares.map((evento) => (
+                {eventos.map((evento) => (
                     <div class="group bg-white rounded-4xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 flex flex-col">
                         
                         <div class="relative h-64 overflow-hidden">
                             <img src={evento.img} alt={evento.titulo} class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                             <div class="absolute inset-0 bg-slate-900/20 group-hover:bg-transparent transition-colors"></div>
                             
+                            {evento.destacado && (
+                                <div class="absolute top-4 left-4 bg-yellow-400 text-slate-900 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-lg">
+                                    ★ Destacado
+                                </div>
+                            )}
+
                             <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-md rounded-2xl p-3 text-center min-w-[70px] shadow-lg">
                                 <span class="block text-2xl font-black text-slate-800 leading-none">{evento.dia}</span>
                                 <span class="block text-xs font-bold text-somno uppercase">{evento.mes}</span>
@@ -120,7 +117,7 @@ const eventosRegulares = eventos.filter(e => !e.destacado);
                         </div>
 
                         <div class="p-8 flex flex-col grow relative">
-                            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">{evento.categoria}</span>
+                            <span class="text-xs font-bold text-somno group-hover:text-slate-800 uppercase tracking-wider mb-2">{evento.categoria}</span>
                             <h3 class="text-xl font-bold text-slate-800 mb-4 leading-tight group-hover:text-somno transition-colors">
                                 {evento.titulo}
                             </h3>
@@ -131,10 +128,7 @@ const eventosRegulares = eventos.filter(e => !e.destacado);
                                 <div class="flex items-center gap-3"><i class="fas fa-ticket-alt w-5 text-center text-somno"></i> {evento.precio}</div>
                             </div>
 
-                            <button 
-                                onclick={`openModal(${evento.id})`}
-                                class="mt-auto w-full py-3 rounded-xl border border-slate-200 text-center font-bold text-slate-600 hover:bg-somno hover:border-somno hover:text-white transition-all cursor-pointer"
-                            >
+                            <button onclick={`openModal(${evento.id})`} class="mt-auto w-full py-3 rounded-xl border border-slate-200 text-center font-bold text-slate-600 hover:bg-somno hover:border-somno hover:text-white transition-all cursor-pointer">
                                 Ver Detalles
                             </button>
                         </div>
@@ -142,82 +136,98 @@ const eventosRegulares = eventos.filter(e => !e.destacado);
                 ))}
             </div>
         </div>
-
     </main>
 
     <div id="event-modal" class="fixed inset-0 z-100 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-        
         <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity opacity-0" id="modal-backdrop"></div>
-
         <div class="fixed inset-0 z-10 overflow-y-auto">
             <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
-                
                 <div class="relative transform overflow-hidden rounded-[2.5rem] bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-2xl opacity-0 translate-y-4" id="modal-panel">
-                    
-                    <button onclick="closeModal()" class="absolute top-4 right-4 z-20 w-10 h-10 bg-white/80 backdrop-blur rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-100 hover:text-red-500 transition-colors">
-                        <i class="fas fa-times text-lg"></i>
-                    </button>
-
+                    <button onclick="closeModal()" class="absolute top-4 right-4 z-20 w-10 h-10 bg-white/80 backdrop-blur rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-100 hover:text-red-500 transition-colors"><i class="fas fa-times text-lg"></i></button>
                     <div class="h-48 sm:h-64 w-full relative">
                         <img id="modal-img" src="" alt="" class="w-full h-full object-cover">
                         <div class="absolute inset-0 bg-linear-to-t from-white via-transparent to-transparent"></div>
                     </div>
-
                     <div class="px-8 pb-8 sm:px-10 sm:pb-10 -mt-12 relative z-10">
-                        <span id="modal-category" class="inline-block bg-somno text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-4 shadow-lg shadow-somno/30">
-                            Categoria
-                        </span>
-                        
+                        <span id="modal-category" class="inline-block bg-somno text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-4 shadow-lg shadow-somno/30">Categoria</span>
                         <h3 id="modal-title" class="text-3xl font-black text-slate-800 leading-tight mb-6">Título del Evento</h3>
-                        
                         <div class="grid grid-cols-2 gap-4 mb-6 bg-slate-50 p-6 rounded-2xl border border-slate-100">
-                            <div>
-                                <p class="text-xs text-slate-400 font-bold uppercase">Fecha</p>
-                                <p id="modal-date" class="font-bold text-slate-700">DD MMM</p>
-                            </div>
-                            <div>
-                                <p class="text-xs text-slate-400 font-bold uppercase">Hora</p>
-                                <p id="modal-time" class="font-bold text-slate-700">00:00</p>
-                            </div>
-                            <div>
-                                <p class="text-xs text-slate-400 font-bold uppercase">Lugar</p>
-                                <p id="modal-location" class="font-bold text-slate-700">Ubicación</p>
-                            </div>
-                            <div>
-                                <p class="text-xs text-slate-400 font-bold uppercase">Costo</p>
-                                <p id="modal-price" class="font-bold text-somno">$$$</p>
-                            </div>
+                            <div><p class="text-xs text-slate-400 font-bold uppercase">Fecha</p><p id="modal-date" class="font-bold text-slate-700">DD MMM</p></div>
+                            <div><p class="text-xs text-slate-400 font-bold uppercase">Hora</p><p id="modal-time" class="font-bold text-slate-700">00:00</p></div>
+                            <div><p class="text-xs text-slate-400 font-bold uppercase">Lugar</p><p id="modal-location" class="font-bold text-slate-700">Ubicación</p></div>
+                            <div><p class="text-xs text-slate-400 font-bold uppercase">Costo</p><p id="modal-price" class="font-bold text-somno">$$$</p></div>
                         </div>
-
-                        <div class="prose prose-slate prose-sm max-w-none mb-8">
-                            <p id="modal-desc" class="text-slate-600 leading-relaxed text-lg">
-                                Descripción detallada...
-                            </p>
-                        </div>
-
+                        <div class="prose prose-slate prose-sm max-w-none mb-8"><p id="modal-desc" class="text-slate-600 leading-relaxed text-lg">Descripción detallada...</p></div>
                         <div class="flex gap-4">
-                            <a href="/citas" class="flex-1 bg-slate-900 text-white text-center py-4 rounded-xl font-bold hover:bg-slate-800 transition-all shadow-xl">
-                                Reservar Lugar
-                            </a>
-                            <button onclick="closeModal()" class="px-6 py-4 rounded-xl border border-slate-200 font-bold text-slate-500 hover:bg-slate-50">
-                                Cerrar
-                            </button>
+                            <a href="/citas" class="flex-1 bg-slate-900 text-white text-center py-4 rounded-xl font-bold hover:bg-slate-800 transition-all shadow-xl">Reservar Lugar</a>
+                            <button onclick="closeModal()" class="px-6 py-4 rounded-xl border border-slate-200 font-bold text-slate-500 hover:bg-slate-50">Cerrar</button>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
     </div>
-
 </Layout>
 
 <script define:vars={{ eventsData: eventos }}>
     
+    const slides = document.querySelectorAll('.carousel-slide');
+    const dots = document.querySelectorAll('.carousel-dot');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    
+    let currentIndex = 0;
+    let autoSlideInterval;
+
+    const showSlide = (index) => {
+        if (index >= slides.length) index = 0;
+        if (index < 0) index = slides.length - 1;
+        currentIndex = index;
+        slides.forEach((slide, i) => {
+            if (i === currentIndex) {
+                slide.classList.remove('opacity-0', 'z-0', 'pointer-events-none');
+                slide.classList.add('opacity-100', 'z-10');
+            } else {
+                slide.classList.add('opacity-0', 'z-0', 'pointer-events-none');
+                slide.classList.remove('opacity-100', 'z-10');
+            }
+        });
+        dots.forEach((dot, i) => {
+            if (i === currentIndex) {
+                dot.classList.remove('bg-white/50', 'w-3');
+                dot.classList.add('bg-somno', 'w-8');
+            } else {
+                dot.classList.add('bg-white/50', 'w-3');
+                dot.classList.remove('bg-somno', 'w-8');
+            }
+        });
+    };
+
+    const nextSlide = () => { showSlide(currentIndex + 1); resetAutoSlide(); };
+    const prevSlide = () => { showSlide(currentIndex - 1); resetAutoSlide(); };
+
+    const startAutoSlide = () => {
+        if (slides.length > 1) {
+            autoSlideInterval = setInterval(() => { showSlide(currentIndex + 1); }, 5000);
+        }
+    };
+    const resetAutoSlide = () => { clearInterval(autoSlideInterval); startAutoSlide(); };
+
+    if (prevBtn) prevBtn.addEventListener('click', prevSlide);
+    if (nextBtn) nextBtn.addEventListener('click', nextSlide);
+
+    dots.forEach(dot => {
+        dot.addEventListener('click', (e) => {
+            const index = parseInt(e.target.dataset.target);
+            showSlide(index);
+            resetAutoSlide();
+        });
+    });
+    startAutoSlide();
+
     const modal = document.getElementById('event-modal');
     const backdrop = document.getElementById('modal-backdrop');
     const panel = document.getElementById('modal-panel');
-    
     const mImg = document.getElementById('modal-img');
     const mCat = document.getElementById('modal-category');
     const mTitle = document.getElementById('modal-title');
@@ -227,11 +237,9 @@ const eventosRegulares = eventos.filter(e => !e.destacado);
     const mPrice = document.getElementById('modal-price');
     const mDesc = document.getElementById('modal-desc');
 
-    // Función global para abrir el modal
     window.openModal = (id) => {
         const event = eventsData.find(e => e.id === id);
         if (!event) return;
-
         mImg.src = event.img;
         mCat.textContent = event.categoria;
         mTitle.textContent = event.titulo;
@@ -240,9 +248,7 @@ const eventosRegulares = eventos.filter(e => !e.destacado);
         mLoc.textContent = event.lugar;
         mPrice.textContent = event.precio;
         mDesc.textContent = event.descripcion;
-
         modal.classList.remove('hidden');
-
         setTimeout(() => {
             backdrop.classList.remove('opacity-0');
             panel.classList.remove('opacity-0', 'translate-y-4');
@@ -252,21 +258,9 @@ const eventosRegulares = eventos.filter(e => !e.destacado);
     window.closeModal = () => {
         backdrop.classList.add('opacity-0');
         panel.classList.add('opacity-0', 'translate-y-4');
-
-        setTimeout(() => {
-            modal.classList.add('hidden');
-        }, 300);
+        setTimeout(() => { modal.classList.add('hidden'); }, 300);
     };
 
-    window.addEventListener('click', (e) => {
-        if (e.target === backdrop) {
-            closeModal();
-        }
-    });
-
-    window.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
-            closeModal();
-        }
-    });
+    window.addEventListener('click', (e) => { if (e.target === backdrop) closeModal(); });
+    window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal(); });
 </script>

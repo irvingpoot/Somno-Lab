@@ -5,8 +5,30 @@ document.getElementById('submit-btn').addEventListener('click', function(event) 
 
     // Obtener los valores del formulario
     const edad = parseInt(document.getElementById('edad').value);
-    const horaActual = document.getElementById('hora').value;
-    const horaDeseada = document.getElementById('horaDespertar').value;
+
+    
+
+    // --- NUEVO: OBTENER Y COMBINAR VALORES ---
+    // Obtenemos Hora y Minuto por separado
+    const dormirH = document.getElementById('dormir-h').value;
+    const dormirM = document.getElementById('dormir-m').value;
+    
+    const despertarH = document.getElementById('despertar-h').value;
+    const despertarM = document.getElementById('despertar-m').value;
+
+    // Combinamos para que el resto del script funcione igual ("HH:MM")
+    // Si no seleccionaron hora, la variable quedará vacía o incompleta
+    let horaActual = "";
+    let horaDeseada = "";
+
+    if (dormirH && dormirM) {
+        horaActual = `${dormirH}:${dormirM}`;
+    }
+
+    if (despertarH && despertarM) {
+        horaDeseada = `${despertarH}:${despertarM}`;
+    }
+    // ----------------------------------------
 
     function mostrarModal(mensaje) {
         const modal = document.getElementById('modal');
@@ -29,15 +51,18 @@ document.getElementById('submit-btn').addEventListener('click', function(event) 
                 closeAction();
             }
         }
-
+        
         const understandBtn = document.getElementById('close-modal-btn');
         if(understandBtn) understandBtn.onclick = closeAction;
     }
 
+    // Validamos que se haya formado la hora completa
     if (!edad || !horaActual || !horaDeseada) {
-        mostrarModal("Por favor, rellene todos los campos");
+        mostrarModal("Por favor, rellene todos los campos (Horas y Minutos)");
         return;
     }
+
+
     function verificarMinutos(hora) {
         const [hh, mm] = hora.split(':').map(Number);
         return mm === 0 || mm === 30;
@@ -99,24 +124,24 @@ document.getElementById('submit-btn').addEventListener('click', function(event) 
 
     // Cálculo de Días
     if (minutosDeseados > minutosActuales) {
-        // Despertar más tarde
+        // CASO: Despertar más tarde
+
         const minutosDormirActual = (minutosActuales - horasIdeales * 60 + 1440) % 1440;
         const minutosDormirDeseado = (minutosDeseados - horasIdeales * 60 + 1440) % 1440;
         
         let dia = 1;
-        let minutosAjuste = minutosDormirActual;
+        let minutosAjuste = minutosDormirDeseado;
 
-        while (minutosAjuste !== minutosDormirDeseado) {
+        while (minutosAjuste !== minutosDormirActual) {
             dias.push({ dia: `Día ${dia}`, hora: convertirMinutosAHora(minutosAjuste) });
-            if (minutosAjuste < minutosDormirDeseado) {
-                minutosAjuste = (minutosAjuste + 30) % 1440;
-            } else {
-                minutosAjuste = (minutosAjuste + 30) % 1440;
-            }
+            
+            minutosAjuste = (minutosAjuste - 30 + 1440) % 1440;
+            
             dia++;
         }
-        dias.push({ dia: `Día ${dia}`, hora: convertirMinutosAHora(minutosDormirDeseado) });
-        tituloTexto = 'Usted debe irse a dormir a las siguientes horas:';
+        dias.push({ dia: `Día ${dia}`, hora: convertirMinutosAHora(minutosDormirActual) });
+        
+        tituloTexto = 'Usted debe acostarse a las siguientes horas:';
 
     } else {
         let dia = 1;

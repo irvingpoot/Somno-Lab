@@ -1,0 +1,147 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+import { UserButton } from "@clerk/astro/components";
+
+const menuItems = [
+    {
+        title: "Pacientes",
+        subtitle: "Directorio",
+        href: "/lista",
+        icon: "fa-users",
+        color: "text-somno",
+        bg: "bg-slate-100",
+        border: "hover:border-somno"
+    },
+    {
+        title: "Eventos",
+        subtitle: "Agregar, eliminar y editar eventos",
+        href: "/gestion-eventos",
+        icon: "fa-solid fa-calendar",
+        color: "text-somno",
+        bg: "bg-slate-100",
+        border: "hover:border-somno"
+    },
+    {
+        title: "Sitio Web",
+        subtitle: "Vista pública",
+        href: "/",
+        icon: "fa-globe",
+        color: "text-somno",
+        bg: "bg-slate-100",
+        border: "hover:border-somno",
+        external: true
+    }
+];
+
+const user = await Astro.locals.currentUser();
+const usuarioActivo = user 
+    ? `${user.firstName}` || "Usuario desconocido" : "Administrador";
+
+---
+
+<Layout title="Dashboard | SomnoLab" showFooter={false}>
+    <div class="min-h-screen bg-slate-50 pb-20 relative overflow-hidden">
+        
+        <Navbar />
+
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-somno/10 rounded-full blur-[100px] pointer-events-none -z-10"></div>
+        <div class="absolute bottom-0 right-0 w-[600px] h-[600px] bg-blue-100/60 rounded-full blur-[120px] pointer-events-none -z-10"></div>
+
+        <main class="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 pt-32">
+            
+            <div class="flex flex-col md:flex-row items-end justify-between gap-6 mb-12 animate-fade-in">
+                <div>
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="w-2 h-2 rounded-full bg-somno animate-pulse"></span>
+                        <p class="text-slate-500 font-bold tracking-widest uppercase text-xs">Panel de Control</p>
+                    </div>
+                    <h1 class="text-4xl md:text-6xl font-black tracking-tight text-slate-800">
+                        ¡Hola, <span class="text-transparent bg-clip-text bg-linear-to-r from-somno to-somno-light">{usuarioActivo}</span>!
+                    </h1>
+                </div>
+                
+                <div class="flex items-center gap-3 bg-white px-5 py-2.5 rounded-full shadow-sm border border-slate-100">
+                    <UserButton />
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+                <a href="/citas" class="group relative lg:col-span-2 bg-white rounded-[2.5rem] p-8 md:p-12 overflow-hidden border border-slate-100 shadow-xl shadow-slate-200/50 hover:shadow-2xl hover:shadow-somno/10 hover:-translate-y-1 transition-all duration-500 animate-fade-in-up">
+                    
+                    <div class="absolute right-0 top-0 w-64 h-64 bg-linear-to-br from-somno/5 to-blue-50 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 group-hover:scale-110 transition-transform duration-700"></div>
+
+                    <div class="relative z-10 flex flex-col h-full justify-between gap-8">
+                        <div class="flex items-start justify-between">
+                            <div>
+                                <h2 class="text-3xl font-bold text-slate-800 mb-2">Agenda de Citas</h2>
+                                <p class="text-slate-500 max-w-md font-medium">Administra el calendario, confirma asistencias y revisa el estado de los pacientes del día.</p>
+                            </div>
+                            <div class="w-16 h-16 rounded-2xl bg-slate-50 flex items-center justify-center text-somno text-3xl group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-inner">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-3 mt-auto">
+                            <span class="px-6 py-3 bg-slate-900 text-white rounded-xl font-bold text-sm group-hover:bg-somno transition-colors duration-300 shadow-lg group-hover:shadow-somno/30">
+                                Abrir Agenda <i class="fas fa-arrow-right ml-2 text-xs"></i>
+                            </span>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="/registro" class="group relative lg:row-span-2 bg-linear-to-br from-somno to-[#4da8ad] rounded-[2.5rem] p-8 md:p-10 flex flex-col overflow-hidden shadow-xl shadow-somno/20 hover:shadow-somno/40 hover:-translate-y-1 transition-all duration-500 animate-fade-in-up" style="animation-delay: 100ms;">
+                    
+                    <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(white 1px, transparent 1px); background-size: 20px 20px;"></div>
+                    
+                    <div class="absolute -bottom-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
+
+                    <div class="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md text-white flex items-center justify-center text-xl mb-auto shadow-inner border border-white/20">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+
+                    <div class="relative z-10 mt-12">
+                        <h2 class="text-3xl font-black text-white mb-2 leading-tight">Nuevo<br>Paciente</h2>
+                        <p class="text-white/90 text-sm font-medium mb-6">Registrar ingreso de primera vez.</p>
+                        
+                        <div class="w-10 h-10 rounded-full bg-white text-somno flex items-center justify-center group-hover:scale-125 transition-transform duration-300 shadow-lg">
+                            <i class="fas fa-plus"></i>
+                        </div>
+                    </div>
+                </a>
+
+                <div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-6 animate-fade-in-up" style="animation-delay: 200ms;">
+                    {menuItems.map((item) => (
+                        <a href={item.href} target={item.external ? "_blank" : "_self"} class={`group bg-white border border-slate-100 rounded-4xl p-6 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 ${item.border}`}>
+                            <div class={`w-12 h-12 rounded-xl flex items-center justify-center text-xl mb-4 ${item.bg} ${item.color} group-hover:scale-110 transition-transform`}>
+                                <i class={`fas ${item.icon}`}></i>
+                            </div>
+                            <h3 class="text-lg font-bold text-slate-800 group-hover:text-somno transition-colors">{item.title}</h3>
+                            <p class="text-xs text-slate-400 font-medium">{item.subtitle}</p>
+                        </a>
+                    ))}
+                </div>
+
+            </div>
+        </main>
+    </div>
+</Layout>
+
+<style>
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    .animate-fade-in-up {
+        animation: fadeInUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        opacity: 0;
+    }
+    .animate-fade-in {
+        animation: fadeIn 0.8s ease-out forwards;
+    }
+</style>

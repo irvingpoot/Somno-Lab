@@ -109,5 +109,5 @@ document.getElementById('edad-hora').addEventListener('submit', function(event) 
     document.getElementById('mensaje-cerca').innerText = `Hora cerca del rango ideal: entre ${horaPosibleMin} y ${horaPosibleMax}. Sugerencia: ${horaMediaPosible}`;
     document.getElementById('mensaje-fuera').innerText = `Hora fuera del rango: antes de ${horaPosibleMin} o después de ${horaPosibleMax}`;
     
-    document.getElementById('pie-semaforo').innerHTML = `Las horas sugeridas de sueño para <span class="font-bold text-[#3F74FB]">${grupo}</span> es entre <span class="font-bold text-[#3F74FB]">${idealMin}</span> y <span class="font-bold text-[#3F74FB]">${idealMax}</span>, idealmente <span class="font-bold text-[#3F74FB]">${horaMediaIdeal}</span>`;
+    document.getElementById('pie-semaforo').innerHTML = `Las horas sugeridas de sueño para <span class="font-bold text-somno">${grupo}</span> es entre <span class="font-bold text-somno">${idealMin}</span> y <span class="font-bold text-somno">${idealMax}</span>, idealmente <span class="font-bold text-somno">${horaMediaIdeal}</span>`;
 });

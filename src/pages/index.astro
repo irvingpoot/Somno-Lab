@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Navbar from '../components/Navbar.astro';
+import { createClient } from "@supabase/supabase-js";
 
 import { getCollection } from 'astro:content';
 
@@ -12,35 +13,35 @@ const postsIzquierda = gridPosts.slice(0, 2);
 const postCentral = gridPosts[2]; 
 const postsDerecha = gridPosts.slice(3, 5);
 
-const proximosEventos = [
-    {
-        dia: "25",
-        mes: "ENE",
-        titulo: "Masterclass: Sueño y Metabolismo",
-        hora: "19:00 hrs",
-        lugar: "Zoom Live",
-        img: "https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=800",
-        categoria: "Salud Integral"
-    },
-    {
-        dia: "08",
-        mes: "FEB",
-        titulo: "Workshop: Domina tu CPAP",
-        hora: "10:00 AM",
-        lugar: "Auditorio SomnoLab",
-        img: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?q=80&w=800",
-        categoria: "Taller Técnico"
-    },
-    {
-        dia: "15",
-        mes: "MAR",
-        titulo: "Simposio: Futuro del Descanso",
-        hora: "09:00 AM",
-        lugar: "Hotel Hyatt Mérida",
-        img: "https://images.unsplash.com/photo-1544531586-fde5298cdd40?q=80&w=800",
-        categoria: "Conferencia"
-    }
-];
+const supabase = createClient(
+    import.meta.env.PUBLIC_SUPABASE_URL,
+    import.meta.env.SUPABASE_KEY
+);
+
+// 3. Obtenemos los próximos 3 eventos (Fecha >= Hoy)
+const today = new Date().toISOString().split('T')[0]; // Formato YYYY-MM-DD
+
+const { data: eventosRaw, error } = await supabase
+    .from('eventos')
+    .select('*')
+    .gte('fecha', today) // Solo eventos futuros o de hoy
+    .order('fecha', { ascending: true })
+    .limit(3); // Solo traemos 3
+
+if (error) console.error("Error al obtener eventos del home:", error);
+
+// 4. Formateamos
+const meses = ["ENE", "FEB", "MAR", "ABR", "MAY", "JUN", "JUL", "AGO", "SEP", "OCT", "NOV", "DIC"];
+
+const proximosEventos = (eventosRaw || []).map(e => {
+    const d = new Date(e.fecha + 'T00:00:00');
+    return {
+        ...e,
+        dia: d.getDate().toString(),
+        mes: meses[d.getMonth()]
+    };
+});
+
 
 ---
 
@@ -231,7 +232,7 @@ const proximosEventos = [
                 <div>
                     <span class="text-somno font-bold tracking-[0.2em] uppercase text-xs mb-3 block">Eventos SomnoLab</span>
                     <h2 class="text-3xl md:text-5xl font-black text-slate-800 tracking-tight">
-                        Proximos <span class="text-transparent bg-clip-text bg-linear-to-r from-somno to-somno-light">Eventos</span>
+                        Próximos <span class="text-transparent bg-clip-text bg-linear-to-r from-somno to-somno-light">Eventos</span>
                     </h2>
                 </div>
                 <a href="/eventos" class="group flex items-center gap-2 text-slate-500 font-bold hover:text-somno transition-colors">
@@ -242,7 +243,10 @@ const proximosEventos = [
 
             <div class="grid md:grid-cols-3 gap-8">
                 {proximosEventos.map((evento: any) => (
-                    <a href="/eventos" class="group bg-white rounded-4xl p-3 border border-slate-100 shadow-sm hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
+                    <div 
+                        onclick={`openEventModal(${evento.id})`}
+                        class="group bg-white rounded-4xl p-3 border border-slate-100 shadow-sm hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 cursor-pointer"
+                    >
                         
                         <div class="relative h-56 rounded-[1.8rem] overflow-hidden mb-5">
                             <img src={evento.img} alt={evento.titulo} class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
@@ -279,7 +283,7 @@ const proximosEventos = [
                                 </div>
                             </div>
                         </div>
-                    </a>
+                    </div>
                 ))}
             </div>
             
@@ -288,7 +292,6 @@ const proximosEventos = [
                     Ver todos los eventos
                 </a>
             </div>
-
         </div>
     </section>
 
@@ -406,10 +409,125 @@ const proximosEventos = [
             </div>
         </div>
     </div>
-    
+
+    <div id="event-detail-modal" class="fixed inset-0 z-100 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity opacity-0" id="detail-backdrop"></div>
+
+        <div class="fixed inset-0 z-10 overflow-y-auto">
+            <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
+                
+                <div class="relative transform overflow-hidden rounded-[2.5rem] bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-2xl opacity-0 translate-y-4" id="detail-panel">
+                    
+                    <button onclick="closeEventModal()" class="absolute top-4 right-4 z-20 w-10 h-10 bg-white/80 backdrop-blur rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-100 hover:text-red-500 transition-colors">
+                        <i class="fas fa-times text-lg"></i>
+                    </button>
+
+                    <div class="h-48 sm:h-64 w-full relative">
+                        <img id="detail-img" src="" alt="" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-linear-to-t from-white via-transparent to-transparent"></div>
+                    </div>
+
+                    <div class="px-8 pb-8 sm:px-10 sm:pb-10 -mt-12 relative z-10">
+                        <span id="detail-category" class="inline-block bg-somno text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-4 shadow-lg shadow-somno/30">
+                            Categoria
+                        </span>
+                        
+                        <h3 id="detail-title" class="text-3xl font-black text-slate-800 leading-tight mb-6">Título del Evento</h3>
+                        
+                        <div class="grid grid-cols-2 gap-4 mb-6 bg-slate-50 p-6 rounded-2xl border border-slate-100">
+                            <div>
+                                <p class="text-xs text-slate-400 font-bold uppercase">Fecha</p>
+                                <p id="detail-date" class="font-bold text-slate-700">DD MMM</p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-slate-400 font-bold uppercase">Hora</p>
+                                <p id="detail-time" class="font-bold text-slate-700">00:00</p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-slate-400 font-bold uppercase">Lugar</p>
+                                <p id="detail-location" class="font-bold text-slate-700">Ubicación</p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-slate-400 font-bold uppercase">Costo</p>
+                                <p id="detail-price" class="font-bold text-somno">$$$</p>
+                            </div>
+                        </div>
+
+                        <div class="prose prose-slate prose-sm max-w-none mb-8">
+                            <p id="detail-desc" class="text-slate-600 leading-relaxed text-lg">
+                                Descripción detallada...
+                            </p>
+                        </div>
+
+                        <div class="flex gap-4">
+                            <a href="/citas" class="flex-1 bg-slate-900 text-white text-center py-4 rounded-xl font-bold hover:bg-slate-800 transition-all shadow-xl">
+                                Reservar Lugar
+                            </a>
+                            <button onclick="closeEventModal()" class="px-6 py-4 rounded-xl border border-slate-200 font-bold text-slate-500 hover:bg-slate-50">
+                                Cerrar
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
 </Layout>
 
 <script src="../scripts/scriptMain.js"></script>
+
+<script define:vars={{ eventsData: proximosEventos }}>
+    const modal = document.getElementById('event-detail-modal');
+    const backdrop = document.getElementById('detail-backdrop');
+    const panel = document.getElementById('detail-panel');
+
+    const mImg = document.getElementById('detail-img');
+    const mCat = document.getElementById('detail-category');
+    const mTitle = document.getElementById('detail-title');
+    const mDate = document.getElementById('detail-date');
+    const mTime = document.getElementById('detail-time');
+    const mLoc = document.getElementById('detail-location');
+    const mPrice = document.getElementById('detail-price');
+    const mDesc = document.getElementById('detail-desc');
+
+    // Función global para abrir el modal
+    window.openEventModal = (id) => {
+        const event = eventsData.find(e => e.id === id);
+        if (!event) return;
+
+        mImg.src = event.img;
+        mCat.textContent = event.categoria;
+        mTitle.textContent = event.titulo;
+        mDate.textContent = `${event.dia} ${event.mes}`;
+        mTime.textContent = event.hora;
+        mLoc.textContent = event.lugar;
+        mPrice.textContent = event.precio;
+        mDesc.textContent = event.descripcion;
+
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            backdrop.classList.remove('opacity-0');
+            panel.classList.remove('opacity-0', 'translate-y-4');
+        }, 10);
+    };
+
+    window.closeEventModal = () => {
+        backdrop.classList.add('opacity-0');
+        panel.classList.add('opacity-0', 'translate-y-4');
+        setTimeout(() => {
+            modal.classList.add('hidden');
+        }, 300);
+    };
+
+    window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+            closeEventModal();
+        }
+    });
+</script>
 
 <style>
     /* Estilos base para el semáforo */
