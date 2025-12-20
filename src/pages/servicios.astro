@@ -4,36 +4,36 @@ import Navbar from '../components/Navbar.astro';
 
 const servicios = [
     {
-        id: "polisomnografia",
-        titulo: "Polisomnografía Nocturna",
-        subtitulo: "El estándar de oro en diagnóstico",
-        descripcion: "Nuestro estudio más completo. Pasas una noche en nuestras suites privadas (diseñadas para parecer un hotel, no un hospital) mientras monitoreamos tu actividad cerebral, respiración y ritmo cardíaco. Es la única forma definitiva de diagnosticar trastornos complejos.",
-        img: "https://images.unsplash.com/photo-1512678080530-7760d81faba6?q=80&w=1000",
-        features: ["Habitación privada tipo suite", "Monitoreo de +16 canales", "Resultados en 48 horas"]
+        id: "insomnio",
+        titulo: "Insomnio",
+        descripcion: "No es solo 'no poder dormir'. Evaluamos las causas psicológicas, físicas y ambientales que fragmentan tu descanso. Nuestros tratamientos cognitivo-conductuales te devuelven el control de tus noches sin depender exclusivamente de fármacos.",
+        lista: ["Dificultad para conciliar el sueño", "Despertares nocturnos frecuentes", "Sueño no reparador"],
+        img: "https://images.unsplash.com/photo-1520206183501-b80df61043c2?q=80&w=2000&auto=format&fit=crop", // Imagen relajante
+        icon: "fa-bed"
     },
     {
-        id: "prueba-casa",
-        titulo: "Estudio de Apnea en Casa",
-        subtitulo: "Diagnóstico sin salir de tu cama",
-        descripcion: "Para casos donde se sospecha apnea obstructiva moderada o severa, ofrecemos dispositivos portátiles simplificados. Te los llevas a casa, duermes en tu entorno natural y nos devuelves el equipo al día siguiente para analizar los datos.",
-        img: "https://images.unsplash.com/photo-1505691938895-1758d7bab589?q=80&w=1000",
-        features: ["Equipo ligero y sin cables", "Entrega a domicilio", "Asistencia remota 24/7"]
+        id: "apnea",
+        titulo: "Apnea de Sueño",
+        descripcion: "Los ronquidos fuertes pueden ser señal de que tu respiración se detiene. Utilizamos estudios de sueño simplificados o completos para diagnosticar la gravedad y ofrecerte soluciones (CPAP, dispositivos orales) que protejan tu salud cardiovascular.",
+        lista: ["Ronquidos fuertes", "Pausas respiratorias observadas", "Cansancio excesivo de día"],
+        img: "https://images.unsplash.com/photo-1684361435952-7ab2649e0cf5?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", // Tono médico/limpio
+        icon: "fa-lungs"
     },
     {
-        id: "terapia-cpap",
-        titulo: "Adaptación y Titulación CPAP",
-        subtitulo: "Tratamiento efectivo para la apnea",
-        descripcion: "No te vendemos una máquina y te deseamos suerte. Nuestro programa de adaptación incluye la calibración precisa de la presión de aire (titulación) y el acompañamiento durante las primeras semanas para asegurar que te sientas cómodo usando la mascarilla.",
-        img: "https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=1000",
-        features: ["Prueba de mascarillas", "Calibración remota", "Seguimiento de adherencia"]
+        id: "ritmo",
+        titulo: "Ritmo Circadiano",
+        descripcion: "Cuando tu reloj interno no coincide con el mundo exterior. Ayudamos a trabajadores por turnos, viajeros frecuentes o personas con fases de sueño retrasadas a sincronizar sus ciclos mediante luminoterapia y cronoterapia.",
+        lista: ["Jet Lag social o de viaje", "Trabajo por turnos rotativos", "Insomnio de inicio tardío"],
+        img: "https://images.unsplash.com/photo-1765571814233-00a6e91c21a3?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", // Sol/Reloj
+        icon: "fa-clock"
     },
     {
-        id: "tcc-i",
-        titulo: "Terapia Cognitiva para Insomnio",
-        subtitulo: "Reentrena tu cerebro para dormir",
-        descripcion: "La TCC-I es el tratamiento de primera línea recomendado mundialmente para el insomnio crónico, por encima de las pastillas. Trabajamos en cambiar los comportamientos y pensamientos que perpetúan tus noches en vela.",
-        img: "https://images.unsplash.com/photo-1544027993-37dbfe43562a?q=80&w=1000",
-        features: ["Sesiones semanales", "Diario de sueño digital", "Sin efectos secundarios"]
+        id: "parasomnias",
+        titulo: "Parasomnias",
+        descripcion: "Eventos físicos indeseables durante el sueño. Desde sonambulismo y terrores nocturnos hasta enuresis. Realizamos un estudio de seguridad para prevenir lesiones y tratar los desencadenantes.",
+        lista: ["Sonambulismo", "Pesadillas recurrentes", "Movimientos involuntarios"],
+        img: "https://images.unsplash.com/photo-1712071442935-69fda1dbb5a5?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", // Ambiente seguro
+        icon: "fa-moon"
     }
 ];
 ---
@@ -41,83 +41,136 @@ const servicios = [
 <Layout title="Servicios | SomnoLab">
     <Navbar />
 
-    <main class="min-h-screen pt-32">
+    <main class="bg-slate-50 min-h-screen pt-32 pb-20 relative overflow-hidden">
         
-        <div class="text-center max-w-3xl mx-auto p-5 mb-10">
-            <span class="text-somno font-bold tracking-[0.2em] uppercase text-xs mb-4 block">Servicios</span>
-            <h1 class="text-4xl md:text-6xl font-black text-slate-800 tracking-tight mb-6">
-                Tecnología a tu <span class="text-transparent bg-clip-text bg-linear-to-r from-somno to-somno-light">disposición</span>
-            </h1>
-        </div>
+        <div class="absolute top-0 right-0 w-[800px] h-[800px] bg-somno/5 rounded-full blur-[100px] pointer-events-none -z-10 translate-x-1/3 -translate-y-1/4"></div>
 
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-24 space-y-32">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6">
             
-            {servicios.map((servicio, index) => (
-                <div id={servicio.id} class={`flex flex-col lg:flex-row items-center gap-12 lg:gap-24 ${index % 2 !== 0 ? 'lg:flex-row-reverse' : ''}`}>
-                    
-                    <div class="w-full lg:w-1/2 relative group">
-                        <div class={`absolute -inset-4 rounded-[2.5rem] bg-linear-to-br opacity-30 blur-2xl transition-all duration-500 group-hover:opacity-50 ${index % 2 === 0 ? 'from-somno to-blue-200' : 'from-purple-200 to-somno'}`}></div>
+            <div class="text-center mb-16 animate-fade-in-up">
+                <span class="text-somno font-bold tracking-[0.2em] uppercase text-xs mb-3 block">
+                    Nuestros Servicios
+                </span>
+                <h1 class="text-4xl md:text-5xl font-black text-slate-800 mb-6 tracking-tight">
+                    Identificación y Atención de <br>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-somno to-somno-light">Alteraciones del Sueño</span>
+                </h1>
+                <p class="text-slate-500 max-w-2xl mx-auto text-lg">
+                    Selecciona un trastorno para conocer cómo podemos ayudarte a recuperar tu calidad de vida.
+                </p>
+            </div>
+
+            <div class="flex flex-wrap justify-center gap-4 mb-12 animate-fade-in-up" style="animation-delay: 100ms;">
+                {servicios.map((servicio, index) => (
+                    <button 
+                        class={`tab-btn px-6 py-4 rounded-full font-bold text-sm md:text-base transition-all duration-300 flex items-center gap-3 border border-transparent hover:scale-105 shadow-sm
+                        ${index === 0 ? 'bg-white text-somno border-somno shadow-md ring-2 ring-somno/10' : 'bg-white text-slate-500 hover:text-somno hover:shadow'}`}
+                        data-target={servicio.id}
+                        onclick="switchTab(this)"
+                    >
+                        <i class={`fas ${servicio.icon}`}></i>
+                        {servicio.titulo}
+                    </button>
+                ))}
+            </div>
+
+            <div class="relative min-h-[500px] bg-white rounded-[3rem] shadow-2xl shadow-slate-200/60 overflow-hidden border border-slate-100 animate-fade-in-up" style="animation-delay: 200ms;">
+                
+                {servicios.map((servicio, index) => (
+                    <div 
+                        id={servicio.id} 
+                        class={`tab-content absolute inset-0 w-full h-full transition-opacity duration-500 flex flex-col md:flex-row
+                        ${index === 0 ? 'opacity-100 z-10 relative' : 'opacity-0 z-0 pointer-events-none absolute'}`}
+                    >
                         
-                        <div class="relative rounded-[2.5rem] overflow-hidden shadow-2xl aspect-4/3">
+                        <div class="w-full md:w-1/2 p-10 md:p-16 flex flex-col justify-center order-2 md:order-1">
+                            <div class="w-14 h-14 bg-somno/10 text-somno rounded-2xl flex items-center justify-center text-2xl mb-6">
+                                <i class={`fas ${servicio.icon}`}></i>
+                            </div>
+                            
+                            <h2 class="text-3xl md:text-4xl font-black text-slate-800 mb-6">
+                                {servicio.titulo}
+                            </h2>
+                            
+                            <p class="text-slate-500 text-lg leading-relaxed mb-8">
+                                {servicio.descripcion}
+                            </p>
+
+                            <ul class="space-y-3 mb-10">
+                                {servicio.lista.map(item => (
+                                    <li class="flex items-center gap-3 text-slate-600 font-medium">
+                                        <i class="fas fa-check-circle text-somno"></i>
+                                        {item}
+                                    </li>
+                                ))}
+                            </ul>
+
+                            <a href="/#" class="w-fit bg-slate-900 text-white px-8 py-4 rounded-xl font-bold hover:bg-somno transition-colors shadow-lg hover:shadow-somno/30 flex items-center gap-2">
+                                Agendar Diagnóstico <i class="fas fa-arrow-right text-xs"></i>
+                            </a>
+                        </div>
+
+                        <div class="w-full md:w-1/2 h-64 md:h-auto relative order-1 md:order-2 overflow-hidden">
                             <img 
                                 src={servicio.img} 
                                 alt={servicio.titulo} 
-                                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                                class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 hover:scale-105"
                             />
-                            <div class="absolute top-6 left-6 bg-white/90 backdrop-blur-md px-4 py-2 rounded-full text-xs font-bold uppercase tracking-widest text-slate-800">
-                                Servicio 0{index + 1}
-                            </div>
+                            <div class="absolute inset-0 bg-gradient-to-r from-white via-transparent to-transparent md:bg-gradient-to-l opacity-20"></div>
                         </div>
+
                     </div>
+                ))}
 
-                    <div class="w-full lg:w-1/2">
-                        <span class="text-somno font-bold tracking-widest uppercase text-xs mb-2 block">
-                            {servicio.subtitulo}
-                        </span>
-                        <h2 class="text-3xl md:text-5xl font-black text-slate-800 mb-6 leading-tight">
-                            {servicio.titulo}
-                        </h2>
-                        <p class="text-slate-600 text-lg leading-relaxed mb-8">
-                            {servicio.descripcion}
-                        </p>
-                        
-                        <ul class="space-y-4 mb-10">
-                            {servicio.features.map(feature => (
-                                <li class="flex items-center gap-3 text-slate-700 font-medium">
-                                    <span class="w-6 h-6 rounded-full bg-somno/20 text-somno flex items-center justify-center text-xs">
-                                        <i class="fas fa-check"></i>
-                                    </span>
-                                    {feature}
-                                </li>
-                            ))}
-                        </ul>
-
-                        <a href="/citas" class="group inline-flex items-center gap-2 text-slate-800 font-bold border-b-2 border-somno pb-1 hover:text-somno transition-colors">
-                            Agendar Cita 
-                            <i class="fas fa-arrow-right transform group-hover:translate-x-1 transition-transform"></i>
-                        </a>
-                    </div>
-                </div>
-            ))}
-
-        </div>
-
-        <div class="bg-slate-50 py-24 border-t border-slate-100">
-            <div class="max-w-4xl mx-auto px-4 text-center">
-                <h2 class="text-3xl font-bold text-slate-800 mb-6">¿No sabes qué estudio necesitas?</h2>
-                <p class="text-slate-500 mb-10">
-                    Muchos pacientes llegan sin saber si roncan, tienen apnea o insomnio. Agenda una <strong>consulta de valoración</strong> y deja que nuestros especialistas tracen la ruta.
-                </p>
-                <div class="flex flex-col md:flex-row justify-center gap-4">
-                    <a href="/citas" class="bg-somno text-white px-8 py-4 rounded-full font-bold shadow-lg shadow-somno/30 hover:bg-[#4da8ad] transition-all">
-                        Agendar Valoración ($800 MXN)
-                    </a>
-                    <a href="https://wa.me/1234567890" class="bg-white text-slate-700 border border-slate-200 px-8 py-4 rounded-full font-bold hover:bg-slate-50 transition-all flex items-center justify-center gap-2">
-                        <i class="fab fa-whatsapp text-green-500 text-xl"></i> Preguntar por WhatsApp
-                    </a>
-                </div>
             </div>
-        </div>
 
+        </div>
     </main>
 </Layout>
+
+<script is:inline>
+    function switchTab(btn) {
+        // 1. Obtener ID objetivo
+        const targetId = btn.getAttribute('data-target');
+
+        // 2. Actualizar Botones
+        document.querySelectorAll('.tab-btn').forEach(b => {
+            // Estilos Inactivos
+            b.classList.remove('text-somno', 'border-somno', 'ring-2', 'ring-somno/10', 'shadow-md');
+            b.classList.add('text-slate-500');
+        });
+        // Estilos Activos (al botón clickeado)
+        btn.classList.remove('text-slate-500');
+        btn.classList.add('text-somno', 'border-somno', 'ring-2', 'ring-somno/10', 'shadow-md');
+
+        // 3. Actualizar Contenido
+        document.querySelectorAll('.tab-content').forEach(content => {
+            content.classList.remove('opacity-100', 'z-10', 'relative');
+            content.classList.add('opacity-0', 'z-0', 'pointer-events-none', 'absolute');
+            
+            if (content.id === targetId) {
+                // Pequeño delay para permitir que el anterior se desvanezca suavemente si quisieras
+                content.classList.remove('opacity-0', 'z-0', 'pointer-events-none', 'absolute');
+                content.classList.add('opacity-100', 'z-10', 'relative');
+            }
+        });
+    }
+</script>
+
+<style>
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in-up {
+        animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        opacity: 0;
+    }
+
+    /* Definimos la animación de movimiento */
+    @keyframes shine {
+        to {
+            background-position: 200% center;
+        }
+    }
+</style>
