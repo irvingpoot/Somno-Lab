@@ -1,0 +1,59 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+---
+
+<Layout title="Página no encontrada | SomnoLab">
+    <Navbar />
+
+    <main class="min-h-screen bg-slate-50 flex items-center justify-center relative overflow-hidden pt-20 pb-10">
+        
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-somno/5 rounded-full blur-[120px] pointer-events-none"></div>
+        <div class="absolute bottom-0 right-0 w-[400px] h-[400px] bg-blue-100/40 rounded-full blur-[100px] pointer-events-none"></div>
+
+        <div class="relative z-10 w-full max-w-2xl px-4 text-center">
+            
+            <div class="bg-white/60 backdrop-blur-xl border border-white/50 p-10 md:p-16 rounded-[3rem] shadow-2xl shadow-slate-200/50 transform hover:scale-[1.01] transition-transform duration-500">
+                
+                <div class="w-24 h-24 bg-somno/10 text-somno rounded-full flex items-center justify-center text-5xl mx-auto mb-6 animate-bounce-slow">
+                    <i class="fas fa-moon"></i>
+                </div>
+
+                <h1 class="text-8xl font-black text-transparent bg-clip-text bg-linear-to-r from-somno to-somno-light mb-2 font-mono tracking-tighter">
+                    404
+                </h1>
+
+                <h2 class="text-2xl md:text-3xl font-bold text-slate-800 mb-4">
+                    ¡Ups! Te has perdido en el sueño
+                </h2>
+                
+                <p class="text-slate-500 text-lg mb-10 leading-relaxed max-w-md mx-auto">
+                    La página que buscas se ha desvanecido al despertar o nunca existió. No te preocupes, es hora de volver a la realidad.
+                </p>
+
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="/" class="inline-flex items-center justify-center px-8 py-4 bg-slate-900 text-white rounded-2xl font-bold hover:bg-somno transition-all duration-300 group shadow-lg hover:shadow-somno/30">
+                        <i class="fas fa-home mr-2 group-hover:-translate-y-0.5 transition-transform"></i>
+                        Volver al Inicio
+                    </a>
+                </div>
+
+            </div>
+            
+            <p class="mt-8 text-slate-400 text-sm font-medium">
+                Error Code: 404_PAGE_NOT_FOUND
+            </p>
+
+        </div>
+    </main>
+</Layout>
+
+<style>
+    @keyframes bounceSlow {
+        0%, 100% { transform: translateY(-5%); }
+        50% { transform: translateY(5%); }
+    }
+    .animate-bounce-slow {
+        animation: bounceSlow 3s infinite ease-in-out;
+    }
+</style>

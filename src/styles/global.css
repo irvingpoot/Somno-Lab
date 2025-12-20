@@ -1,6 +1,9 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+
+
+
 @theme {
     --color-somno: #3E8CB1;
     --color-somno-light: #60BDC3;
