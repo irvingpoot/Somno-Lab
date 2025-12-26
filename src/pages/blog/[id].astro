@@ -3,7 +3,7 @@ export const prerender = true;
 
 import { getCollection, render } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
-import Navbar from '../../components/Navbar.astro';
+import NavBarSimple from '../../components/NavBarSimple.astro';
 import BackButton from '../../components/BackButton.astro';
 
 export async function getStaticPaths() {
@@ -26,7 +26,7 @@ const relacionados = posts
 ---
 
 <Layout title={`${post.data.titulo} | SomnoBlog`}>
-    <Navbar />
+    <NavBarSimple />
     
     <article class="bg-white min-h-screen pb-24">
         
