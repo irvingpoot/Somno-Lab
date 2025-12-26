@@ -1,0 +1,101 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+---
+
+<Layout title="Academia SomnoLab | Próximamente">
+    <Navbar />
+
+    <main class="min-h-screen bg-slate-50 flex items-center justify-center relative overflow-hidden pt-20 pb-10">
+        
+        <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-somno/5 rounded-full blur-[120px] pointer-events-none translate-x-1/3 -translate-y-1/4"></div>
+        <div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-100/50 rounded-full blur-[100px] pointer-events-none -translate-x-1/3 translate-y-1/4"></div>
+
+        <div class="relative z-10 w-full max-w-3xl px-6 text-center">
+            
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 text-somno text-xs font-bold uppercase tracking-widest mb-8 border border-blue-100 shadow-sm animate-fade-in-up">
+                <span class="relative flex h-2 w-2">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-somno opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-somno"></span>
+                </span>
+                En Desarrollo
+            </div>
+
+            <h1 class="text-5xl md:text-7xl font-black text-slate-800 mb-6 tracking-tight animate-fade-in-up delay-100">
+                Academia <br>
+                <span class="text-transparent bg-clip-text bg-linear-to-r from-somno to-somno-light">SomnoLab</span>
+            </h1>
+
+            <p class="text-slate-500 text-lg md:text-xl leading-relaxed max-w-xl mx-auto mb-10 animate-fade-in-up delay-200">
+                Estamos preparando una plataforma educativa integral para estudiantes, profesionistas y especialistas. Pronto podrás acceder a una variedad de cursos relacionados con neurocienas del sueño concertificaciones oficiales.
+            </p>
+
+            <div class="w-full max-w-md mx-auto bg-white p-6 rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100 mb-12 animate-fade-in-up delay-300 transform hover:scale-105 transition-transform duration-500">
+                <div class="flex justify-between text-xs font-bold text-slate-400 uppercase mb-2">
+                    <span>Progreso del lanzamiento</span>
+                    <span class="text-somno">50%</span>
+                </div>
+                <div class="h-4 w-full bg-slate-100 rounded-full overflow-hidden">
+                    <div class="h-full bg-linear-to-r from-somno to-somno-light rounded-full w-[50%] relative">
+                        <div class="absolute top-0 left-0 bottom-0 right-0 bg-linear-to-r from-transparent via-white/30 to-transparent w-full -translate-x-full animate-shimmer"></div>
+                    </div>
+                </div>
+                <p class="mt-4 text-sm text-slate-400 font-medium">
+                    <i class="fas fa-tools mr-2"></i> Ajustando detalles...
+                </p>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up delay-400">
+                <a href="/" class="inline-flex items-center justify-center px-8 py-4 bg-slate-900 text-white rounded-xl font-bold hover:bg-somno transition-all duration-300 shadow-lg hover:shadow-somno/30 group">
+                    <i class="fas fa-home mr-2 group-hover:-translate-x-1 transition-transform"></i>
+                    Volver al Inicio
+                </a>
+            </div>
+
+        </div>
+
+        <div class="absolute top-1/4 left-10 md:left-1/4 text-somno/10 text-6xl animate-float-slow hidden md:block">
+            <i class="fas fa-book-open"></i>
+        </div>
+        <div class="absolute bottom-1/3 right-10 md:right-1/4 text-blue-400/10 text-5xl animate-float-delayed hidden md:block">
+            <i class="fas fa-graduation-cap"></i>
+        </div>
+
+    </main>
+</Layout>
+
+<style>
+    /* Animaciones */
+    @keyframes shimmer {
+        100% { transform: translateX(100%); }
+    }
+    .animate-shimmer {
+        animation: shimmer 2s infinite linear;
+    }
+
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in-up {
+        opacity: 0;
+        animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-20px); }
+    }
+    .animate-float-slow {
+        animation: float 6s infinite ease-in-out;
+    }
+    .animate-float-delayed {
+        animation: float 7s infinite ease-in-out 1s;
+    }
+
+    /* Delays para la aparición secuencial */
+    .delay-100 { animation-delay: 100ms; }
+    .delay-200 { animation-delay: 200ms; }
+    .delay-300 { animation-delay: 300ms; }
+    .delay-400 { animation-delay: 400ms; }
+</style>
