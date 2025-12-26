@@ -1,9 +1,10 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
-import node from "@astrojs/node";
 import clerk from "@clerk/astro";
 import tailwindcss from '@tailwindcss/vite';
 import { esMX } from '@clerk/localizations';
+
+import vercel from '@astrojs/vercel';
 
 // https://astro.build/config
 export default defineConfig({
@@ -18,6 +19,6 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()]
   },
-  adapter: node({ mode: "standalone" }),
+  adapter: vercel(),
   output: "server",
 });
