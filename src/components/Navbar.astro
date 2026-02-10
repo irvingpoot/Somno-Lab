@@ -1,7 +1,12 @@
 ---
 import { SignedIn } from '@clerk/astro/components';
+import { isUserAdmin } from '../lib/isAdmin'; // <--- Importamos
+
+const { userId } = Astro.locals.auth();
+const isAdmin = isUserAdmin(userId);
+
 const navItems = [
-    { name: 'Quiénes Somos', href: '/quienes-somos' }, // Cambiado a ruta absoluta para que funcione desde cualquier página
+    { name: 'Quiénes Somos', href: '/quienes-somos' },
     { name: 'Servicios', href: '/servicios' },
     { name: 'SomnoBlog', href: '/blog' },
     { name: 'Eventos', href: '/eventos' },
@@ -28,10 +33,19 @@ const navItems = [
                         {item.name}
                     </a>
                 ))}
+                
                 <SignedIn>
-                    <a href="/dashboard" class="text-sm font-bold text-somno bg-somno/10 px-4 py-2 rounded-full hover:bg-somno hover:text-white transition-all">
-                        Dashboard
-                    </a>
+                    <div class="flex items-center gap-2 ml-2 pl-2 border-l border-slate-200">
+                        <a href="/mis-cursos" class="px-4 py-2 text-slate-600 hover:text-somno rounded-full hover:bg-somno/5 transition-all duration-200 font-medium text-sm flex items-center gap-2">
+                            <i class="fas fa-book-reader"></i> Mis Cursos
+                        </a>
+
+                        {isAdmin && (
+                            <a href="/dashboard" class="text-sm font-bold text-somno bg-somno/10 px-4 py-2 rounded-full hover:bg-somno hover:text-white transition-all">
+                                Dashboard
+                            </a>
+                        )}
+                    </div>
                 </SignedIn>
             </div>
 
@@ -44,16 +58,25 @@ const navItems = [
     </div>
 
     <div class="hidden lg:hidden" id="mobile-menu">
-        <div class="px-4 pt-2 pb-6 space-y-2">
+        <div class="px-4 pt-2 pb-6 space-y-2 bg-white/95 backdrop-blur-xl shadow-lg border-t border-slate-100">
             {navItems.map(item => (
                 <a href={item.href} class="block px-4 py-3 rounded-2xl text-base font-medium text-slate-600 hover:text-somno hover:bg-slate-50">
                     {item.name}
                 </a>
             ))}
+            
             <SignedIn>
-                <a href="/dashboard" class="text-sm font-bold text-somno bg-somno/10 px-4 py-2 rounded-full hover:bg-somno hover:text-white transition-all">
-                    <i class="fas fa-columns mr-2"></i> Dashboard
-                </a>
+                <div class="border-t border-slate-100 my-2 pt-2">
+                    <a href="/mis-cursos" class="block px-4 py-3 rounded-2xl text-base font-medium text-slate-600 hover:text-somno hover:bg-slate-50">
+                        <i class="fas fa-book-reader mr-2 text-somno"></i> Mis Cursos
+                    </a>
+                    
+                    {isAdmin && (
+                        <a href="/dashboard" class="block px-4 py-3 rounded-2xl text-base font-bold text-somno hover:bg-somno/5">
+                            <i class="fas fa-columns mr-2"></i> Dashboard
+                        </a>
+                    )}
+                </div>
             </SignedIn>
         </div>
     </div>
@@ -65,7 +88,10 @@ const navItems = [
     const menu = document.getElementById('mobile-menu');
     const btn = document.getElementById('mobile-menu-button');
     const icon = document.getElementById('menu-icon');
-    const section = document.getElementById('quienes-somos');
+    
+    // IMPORTANTE: Asegúrate de que el ID 'quienes-somos' exista en tu index, 
+    // si no, cambia esto por otro ID o usa null para evitar errores.
+    const section = document.getElementById('quienes-somos'); 
 
     // Detectar si estamos en el index
     const isIndex = window.location.pathname === '/' || window.location.pathname === '/index.html';
@@ -86,7 +112,7 @@ const navItems = [
 
         // Lógica original para el index
         if (isScrolled) {
-            nav?.classList.add('bg-slate-50');
+            nav?.classList.add('bg-slate-50', 'py-2'); // Agregué py-2 aquí para consistencia
             nav?.classList.remove('py-4');
         } else {
             if (menu?.classList.contains('hidden')) {

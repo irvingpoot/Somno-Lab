@@ -1,0 +1,308 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import Navbar from '../../../../components/Navbar.astro';
+import { supabase } from '../../../../lib/supabase';
+
+const { id } = Astro.params;
+const { userId } = Astro.locals.auth();
+
+if (!userId) return Astro.redirect('/login');
+
+// 1. Obtener TODO el curso
+const { data: course, error } = await supabase
+    .from('courses')
+    .select(`
+        *,
+        modules (
+        id, title, order_index,
+        lessons (id, title, video_url, duration, is_free_preview, order_index)
+        )
+    `)
+    .eq('id', id)
+    .single();
+
+if (!course) return Astro.redirect('/404');
+
+// Ordenar
+const sortedModules = course.modules ? course.modules.sort((a, b) => a.order_index - b.order_index) : [];
+sortedModules.forEach(m => m.lessons.sort((a, b) => a.order_index - b.order_index));
+---
+
+<Layout title={`Editando: ${course.title}`}>
+    <Navbar />
+
+    <main id="editor-container" data-course-id={id} class="min-h-screen bg-slate-50 pb-20 pt-24 px-4">
+        <div class="max-w-7xl mx-auto">
+            
+            <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4 sticky top-20 z-30 bg-slate-50/90 backdrop-blur py-4 border-b border-slate-200">
+                <div>
+                    <a href="/admin/cursos" class="text-slate-400 hover:text-somno text-sm font-bold mb-1 inline-block">
+                        <i class="fas fa-arrow-left"></i> Volver
+                    </a>
+                    <h1 class="text-2xl font-black text-slate-800 flex items-center gap-3">
+                        {course.title}
+                        <span class={`text-xs px-2 py-1 rounded-full border ${course.is_published ? 'bg-green-100 text-green-700 border-green-200' : 'bg-yellow-100 text-yellow-700 border-yellow-200'}`}>
+                            {course.is_published ? 'PUBLICADO' : 'BORRADOR'}
+                        </span>
+                    </h1>
+                </div>
+
+                <div class="flex gap-3">
+                    <button id="btn-save-general" class="bg-somno text-white px-6 py-2 rounded-lg font-bold shadow-lg shadow-somno/20 hover:bg-teal-700 transition-all cursor-pointer">
+                        <i class="fas fa-save"></i> Guardar Todo
+                    </button>
+                    
+                    <button id="btn-toggle-publish" data-published={course.is_published ? "true" : "false"} class={`px-6 py-2 rounded-lg font-bold border transition-all cursor-pointer ${course.is_published ? 'border-red-200 text-red-600 hover:bg-red-50' : 'border-green-200 text-green-600 hover:bg-green-50'}`}>
+                        {course.is_published ? 'Despublicar' : 'Publicar'}
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                
+                <div class="lg:col-span-2 space-y-6">
+                    <div class="flex justify-between items-center">
+                        <h2 class="text-xl font-bold text-slate-800">Contenido del Curso</h2>
+                        <button id="btn-open-new-module" class="text-sm font-bold text-somno hover:underline cursor-pointer">
+                            + Agregar Módulo
+                        </button>
+                    </div>
+
+                    <div class="space-y-4">
+                        {sortedModules.map((modulo) => (
+                            <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+                                {/* Encabezado del Módulo */}
+                                <div class="bg-slate-50 px-6 py-4 flex justify-between items-center border-b border-slate-100 group">
+                                    <h3 class="font-bold text-slate-700">
+                                        <i class="fas fa-folder mr-2 text-slate-400"></i> {modulo.title}
+                                    </h3>
+                                    <button class="text-xs text-red-400 hover:text-red-600 btn-delete-module cursor-pointer" data-id={modulo.id}>Eliminar</button>
+                                </div>
+
+                                {/* Lista de Lecciones */}
+                                <div class="divide-y divide-slate-100">
+                                    {modulo.lessons.map((leccion) => (
+                                        <div class="px-6 py-3 flex items-center justify-between hover:bg-slate-50 transition-colors group">
+                                            <div class="flex items-center gap-3">
+                                                <i class="fas fa-video text-slate-300"></i>
+                                                <span class="text-sm font-medium text-slate-600">{leccion.title}</span>
+                                                {leccion.is_free_preview && <span class="text-[10px] bg-green-100 text-green-600 px-1.5 rounded border border-green-200">GRATIS</span>}
+                                            </div>
+                                            <button class="text-xs text-red-400 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-opacity btn-delete-lesson cursor-pointer" data-id={leccion.id}>
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    ))}
+                                    
+                                    <button 
+                                        class="w-full py-2 text-center text-xs font-bold text-slate-400 hover:text-somno hover:bg-slate-50 transition-colors btn-open-lesson-modal cursor-pointer"
+                                        data-module-id={modulo.id}
+                                    >
+                                        + Agregar Lección aquí
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+
+                        {sortedModules.length === 0 && (
+                            <div class="text-center py-10 border-2 border-dashed border-slate-300 rounded-xl">
+                                <p class="text-slate-400 mb-2">Este curso está vacío.</p>
+                                <button id="btn-open-new-module-empty" class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-2 rounded-lg text-sm font-bold cursor-pointer">
+                                    Crear primer módulo
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <h2 class="text-xl font-bold text-slate-800">Ajustes</h2>
+                    
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Título</label>
+                            <input type="text" id="input-title" value={course.title} class="w-full p-2 border rounded-lg text-sm font-bold text-slate-700" />
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Precio ($)</label>
+                            <input type="number" id="input-price" value={course.price} class="w-full p-2 border rounded-lg text-sm" />
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">URL de Portada</label>
+                            <input type="text" id="input-image" value={course.image_url} placeholder="https://..." class="w-full p-2 border rounded-lg text-sm" />
+                            {course.image_url && <img src={course.image_url} class="mt-2 rounded-lg w-full h-32 object-cover" />}
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Descripción</label>
+                            <textarea id="input-description" rows="3" class="w-full p-2 border rounded-lg text-sm">{course.description}</textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <dialog id="modal-new-module" class="m-auto p-0 rounded-xl shadow-2xl backdrop:bg-black/50">
+        <form method="dialog" class="bg-white w-[400px] p-6">
+            <h3 class="font-bold text-lg mb-4">Nuevo Módulo</h3>
+            <input type="text" id="new-module-title" placeholder="Ej: Introducción" class="w-full p-3 border rounded-lg mb-4" />
+            <div class="flex justify-end gap-2">
+                <button class="px-4 py-2 text-slate-500 hover:bg-slate-100 rounded-lg cursor-pointer">Cancelar</button>
+                <button type="button" id="btn-create-module" class="px-4 py-2 bg-somno text-white rounded-lg font-bold cursor-pointer">Crear</button>
+            </div>
+        </form>
+    </dialog>
+
+    <dialog id="modal-new-lesson" class="m-auto p-0 rounded-xl shadow-2xl backdrop:bg-black/50">
+        <form method="dialog" class="bg-white w-[500px] p-6">
+            <h3 class="font-bold text-lg mb-4">Nueva Lección</h3>
+            <input type="hidden" id="target-module-id" />
+            
+            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Título</label>
+            <input type="text" id="new-lesson-title" class="w-full p-3 border rounded-lg mb-3" />
+            
+            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">YouTube URL</label>
+            <input type="text" id="new-lesson-video" placeholder="https://youtube.com/..." class="w-full p-3 border rounded-lg mb-3" />
+            
+            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Duración (Minutos)</label>
+            <input type="number" id="new-lesson-duration" value="10" class="w-full p-3 border rounded-lg mb-4" />
+
+            <div class="flex items-center gap-2 mb-6">
+                <input type="checkbox" id="new-lesson-free" />
+                <label for="new-lesson-free" class="text-sm">Vista previa gratuita</label>
+            </div>
+
+            <div class="flex justify-end gap-2">
+                <button class="px-4 py-2 text-slate-500 hover:bg-slate-100 rounded-lg cursor-pointer">Cancelar</button>
+                <button type="button" id="btn-create-lesson" class="px-4 py-2 bg-somno text-white rounded-lg font-bold cursor-pointer">Guardar</button>
+            </div>
+        </form>
+    </dialog>
+
+</Layout>
+
+<script>
+    //@ts-nocheck
+    const courseId = document.getElementById('editor-container').dataset.courseId;
+    const modalModule = document.getElementById('modal-new-module');
+    const modalLesson = document.getElementById('modal-new-lesson');
+
+    // 1. Abrir Modal Módulo
+    document.getElementById('btn-open-new-module')?.addEventListener('click', () => modalModule.showModal());
+    document.getElementById('btn-open-new-module-empty')?.addEventListener('click', () => modalModule.showModal());
+
+    // 2. Crear Módulo (Llamando a API)
+    document.getElementById('btn-create-module')?.addEventListener('click', async () => {
+        const title = document.getElementById('new-module-title').value;
+        if(!title) return;
+
+        const res = await fetch('/api/modules', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ courseId, title })
+        });
+
+        if(res.ok) window.location.reload();
+        else alert('Error al crear módulo');
+    });
+
+    // 3. Abrir Modal Lección (Delegación)
+    document.addEventListener('click', (e) => {
+        if(e.target.classList.contains('btn-open-lesson-modal')) {
+            document.getElementById('target-module-id').value = e.target.dataset.moduleId;
+            modalLesson.showModal();
+        }
+    });
+
+    // 4. Crear Lección (Llamando a API)
+    document.getElementById('btn-create-lesson')?.addEventListener('click', async () => {
+        const moduleId = document.getElementById('target-module-id').value;
+        const title = document.getElementById('new-lesson-title').value;
+        const videoUrl = document.getElementById('new-lesson-video').value;
+        const duration = document.getElementById('new-lesson-duration').value;
+        const isFree = document.getElementById('new-lesson-free').checked;
+
+        if(!title) return;
+
+        const res = await fetch('/api/lessons', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ moduleId, title, videoUrl, duration, isFree })
+        });
+
+        if(res.ok) window.location.reload();
+        else alert('Error al crear lección');
+    });
+
+    // 5. Guardar General
+    const btnSave = document.getElementById('btn-save-general');
+    btnSave?.addEventListener('click', async () => {
+        const originalText = btnSave.innerText;
+        btnSave.innerText = 'Guardando...';
+
+        const updates = {
+            title: document.getElementById('input-title').value,
+            price: document.getElementById('input-price').value,
+            description: document.getElementById('input-description').value,
+            image_url: document.getElementById('input-image').value,
+        };
+
+        const res = await fetch('/api/courses', {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ id: courseId, updates })
+        });
+
+        if(res.ok) {
+            btnSave.innerText = 'Guardado!';
+            setTimeout(() => btnSave.innerText = originalText, 2000);
+        } else {
+            btnSave.innerText = 'Error';
+            alert('Error al guardar cambios');
+        }
+    });
+
+    // 6. Publicar
+    const btnPublish = document.getElementById('btn-toggle-publish');
+    btnPublish?.addEventListener('click', async () => {
+        const isPublished = btnPublish.dataset.published === 'true';
+        
+        const res = await fetch('/api/courses', {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ id: courseId, updates: { is_published: !isPublished } })
+        });
+
+        if(res.ok) window.location.reload();
+    });
+
+    // 7. Eliminar (Delegación)
+    document.addEventListener('click', async (e) => {
+        // Eliminar Módulo
+        if(e.target.classList.contains('btn-delete-module')) {
+            if(!confirm('¿Eliminar módulo?')) return;
+            const res = await fetch('/api/modules', {
+                method: 'DELETE',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ id: e.target.dataset.id })
+            });
+            if(res.ok) window.location.reload();
+        }
+
+        // Eliminar Lección
+        const btnDelLesson = e.target.closest('.btn-delete-lesson');
+        if(btnDelLesson) {
+            if(!confirm('¿Eliminar lección?')) return;
+            const res = await fetch('/api/lessons', {
+                method: 'DELETE',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ id: btnDelLesson.dataset.id })
+            });
+            if(res.ok) window.location.reload();
+        }
+    });
+
+</script>

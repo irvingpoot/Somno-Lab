@@ -1,0 +1,127 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+import { supabase } from '../lib/supabase';
+
+// 1. SEGURIDAD: Solo usuarios logueados
+const { userId } = Astro.locals.auth();
+if (!userId) return Astro.redirect('/login');
+
+// 2. OBTENER CURSOS INSCRITOS
+const { data: myCourses, error } = await supabase
+    .from('enrollments')
+    .select(`
+        course:courses (
+        title, slug, image_url, instructor_name,
+        modules (lessons (id))
+        )
+    `)
+    .eq('user_id', userId);
+
+// 3. OBTENER PROGRESO TOTAL
+const { data: allProgress } = await supabase
+    .from('progress')
+    .select('lesson_id')
+    .eq('user_id', userId)
+    .eq('is_completed', true);
+
+const completedSet = new Set(allProgress?.map(p => p.lesson_id));
+
+// 4. CALCULAR PORCENTAJES
+const coursesWithProgress = myCourses?.map(enrollment => {
+    const course = enrollment.course;
+    // Aplanamos lecciones para contar totales
+    const allLessons = course.modules ? course.modules.flatMap(m => m.lessons) : [];
+    const total = allLessons.length;
+    const completed = allLessons.filter(l => completedSet.has(l.id)).length;
+    const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+    return { ...course, percent, total, completed };
+}) || [];
+---
+
+<Layout title="Mi Aprendizaje - SomnoLab">
+    <Navbar />
+
+    <main class="min-h-screen bg-slate-50 pt-24 pb-12 px-4">
+        <div class="max-w-7xl mx-auto">
+            
+            <div class="mb-10 flex flex-col md:flex-row justify-between items-end gap-4 border-b border-slate-200 pb-8">
+                <div>
+                    <h1 class="text-3xl font-black text-slate-800 mb-2">Mi Aprendizaje</h1>
+                    <p class="text-slate-500">
+                        Tienes {coursesWithProgress.length} curso{coursesWithProgress.length !== 1 ? 's' : ''} activo{coursesWithProgress.length !== 1 ? 's' : ''}.
+                    </p>
+                </div>
+                <a href="/cursos" class="text-somno font-bold hover:underline flex items-center gap-2">
+                    <i class="fas fa-search"></i> Explorar más cursos
+                </a>
+            </div>
+
+            {coursesWithProgress.length > 0 ? (
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {coursesWithProgress.map(curso => (
+                        <a href={`/aula/${curso.slug}`} class="bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group flex flex-col h-full">
+                            
+                            <div class="h-48 overflow-hidden bg-slate-200 relative">
+                                {curso.image_url ? (
+                                    <img src={curso.image_url} alt={curso.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                ) : (
+                                    <div class="flex items-center justify-center h-full text-slate-400">
+                                        <i class="fas fa-image text-4xl"></i>
+                                    </div>
+                                )}
+                                
+                                <div class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[2px]">
+                                    <span class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-somno shadow-lg transform scale-0 group-hover:scale-100 transition-transform delay-100">
+                                        <i class="fas fa-play ml-1"></i>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="p-6 flex-1 flex flex-col">
+                                <h3 class="font-bold text-lg text-slate-800 mb-2 leading-tight group-hover:text-somno transition-colors">
+                                    {curso.title}
+                                </h3>
+                                <p class="text-sm text-slate-500 mb-4">
+                                    Instructor: {curso.instructor_name}
+                                </p>
+
+                                <div class="mt-auto space-y-2">
+                                    <div class="flex justify-between text-xs font-bold text-slate-500 uppercase tracking-wide">
+                                        <span>Progreso</span>
+                                        <span>{curso.percent}%</span>
+                                    </div>
+                                    <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                                        <div 
+                                            class="bg-somno h-full rounded-full transition-all duration-1000 ease-out" 
+                                            style={`width: ${curso.percent}%`}
+                                        ></div>
+                                    </div>
+                                    <p class="text-xs text-right text-slate-400">
+                                        {curso.completed} de {curso.total} lecciones
+                                    </p>
+                                </div>
+                            </div>
+                        </a>
+                    ))}
+                </div>
+            ) : (
+                /* ESTADO VACÍO (Empty State) */
+                <div class="text-center py-20 bg-white rounded-3xl border border-dashed border-slate-300">
+                    <div class="w-20 h-20 bg-blue-50 text-blue-400 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-graduation-cap text-3xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-slate-800 mb-2">Aún no te has inscrito</h2>
+                    <p class="text-slate-500 max-w-md mx-auto mb-8">
+                        Comienza tu camino hacia un mejor descanso explorando nuestro catálogo de cursos especializados.
+                    </p>
+                    <a href="/cursos" class="inline-flex items-center gap-2 bg-somno hover:bg-teal-700 text-white px-8 py-4 rounded-xl font-bold transition-colors shadow-lg shadow-somno/30">
+                        Ver Catálogo de Cursos <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            )}
+
+        </div>
+    </main>
+</Layout>

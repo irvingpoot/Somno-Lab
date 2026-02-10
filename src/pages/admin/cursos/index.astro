@@ -1,0 +1,121 @@
+---
+// src/pages/admin/cursos/index.astro
+import Layout from '../../../layouts/Layout.astro';
+import Navbar from '../../../components/Navbar.astro';
+import { supabase } from '../../../lib/supabase';
+
+// 1. Seguridad
+const { userId } = Astro.locals.auth();
+if (!userId) return Astro.redirect('/login');
+
+// 2. Obtener Cursos con conteo de estudiantes
+const { data: courses, error } = await supabase
+    .from('courses')
+    .select(`
+        *,
+        enrollments (count)
+    `)
+    .order('created_at', { ascending: false });
+
+---
+
+<Layout title="Administrar Cursos - SomnoLab">
+    <Navbar />
+
+    <main class="min-h-screen bg-slate-50 pt-24 pb-12 px-4">
+        <div class="max-w-6xl mx-auto">
+            
+            <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+                <div>
+                    <h1 class="text-3xl font-black text-slate-800">Mis Cursos</h1>
+                    <p class="text-slate-500">Gestiona tu catálogo educativo</p>
+                </div>
+                
+                <a href="/admin/cursos/nuevo" class="bg-somno hover:bg-teal-700 text-white px-6 py-3 rounded-xl font-bold transition-all shadow-lg shadow-somno/30 flex items-center gap-2">
+                    <i class="fas fa-plus"></i> Nuevo Curso
+                </a>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider border-b border-slate-200">
+                                <th class="p-6 font-bold">Curso</th>
+                                <th class="p-6 font-bold text-center">Precio</th>
+                                <th class="p-6 font-bold text-center">Alumnos</th>
+                                <th class="p-6 font-bold text-center">Estado</th>
+                                <th class="p-6 font-bold text-right">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            {courses?.map((curso) => (
+                                <tr class="hover:bg-slate-50/50 transition-colors group">
+                                    <td class="p-6">
+                                        <div class="flex items-center gap-4">
+                                            <div class="w-12 h-12 rounded-lg bg-slate-100 overflow-hidden shrink-0 border border-slate-200">
+                                                {curso.image_url ? (
+                                                    <img src={curso.image_url} class="w-full h-full object-cover" />
+                                                ) : (
+                                                    <div class="flex items-center justify-center h-full text-slate-300">
+                                                        <i class="fas fa-image"></i>
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <div>
+                                                <h3 class="font-bold text-slate-800 group-hover:text-somno transition-colors">
+                                                    {curso.title}
+                                                </h3>
+                                                <p class="text-xs text-slate-400 truncate max-w-[200px]">
+                                                    /{curso.slug}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    
+                                    <td class="p-6 text-center font-medium text-slate-600">
+                                        {curso.price === 0 ? 'Gratis' : `$${curso.price}`}
+                                    </td>
+                                    
+                                    <td class="p-6 text-center">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                            {curso.enrollments[0]?.count || 0}
+                                        </span>
+                                    </td>
+                                    
+                                    <td class="p-6 text-center">
+                                        {curso.is_published ? (
+                                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700">
+                                                <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                                                Publicado
+                                            </span>
+                                        ) : (
+                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-500">
+                                                Borrador
+                                            </span>
+                                        )}
+                                    </td>
+                                    
+                                    <td class="p-6 text-right">
+                                        <a href={`/admin/cursos/editar/${curso.id}`} class="text-slate-400 hover:text-somno font-bold text-sm transition-colors border border-slate-200 hover:border-somno px-4 py-2 rounded-lg bg-white">
+                                            <i class="fas fa-edit mr-1"></i> Editar
+                                        </a>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+                
+                {courses?.length === 0 && (
+                    <div class="text-center py-20">
+                        <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-300">
+                            <i class="fas fa-box-open text-2xl"></i>
+                        </div>
+                        <p class="text-slate-500">No tienes cursos creados aún.</p>
+                    </div>
+                )}
+            </div>
+        </div>
+    </main>
+</Layout>
