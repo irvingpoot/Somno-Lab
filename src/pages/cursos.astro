@@ -1,0 +1,87 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+import { supabase } from '../lib/supabase';
+
+let { data: courses, error } = await supabase
+    .from('courses')
+    .select('*')
+    .eq('is_published', true);
+
+if (error) {
+    console.error("Error cargando cursos:", error);
+}
+---
+
+<Layout title="Academia SomnoLab">
+    <Navbar />
+
+    <main class="min-h-screen bg-slate-50 py-20 px-6">
+        <div class="max-w-7xl mx-auto">
+            
+            <div class="text-center mb-16">
+                <h1 class="text-4xl md:text-5xl font-black text-slate-800 mb-4">
+                    Nuestros <span class="text-transparent bg-clip-text bg-linear-to-r from-somno to-blue-400">Cursos</span>
+                </h1>
+                <p class="text-slate-600 max-w-2xl mx-auto text-lg">
+                    Formación especializada en medicina del sueño para pacientes y profesionales.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                {courses?.map((curso) => (
+                    <article class="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border border-slate-100 flex flex-col group">
+                        
+                        <div class="relative h-48 overflow-hidden bg-slate-200">
+                            {curso.image_url ? (
+                                <img 
+                                    src={curso.image_url} 
+                                    alt={curso.title} 
+                                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                />
+                            ) : (
+                                <div class="flex items-center justify-center h-full text-slate-400">
+                                    <i class="fas fa-image text-3xl"></i>
+                                </div>
+                            )}
+                            
+                            <div class="absolute top-4 right-4 bg-white/90 backdrop-blur text-slate-800 px-3 py-1 rounded-full text-sm font-bold shadow-sm">
+                                {curso.price === 0 ? 'GRATIS' : `$${curso.price}`}
+                            </div>
+                        </div>
+
+                        <div class="p-6 flex-1 flex flex-col">
+                            <h3 class="text-xl font-bold text-slate-800 mb-2 leading-tight">
+                                {curso.title}
+                            </h3>
+                            <p class="text-slate-500 text-sm line-clamp-2 mb-4 flex-1">
+                                {curso.description}
+                            </p>
+                            
+                            <div class="flex items-center justify-between mt-auto pt-4 border-t border-slate-100">
+                                <span class="text-xs text-slate-400 font-medium">
+                                    <i class="fas fa-chalkboard-teacher mr-1"></i>
+                                    {curso.instructor_name}
+                                </span>
+                                
+                                <a href={`/cursos/${curso.slug}`} class="text-somno font-bold text-sm hover:underline flex items-center">
+                                    Ver Detalles <i class="fas fa-arrow-right ml-1 text-xs"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+                ))}
+
+            </div>
+
+            {(!courses || courses.length === 0) && (
+                <div class="text-center py-20 text-slate-400">
+                    <i class="fas fa-inbox text-5xl mb-4 opacity-50"></i>
+                    <p>No hay cursos publicados todavía.</p>
+                </div>
+            )}
+
+        </div>
+    </main>
+</Layout>

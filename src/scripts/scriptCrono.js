@@ -1,12 +1,26 @@
-// src/scripts/scriptCrono.js
-
 document.getElementById('submit-btn').addEventListener('click', function(event) {
     event.preventDefault();
 
-    // Obtener los valores del formulario
     const edad = parseInt(document.getElementById('edad').value);
-    const horaActual = document.getElementById('hora').value;
-    const horaDeseada = document.getElementById('horaDespertar').value;
+
+    
+
+    const dormirH = document.getElementById('dormir-h').value;
+    const dormirM = document.getElementById('dormir-m').value;
+    
+    const despertarH = document.getElementById('despertar-h').value;
+    const despertarM = document.getElementById('despertar-m').value;
+
+    let horaActual = "";
+    let horaDeseada = "";
+
+    if (dormirH && dormirM) {
+        horaActual = `${dormirH}:${dormirM}`;
+    }
+
+    if (despertarH && despertarM) {
+        horaDeseada = `${despertarH}:${despertarM}`;
+    }
 
     function mostrarModal(mensaje) {
         const modal = document.getElementById('modal');
@@ -29,15 +43,17 @@ document.getElementById('submit-btn').addEventListener('click', function(event) 
                 closeAction();
             }
         }
-
+        
         const understandBtn = document.getElementById('close-modal-btn');
         if(understandBtn) understandBtn.onclick = closeAction;
     }
 
     if (!edad || !horaActual || !horaDeseada) {
-        mostrarModal("Por favor, rellene todos los campos");
+        mostrarModal("Por favor, rellene todos los campos (Horas y Minutos)");
         return;
     }
+
+
     function verificarMinutos(hora) {
         const [hh, mm] = hora.split(':').map(Number);
         return mm === 0 || mm === 30;
@@ -48,9 +64,6 @@ document.getElementById('submit-btn').addEventListener('click', function(event) 
         return;
     }
 
-    // ---------------------------------------------------------
-    //  LÓGICA DE CÁLCULO (NO TOCAR)
-    // ---------------------------------------------------------
     const rangosDeSueño = {
         '0-3': { idealMin: 14, idealMax: 17 },
         '4-11': { idealMin: 12, idealMax: 15 },
@@ -97,26 +110,24 @@ document.getElementById('submit-btn').addEventListener('click', function(event) 
     let dias = [];
     let tituloTexto = "";
 
-    // Cálculo de Días
     if (minutosDeseados > minutosActuales) {
-        // Despertar más tarde
+
         const minutosDormirActual = (minutosActuales - horasIdeales * 60 + 1440) % 1440;
         const minutosDormirDeseado = (minutosDeseados - horasIdeales * 60 + 1440) % 1440;
         
         let dia = 1;
-        let minutosAjuste = minutosDormirActual;
+        let minutosAjuste = minutosDormirDeseado;
 
-        while (minutosAjuste !== minutosDormirDeseado) {
+        while (minutosAjuste !== minutosDormirActual) {
             dias.push({ dia: `Día ${dia}`, hora: convertirMinutosAHora(minutosAjuste) });
-            if (minutosAjuste < minutosDormirDeseado) {
-                minutosAjuste = (minutosAjuste + 30) % 1440;
-            } else {
-                minutosAjuste = (minutosAjuste + 30) % 1440;
-            }
+            
+            minutosAjuste = (minutosAjuste - 30 + 1440) % 1440;
+            
             dia++;
         }
-        dias.push({ dia: `Día ${dia}`, hora: convertirMinutosAHora(minutosDormirDeseado) });
-        tituloTexto = 'Usted debe irse a dormir a las siguientes horas:';
+        dias.push({ dia: `Día ${dia}`, hora: convertirMinutosAHora(minutosDormirActual) });
+        
+        tituloTexto = 'Usted debe acostarse a las siguientes horas:';
 
     } else {
         let dia = 1;
@@ -154,10 +165,10 @@ document.getElementById('submit-btn').addEventListener('click', function(event) 
         `;
         
         card.innerHTML = `
-            <div class="text-[#3F74FB] font-bold text-lg mb-2 bg-blue-50 px-4 py-1 rounded-full group-hover:bg-[#3F74FB] group-hover:text-white transition-colors duration-300">
+            <div class="text-somno font-bold text-lg mb-2 bg-blue-50 px-4 py-1 rounded-full group-hover:bg-somno group-hover:text-white transition-colors duration-300">
                 ${item.dia}
             </div>
-            <div class="text-gray-700 font-semibold text-2xl font-mono tracking-tight">
+            <div class="text-slate-800 font-semibold text-2xl font-mono tracking-tight">
                 ${item.hora}
             </div>
         `;
@@ -170,13 +181,10 @@ function showToast(message) {
     const toast = document.getElementById('toast');
     const toastMsg = document.getElementById('toast-message');
     
-    // Setear mensaje
     toastMsg.textContent = message;
     
-    // Mostrar (Quitamos opacidad 0 y el desplazamiento)
     toast.classList.remove('opacity-0', 'translate-y-10');
     
-    // Ocultar después de 3.5 segundos
     setTimeout(() => {
         toast.classList.add('opacity-0', 'translate-y-10');
     }, 3500);
@@ -190,7 +198,6 @@ document.querySelectorAll('input[type="time"]').forEach(input => {
         const [h, m] = this.value.split(':');
         let min = parseInt(m);
         
-        // Lógica de redondeo
         if (min < 15) min = '00';
         else if (min < 45) min = '30';
 

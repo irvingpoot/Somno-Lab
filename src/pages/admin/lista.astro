@@ -1,0 +1,374 @@
+---
+
+/**
+ * @file lista.astro
+ * @description Directorio principal y listado de expedientes de pacientes.
+ * * OPTIMIZACIÓN DE RENDIMIENTO:
+ * - Paginación Server-Side (Offset/Limit), PAGE_SIZE = 25.
+ * - Subconsulta optimizada: trae solo el último seguimiento por paciente
+ *   directamente desde Supabase (limit 1 + order), eliminando el sort en cliente.
+ * * FUNCIONALIDAD:
+ * - Búsqueda por nombre con ilike de Postgres.
+ * - Filtros clínicos por tipo de paciente (sueño/ánimo) con chips visuales.
+ * - Navegación entre páginas manteniendo estado de búsqueda y filtros.
+ *
+ * La lógica de acceso a datos vive en: src/services/pacientes.service.ts
+ */
+
+import Layout from "../../layouts/Layout.astro"
+import Icon from "../../components/Icon.astro"
+import ReturnButton from "../../components/ReturnButton.astro"
+import PatientTypeModal from "../../components/PatientTypeModal.astro"
+import PatientIcon from "../../components/icons/PatientIcon.astro"
+import { getPacientes } from "../../services/pacientes.service"
+import RightArrow from "../../components/icons/RightArrow.astro"
+import LeftArrow from "../../components/icons/LeftArrow.astro"
+import FilterIcon from "../../components/icons/FilterIcon.astro"
+import FaceIcon from "../../components/icons/FaceIcon.astro"
+import SleepIcon from "../../components/icons/SleepIcon.astro"
+
+const busqueda = Astro.url.searchParams.get("q") || "";
+const filtroSueno = Astro.url.searchParams.get("sueno") || "";
+const filtroAnimo = Astro.url.searchParams.get("animo") || "";
+const page = parseInt(Astro.url.searchParams.get("page") || "1");
+const PAGE_SIZE = 25;
+
+const { pacientes, count } = await getPacientes({
+    busqueda, filtroSueno, filtroAnimo, page, pageSize: PAGE_SIZE,
+});
+
+const from = (page - 1) * PAGE_SIZE;
+const to = from + PAGE_SIZE - 1;
+const totalPages = Math.ceil(count / PAGE_SIZE);
+const hasPrev = page > 1;
+const hasNext = page < totalPages;
+const startItem = count === 0 ? 0 : from + 1;
+const endItem = Math.min(to + 1, count);
+
+const getPageLink = (pageNum: number) => {
+    const params = new URLSearchParams();
+    if (busqueda) params.set("q", busqueda);
+    if (filtroSueno) params.set("sueno", filtroSueno);
+    if (filtroAnimo) params.set("animo", filtroAnimo);
+    params.set("page", pageNum.toString());
+    return `?${params.toString()}`;
+};
+
+const filtrosSueno: { value: string; label: string }[] = [
+    { value: "insomnio",              label: "Insomnio" },
+    { value: "respiracion",           label: "Respiración" },
+    { value: "ritmo_circadiano",      label: "Ritmo circadiano" },
+    { value: "movimiento",            label: "Movimiento" },
+    { value: "parasomnia",            label: "Parasomnia" },
+    { value: "hipersomnia",           label: "Hipersomnia" },
+    { value: "medicas_psiquiatricas", label: "Médicas / Psiquiátricas" },
+    { value: "sustancias",            label: "Sustancias" },
+];
+
+const filtrosAnimo: { value: string; label: string; group: string }[] = [
+    { value: "Ansiedad generalizada",                         label: "Ansiedad generalizada",   group: "Ansiedad, TOC y Trauma" },
+    { value: "Ansiedad inducida por sustancia o medicamento", label: "Ansiedad por sustancia",  group: "Ansiedad, TOC y Trauma" },
+    { value: "Ansiedad debida a afección médica",             label: "Ansiedad por afección",   group: "Ansiedad, TOC y Trauma" },
+    { value: "Ansiedad por enfermedad",                       label: "Ansiedad por enfermedad", group: "Ansiedad, TOC y Trauma" },
+    { value: "TOC",                                           label: "TOC",                     group: "Ansiedad, TOC y Trauma" },
+    { value: "Dismórfico corporal",                           label: "Dismórfico corporal",     group: "Ansiedad, TOC y Trauma" },
+    { value: "TEPT",                                          label: "TEPT",                    group: "Ansiedad, TOC y Trauma" },
+    { value: "Esquizofreniforme",                             label: "Esquizofreniforme",       group: "Espectro Psicótico" },
+    { value: "Esquizoafectivo",                               label: "Esquizoafectivo",         group: "Espectro Psicótico" },
+    { value: "Esquizofrenia (Paranoide, catatónica, desorganizada, indiferenciada, simple)", label: "Esquizofrenia", group: "Espectro Psicótico" },
+    { value: "Psicótico breve",                               label: "Psicótico breve",         group: "Espectro Psicótico" },
+    { value: "Delirante (Erotomaníaco, celotípico, grandeza, mixto, persecutorio, somático, no especificado)", label: "Delirante", group: "Espectro Psicótico" },
+    { value: "Bipolar I (Predominan episodios maníacos)",     label: "Bipolar I",               group: "Bipolar y Depresivos" },
+    { value: "Bipolar II (Predominan episodios depresivos)",  label: "Bipolar II",              group: "Bipolar y Depresivos" },
+    { value: "Ciclotímico: Cíclico, tiempo especifico",       label: "Ciclotímico",             group: "Bipolar y Depresivos" },
+    { value: "Depresión mayor",                               label: "Depresión mayor",         group: "Bipolar y Depresivos" },
+    { value: "Distimia",                                      label: "Distimia",                group: "Bipolar y Depresivos" },
+    { value: "Disfórico premenstrual",                        label: "Disfórico premenstrual",  group: "Bipolar y Depresivos" },
+    { value: "Anorexia",                                      label: "Anorexia",                group: "Conducta y Sustancias" },
+    { value: "Bulimia",                                       label: "Bulimia",                 group: "Conducta y Sustancias" },
+    { value: "Atracones",                                     label: "Atracones",               group: "Conducta y Sustancias" },
+    { value: "Consumo de sustancias",                         label: "Consumo de sustancias",   group: "Conducta y Sustancias" },
+];
+
+const filtroActivo = filtroSueno
+    ? filtrosSueno.find(f => f.value === filtroSueno)?.label
+    : filtroAnimo
+    ? filtrosAnimo.find(f => f.value === filtroAnimo)?.label
+    : null;
+
+const tipoActivo = filtroSueno ? "sueno" : filtroAnimo ? "animo" : null;
+---
+
+<Layout title="Pacientes | SomnoLab" showFooter={false}>
+    <Icon />
+    <ReturnButton href="/admin/dashboard" text="Volver al dashboard" />
+    <main class="max-w-7xl mx-auto pt-10 pb-28 px-4">
+
+        <div class="max-w-7xl mx-auto mb-5">
+            <div class="absolute -top-10 -left-10 w-64 h-64 bg-somno/8 rounded-full blur-3xl pointer-events-none"></div>
+            <h1 class="max-md:max-w-xs max-md:pt-10 max-lg:max-w-xl text-4xl md:text-6xl font-extrabold text-balance text-center">Lista de <span class="bg-linear-to-r from-somno via-somno-light to-somno-dark bg-clip-text text-transparent drop-shadow-[0_0_15px_rgba(62,140,177,0.4)]">pacientes</span></h1>
+            <p class=" pt-5 text-lg text-gray-400 text-center">
+                Puedes buscar por nombre o filtrar por diagnóstico para encontrar el paciente que buscas.
+            </p>
+        </div>
+
+        <div class="flex flex-col-reverse md:flex-row justify-between items-start gap-4 mb-4 mx-1">
+
+            <div class="w-full md:w-3/4 flex flex-col gap-3">
+
+                <form method="GET" id="form-filtro" class="flex flex-col sm:flex-row gap-2">
+                    <div class="relative group grow">
+                        <div class="absolute inset-y-0 inset-s-0 flex items-center ps-3 pointer-events-none">
+                            <svg class="w-4 h-4 text-gray-400 group-focus-within:text-somno transition-colors" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+                            </svg>
+                        </div>
+                        <input
+                            type="text"
+                            name="q"
+                            value={busqueda}
+                            class="block w-full p-3 ps-10 pr-10 text-sm text-gray-900 border border-gray-300 rounded-xl bg-white focus:ring-2 focus:ring-somno focus:border-transparent placeholder-gray-500 transition-all shadow-lg"
+                            placeholder="Buscar por nombre..."
+                            autocomplete="off"
+                        />
+                        {busqueda && (
+                            <a href="/admin/lista" class="absolute inset-y-0 right-2 flex items-center text-gray-400 hover:text-gray-900 hover:bg-gray-200/60 p-1.5 my-1.5 rounded-md transition-colors" title="Limpiar búsqueda">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                                </svg>
+                            </a>
+                        )}
+                    </div>
+
+                    {filtroSueno && <input type="hidden" name="sueno" value={filtroSueno} />}
+                    {filtroAnimo && <input type="hidden" name="animo" value={filtroAnimo} />}
+
+                    <button
+                        type="button"
+                        id="btn-toggle-filtros"
+                        class={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium border transition-all shrink-0 ${
+                            filtroActivo
+                                ? tipoActivo === "sueno"
+                                    ? "bg-blue-500/15 border-blue-500/40 text-somno-dark hover:bg-blue-500/20"
+                                    : "bg-purple-500/15 border-purple-500/40 text-purple-300 hover:bg-purple-500/20"
+                                : "bg-gray-100 border-gray-300 text-gray-600 hover:bg-gray-200 hover:border-gray-300"
+                        }`}>
+                        <FilterIcon class="h-4 w-4" />
+                        {filtroActivo ? filtroActivo : "Filtros"}
+                        {filtroActivo && (
+                            <a href={busqueda ? `/admin/lista?q=${encodeURIComponent(busqueda)}` : "/admin/lista"} class="ml-1 hover:text-gray-900 transition-colors" title="Quitar filtro" onclick="event.stopPropagation()">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                                </svg>
+                            </a>
+                        )}
+                    </button>
+                </form>
+
+                <div id="panel-filtros" class="hidden bg-white/90 border border-gray-200/80 rounded-2xl p-4 backdrop-blur-sm shadow-xl">
+                    <div class="flex items-center justify-between mb-4">
+                        <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Filtrar por diagnóstico</p>
+                        <button type="button" id="btn-cerrar-filtros" class="text-gray-400 hover:text-gray-900 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 cursor-pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="mb-4">
+                        <div class="flex items-center gap-2 mb-2.5">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-somno" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                            </svg>
+                            <span class="text-xs font-semibold text-somno uppercase tracking-wider">Alteraciones de Sueño</span>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            {filtrosSueno.map(f => (
+                                <a href={`/admin/lista?sueno=${encodeURIComponent(f.value)}${busqueda ? `&q=${encodeURIComponent(busqueda)}` : ""}`}
+                                    class={`chip-filtro px-3 py-1.5 rounded-lg text-xs font-medium border transition-all cursor-pointer ${
+                                        filtroSueno === f.value
+                                            ? "bg-somno/15 border-somno/50 text-somno-dark shadow-[0_0_8px_rgba(62,140,177,0.15)]"
+                                            : "bg-gray-100/70 border-gray-200/80 text-gray-400 hover:bg-blue-500/10 hover:border-blue-500/30 hover:text-somno-dark"
+                                    }`}>
+                                    {f.label}
+                                </a>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div class="border-t border-gray-200/60 my-3"></div>
+
+                    <div>
+                        <div class="flex items-center gap-2 mb-2.5">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span class="text-xs font-semibold text-purple-400 uppercase tracking-wider">Trastornos de Ánimo</span>
+                        </div>
+
+                        {["Ansiedad, TOC y Trauma", "Espectro Psicótico", "Bipolar y Depresivos", "Conducta y Sustancias"].map(grupo => (
+                            <div class="mb-3">
+                                <p class="text-[10px] text-gray-400 uppercase tracking-wider mb-1.5 pl-0.5">{grupo}</p>
+                                <div class="flex flex-wrap gap-2">
+                                    {filtrosAnimo.filter(f => f.group === grupo).map(f => (
+                                        <a href={`/admin/lista?animo=${encodeURIComponent(f.value)}${busqueda ? `&q=${encodeURIComponent(busqueda)}` : ""}`}
+                                            class={`chip-filtro px-3 py-1.5 rounded-lg text-xs font-medium border transition-all cursor-pointer ${
+                                                filtroAnimo === f.value
+                                                    ? "bg-purple-500/25 border-purple-400/60 text-purple-200 shadow-[0_0_8px_rgba(168,85,247,0.2)]"
+                                                    : "bg-gray-100/70 border-gray-200/80 text-gray-400 hover:bg-purple-500/10 hover:border-purple-500/30 hover:text-purple-300"
+                                            }`}>
+                                            {f.label}
+                                        </a>
+                                    ))}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+            </div>
+
+            <button onclick="document.getElementById('modal-tipo-paciente').showModal()" class="w-full h-auto md:w-auto cursor-pointer border border-gray-200/60 p-3 rounded-2xl bg-white hover:bg-somno/5 transition-colors hover:shadow-lg hover:shadow-somno/20 hover:border-somno/40">
+                <span class="relative flex items-center gap-2 text-xs font-semibold tracking-wide uppercase">
+                    <PatientIcon/>
+                    Nuevo paciente
+                </span>
+            </button>
+        </div>
+
+        <div class="w-full overflow-hidden rounded-xl border border-gray-200 bg-white/80 backdrop-blur shadow-lg overflow-x-auto">
+            <table class="w-full text-left border-collapse min-w-225">
+                <thead class="bg-linear-to-r from-transparent via-somno/8 to-transparent">
+                    <tr>
+                        <th class="px-8 py-4 text-gray-400 font-semibold text-sm uppercase tracking-wider">Nombre</th>
+                        <th class="px-6 py-4 text-gray-400 font-semibold text-sm uppercase tracking-wider">Tipo</th>
+                        <th class="px-6 py-4 text-gray-400 font-semibold text-sm uppercase tracking-wider">Edad</th>
+                        <th class="px-6 py-4 text-gray-400 font-semibold text-sm uppercase tracking-wider">Referencia</th>
+                        <th class="px-6 py-4 text-gray-400 font-semibold text-sm uppercase tracking-wider">Registró</th>
+                        <th class="px-6 py-4 text-center text-gray-400 font-semibold text-sm uppercase tracking-wider">Último Seguimiento</th>
+                        <th class="px-6 py-4 text-gray-400 font-semibold text-sm uppercase tracking-wider text-right">Fecha</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {pacientes.map((paciente) => (
+                        <tr class="group cursor-pointer hover:bg-somno/3 transition-colors relative" onclick={`window.location.href = '${paciente.tipo_paciente === "animo" ? "/admin/paciente/animo/" + paciente.id : "/admin/paciente/sueno/" + paciente.id}'`}>
+                            <td class="pl-5 pr-8 py-5 align-middle">
+                                <div class="flex items-center gap-3">
+                                    <div>
+                                        {paciente.tipo_paciente === "animo" ? (
+                                            <FaceIcon class="size-5 text-purple-400" />
+                                        ) : (
+                                            <SleepIcon class="size-5 text-somno" />
+                                        )}
+                                    </div>
+                                    <span class="text-gray-700 font-medium text-lg capitalize group-hover:text-gray-900 transition-colors">
+                                        {paciente.nombre}
+                                    </span>
+                                </div>
+                                <div class="absolute bottom-0 left-0 right-0 h-px bg-linear-to-r from-transparent via-gray-200/50 to-transparent group-hover:via-somno/40 transition-all"></div>
+                            </td>
+
+                            <td class="px-6 py-5 align-middle">
+                                {paciente.tipo_paciente === "animo" ? (
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold bg-purple-500/10 text-purple-400 border border-purple-500/20">
+                                        <FaceIcon class="size-3" />
+                                        ÁNIMO
+                                    </span>
+                                ) : (
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold bg-somno/10 text-somno-dark border border-somno/25">
+                                        <SleepIcon class="size-3" />
+                                        SUEÑO
+                                    </span>
+                                )}
+                            </td>
+
+                            <td class="px-6 py-5 text-gray-400 align-middle">{paciente.edad} años</td>
+                            <td class="px-6 py-5 text-gray-400 align-middle">{paciente.referencia || "—"}</td>
+                            <td class="px-6 py-5 text-gray-400 align-middle">{paciente.registrado_por || "—"}</td>
+
+                            <td class="px-6 py-4 text-center">
+                                {paciente.ultimo_seguimiento_por ? (
+                                    <div class="flex flex-col items-center">
+                                        <span class={`text-gray-900 font-medium text-xs px-2 py-0.5 rounded border ${paciente.tipo_paciente === "animo" ? "bg-purple-600/30 border-purple-500/20" : "bg-somno/15 border-somno/25"}`}>
+                                            {paciente.ultimo_seguimiento_por}
+                                        </span>
+                                        <span class="text-[10px] text-gray-500 mt-1">
+                                            {new Date(paciente.fecha_ultimo_seguimiento!).toLocaleDateString("es-MX", { day: "2-digit", month: "short" })}
+                                        </span>
+                                    </div>
+                                ) : (
+                                    <span class="text-gray-400 text-xs">—</span>
+                                )}
+                            </td>
+
+                            <td class="px-6 py-5 text-gray-400 font-mono text-sm align-middle text-right">
+                                {new Date(paciente.created_at).toLocaleDateString("es-MX", { year: "2-digit", month: "short", day: "numeric" })}
+                            </td>
+                        </tr>
+                    ))}
+
+                    {pacientes.length === 0 && (
+                        <tr>
+                            <td colspan="7" class="px-8 py-16 text-center text-gray-500">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 mx-auto mb-3 opacity-30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                                <p class="text-sm">
+                                    No se encontraron pacientes{busqueda ? ` con el nombre "${busqueda}"` : ""}{filtroActivo ? ` con el filtro "${filtroActivo}"` : ""}.
+                                </p>
+                                {(busqueda || filtroActivo) && (
+                                    <a href="/admin/lista" class="mt-3 inline-block text-xs text-somno hover:text-somno-dark transition-colors">Limpiar filtros</a>
+                                )}
+                            </td>
+                        </tr>
+                    )}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="flex flex-col md:flex-row justify-between items-center mt-6 gap-4">
+            <div class="text-sm text-gray-400">
+                Mostrando <span class="font-bold text-gray-900">{startItem}</span> – <span class="font-bold text-gray-900">{endItem}</span> de <span class="font-bold text-somno">{count}</span> pacientes
+                {filtroActivo && <span class="ml-1 text-gray-500">(filtro activo: <span class={tipoActivo === "sueno" ? "text-somno" : "text-purple-400"}>{filtroActivo}</span>)</span>}
+            </div>
+
+            <div class="flex gap-2">
+                <a href={hasPrev ? getPageLink(page - 1) : "#"} class={`flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-colors border border-gray-300 ${hasPrev ? "bg-gray-100 text-gray-900 hover:bg-gray-700 hover:border-gray-200" : "bg-white text-gray-400 cursor-not-allowed pointer-events-none"}`}>
+                    <LeftArrow class="size-5" /> Anterior
+                </a>
+
+                <div class="px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-400 font-mono">
+                    Pág {page} / {totalPages || 1}
+                </div>
+
+                <a href={hasNext ? getPageLink(page + 1) : "#"} class={`flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-colors border border-gray-300 ${hasNext ? "bg-gray-100 text-gray-900 hover:bg-gray-700 hover:border-gray-200" : "bg-white text-gray-400 cursor-not-allowed pointer-events-none"}`}>
+                    Siguiente <RightArrow class="size-5" />
+                </a>
+            </div>
+        </div>
+
+    </main>
+
+    <PatientTypeModal />
+</Layout>
+
+<script>
+    const btnToggle = document.getElementById("btn-toggle-filtros");
+    const btnCerrar = document.getElementById("btn-cerrar-filtros");
+    const panel = document.getElementById("panel-filtros");
+
+    const togglePanel = () => panel?.classList.toggle("hidden");
+    btnToggle?.addEventListener("click", togglePanel);
+    btnCerrar?.addEventListener("click", () => panel?.classList.add("hidden"));
+
+    const hayFiltro = new URLSearchParams(window.location.search).has("sueno") || new URLSearchParams(window.location.search).has("animo");
+    if (hayFiltro) panel?.classList.remove("hidden");
+
+    document.addEventListener("click", (e) => {
+        if (!panel?.classList.contains("hidden") &&
+            !panel?.contains(e.target as Node) &&
+            !btnToggle?.contains(e.target as Node)) {
+            panel?.classList.add("hidden");
+        }
+    });
+</script>

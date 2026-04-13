@@ -1,21 +1,63 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+import { createClient } from "@supabase/supabase-js";
+
+import { getCollection } from 'astro:content';
+
+const allPosts = await getCollection('blog');
+
+const gridPosts = allPosts.slice(0, 5); 
+
+const postsIzquierda = gridPosts.slice(0, 2);
+const postCentral = gridPosts[2]; 
+const postsDerecha = gridPosts.slice(3, 5);
+
+const supabase = createClient(
+    import.meta.env.PUBLIC_SUPABASE_URL,
+    import.meta.env.SUPABASE_KEY
+);
+
+const today = new Date().toISOString().split('T')[0];
+
+const { data: eventosRaw, error } = await supabase
+    .from('eventos')
+    .select('*')
+    .gte('fecha', today)
+    .order('fecha', { ascending: true })
+    .limit(3);
+
+if (error) console.error("Error al obtener eventos del home:", error);
+
+const meses = ["ENE", "FEB", "MAR", "ABR", "MAY", "JUN", "JUL", "AGO", "SEP", "OCT", "NOV", "DIC"];
+
+const proximosEventos = (eventosRaw || []).map(e => {
+    const d = new Date(e.fecha + 'T00:00:00');
+    return {
+        ...e,
+        dia: d.getDate().toString(),
+        mes: meses[d.getMonth()]
+    };
+});
+
+
 ---
 
-<Layout title="Somno-Lab - Inicio">
+<Layout title="Inicio | Somno-Lab">
+    <Navbar />
     <section class="relative min-h-screen flex flex-col justify-center items-center overflow-hidden bg-slate-50">
-        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-125 h-125 bg-blue-400/20 rounded-full blur-[100px] pointer-events-none"></div>
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-125 h-125 bg-somno/20 rounded-full blur-[100px] pointer-events-none"></div>
 
         <div class="relative z-10 max-w-5xl mx-auto flex flex-col items-center text-center px-4 animate-fade-in-up">
             <img src="/logoSomno.webp" alt="Logo Somnomid" class="w-24 md:w-30 h-auto mb-8 rounded-2xl shadow-sm opacity-90 hover:opacity-100 transition-opacity bg-slate-50" />
             <h1 class="font-black tracking-tighter text-7xl md:text-9xl mb-6">
-                <span class="bg-clip-text text-transparent bg-linear-to-r from-slate-800 via-somno to-blue-400 pr-4">
+                <span class="bg-clip-text text-transparent bg-linear-to-r from-somno-light via-somno to-somno-dark pr-4">
                     SomnoLab
                 </span>
             </h1>
-            <p class="text-xl md:text-2xl text-gray-500 max-w-2xl font-light leading-relaxed mb-12">
+            <p class="text-xl md:text-2xl text-slate-800 max-w-2xl font-light leading-relaxed mb-12">
                 Ciencia aplicada a tu descanso. <br class="hidden md:block"/>
-                <span class="text-gray-400 text-lg">Optimiza tus ciclos de sueño con precisión clínica.</span>
+                <span class="text-slate-500 text-lg">Optimiza tus ciclos de sueño con precisión clínica.</span>
             </p>
             <div class="flex flex-col sm:flex-row gap-5 w-full justify-center">
                 <a href="#calculadora" 
@@ -34,13 +76,78 @@ import Layout from '../layouts/Layout.astro';
             </div>
         </div>
         <div class="absolute bottom-12 animate-bounce-slow">
-            <a href="#calculadora" class="text-slate-300 hover:text-somno transition-colors p-2">
+            <a href="#quienes-somos" class="text-slate-300 hover:text-somno transition-colors p-2">
                 <i class="fas fa-chevron-down text-2xl"></i>
             </a>
         </div>
     </section>
 
-    <div id="calculadora" class="relative min-h-screen w-full bg-slate-50 py-24 px-4 overflow-hidden">
+    <section id="quienes-somos" class="py-24 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                
+                <div class="relative">
+                    <div class="absolute -top-4 -left-4 w-64 h-64 bg-somno/5 rounded-full blur-3xl"></div>
+                    <div class="relative rounded-3xl overflow-hidden shadow-2xl transform hover:scale-[1.02] transition-transform duration-500">
+                        <img 
+                            src="https://images.unsplash.com/photo-1659989693409-5adc97274bed?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
+                            alt="Equipo SomnoLab" 
+                            class="w-full h-[500px] object-cover"
+                            loading="lazy"
+                        />
+                        <div class="absolute inset-0 bg-linear-to-t from-somno/20 to-transparent"></div>
+                    </div>
+                    <div class="absolute -bottom-6 -right-6 bg-white p-6 rounded-2xl shadow-xl border border-slate-50 animate-bounce-slow">
+                        <p class="text-somno font-black text-4xl">10+</p>
+                        <p class="text-slate-500 text-sm font-medium">Años de experiencia<br/>clínica</p>
+                    </div>
+                </div>
+
+                <div class="space-y-8">
+                    <div class="space-y-4">
+                        <h2 class="text-somno font-bold tracking-wider uppercase text-sm">Nuestra Filosofía</h2>
+                        <h3 class="text-4xl md:text-5xl font-black text-slate-800 tracking-tight leading-tight">
+                            Comprometidos con tu <span class="text-somno-light">descanso</span>
+                        </h3>
+                        <p class="text-lg text-slate-600 leading-relaxed font-light">
+                            En <span class="font-semibold text-somno">SomnoLab</span>, fusionamos la tecnología con protocolos médicos para transformar tu salud a través del sueño, diseñando soluciones personalizadas para tu bienestar.
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="flex gap-4 items-start">
+                            <div class="shrink-0 w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center text-somno border border-slate-100">
+                                <i class="fas fa-microscope text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-800">Precisión Clínica</h4>
+                                <p class="text-sm text-slate-500">Resultados basados en tus reportes médicos.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-4 items-start">
+                            <div class="shrink-0 w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center text-somno border border-slate-100">
+                                <i class="fas fa-user-md text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-800">Atención Humana</h4>
+                                <p class="text-sm text-slate-500">Acompañamiento médico en cada paso.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-4">
+                        <a href="/quienes-somos" class="inline-flex items-center gap-2 text-somno font-bold hover:text-somno-dark transition-colors group">
+                            Conoce más de nosotros
+                            <i class="fas fa-arrow-right text-sm group-hover:translate-x-1 transition-transform"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="calculadora" class="relative min-h-screen w-full bg-slate-50 py-24 px-4 overflow-hidden">
 
         <div class="max-w-7xl mx-auto relative z-10">
             <div class="text-center mb-16 space-y-4">
@@ -55,26 +162,26 @@ import Layout from '../layouts/Layout.astro';
 
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
                 <div class="lg:col-span-5 bg-white p-8 rounded-4xl border border-slate-100 shadow-[0_10px_30px_rgba(0,0,0,0.03)] h-fit sticky top-8">
-                    <img src="/logoSomno.webp" alt="Logo SomnoLab" class="w-20 md:w-24 h-auto mb-8 rounded-2xl opacity-90 absolute right-1 top-1 hover:opacity-100 transition-opacity" />
+                    <img loading="lazy" src="/logoSomno.webp" alt="Logo SomnoLab" class="w-20 md:w-24 h-auto mb-8 rounded-2xl opacity-90 absolute right-1 top-1 hover:opacity-100 transition-opacity" />
                     <div class="mb-8">
                         <h3 class="text-2xl font-bold text-slate-800 mb-2">Comencemos</h3>
-                        <p class="text-slate-500">Ingresa tus datos para calcular tu horario.</p>
+                        <p class="text-somno">Ingresa tus datos para calcular tu horario.</p>
                     </div>
                     
                     <form id="edad-hora" class="flex flex-col gap-6">
                         <div class="space-y-2">
-                            <label for="edad" class="text-sm font-semibold text-slate-600 ml-1">Tu Edad</label>
+                            <label for="edad" class="text-sm font-semibold text-slate-800 ml-1">Tu Edad</label>
                             <input type="number" id="edad" name="edad" placeholder="Ej. 25"
                                 class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 font-medium focus:ring-2 focus:ring-somno focus:bg-white transition-all outline-none" />
                         </div>
                         
                         <div class="space-y-2">
-                            <label for="hora" class="text-sm font-semibold text-slate-600 ml-1">¿A qué hora quieres despertar?</label>
+                            <label for="hora" class="text-sm font-semibold text-slate-800 ml-1">¿A qué hora quieres despertar?</label>
                             <input type="time" id="hora" name="hora" 
                                 class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 font-medium focus:ring-2 focus:ring-somno focus:bg-white transition-all outline-none" />
                         </div>
 
-                        <button type="submit" class="mt-4 w-full bg-somno text-white font-bold py-4 px-6 rounded-xl hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-500/30 transition-all duration-300 transform active:scale-[0.98]">
+                        <button type="submit" class="mt-4 w-full bg-somno text-white font-bold py-4 px-6 rounded-xl hover:bg-somno-light hover:shadow-lg hover:shadow-blue-500/30 transition-all duration-300 transform active:scale-[0.98]">
                             Calcular Hora Ideal
                         </button>
                     </form>
@@ -112,7 +219,172 @@ import Layout from '../layouts/Layout.astro';
 
             </div>
         </div>
-    </div>
+    </section>
+
+    <section class="py-24 bg-slate-50 relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-px bg-linear-to-r from-transparent via-slate-200 to-transparent"></div>
+
+        <div class="max-w-[1400px] mx-auto px-4 sm:px-6">
+            
+            <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+                <div>
+                    <span class="text-somno font-bold tracking-[0.2em] uppercase text-xs mb-3 block">Eventos SomnoLab</span>
+                    <h2 class="text-3xl md:text-5xl font-black text-slate-800 tracking-tight">
+                        Próximos <span class="text-transparent bg-clip-text bg-linear-to-r from-somno to-somno-light">Eventos</span>
+                    </h2>
+                </div>
+                <a href="/eventos" class="group flex items-center gap-2 text-slate-500 font-bold hover:text-somno transition-colors">
+                    Ver calendario completo 
+                    <i class="fas fa-arrow-right transform group-hover:translate-x-1 transition-transform"></i>
+                </a>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                {proximosEventos.map((evento: any) => (
+                    <div 
+                        onclick={`openEventModal(${evento.id})`}
+                        class="group bg-white rounded-4xl p-3 border border-slate-100 shadow-sm hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 cursor-pointer"
+                    >
+                        
+                        <div class="relative h-56 rounded-[1.8rem] overflow-hidden mb-5">
+                            <img src={evento.img} alt={evento.titulo} class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                            
+                            <div class="absolute top-4 right-4 bg-white/95 backdrop-blur-md rounded-2xl p-2.5 text-center shadow-lg min-w-[65px]">
+                                <span class="block text-xl font-black text-slate-800 leading-none">{evento.dia}</span>
+                                <span class="block text-[10px] font-bold text-somno uppercase">{evento.mes}</span>
+                            </div>
+
+                            <div class="absolute bottom-4 left-4">
+                                <span class="bg-slate-900/70 backdrop-blur-md text-white text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-wider border border-white/10">
+                                    {evento.categoria}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="px-3 pb-3">
+                            <h3 class="text-xl font-bold text-slate-800 mb-3 leading-tight group-hover:text-somno transition-colors line-clamp-2">
+                                {evento.titulo}
+                            </h3>
+                            
+                            <div class="flex flex-col gap-2 text-sm text-slate-500 border-t border-slate-50 pt-3 mt-auto">
+                                <div class="flex items-center gap-3">
+                                    <span class="w-6 h-6 rounded-full bg-somno/10 flex items-center justify-center text-somno text-xs">
+                                        <i class="far fa-clock"></i>
+                                    </span>
+                                    {evento.hora}
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <span class="w-6 h-6 rounded-full bg-somno/10 flex items-center justify-center text-somno text-xs">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                    </span>
+                                    {evento.lugar}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                ))}
+            </div>
+            
+            <div class="mt-8 text-center md:hidden">
+                <a href="/eventos" class="inline-block w-full px-8 py-4 bg-slate-100 text-slate-700 font-bold rounded-xl hover:bg-slate-200 transition-colors">
+                    Ver todos los eventos
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section id="somnoblog" class="py-24">
+        <div class="max-w-[1400px] mx-auto px-4 sm:px-6">
+            
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-6xl font-bold text-slate-800 tracking-[0.2em] uppercase mb-4">
+                    Somno<span class="text-transparent bg-clip-text bg-linear-to-r from-somno to-somno-light">Blog</span>
+                </h2>
+                <p class="text-slate-500 max-w-2xl mx-auto text-lg">
+                    Explora nuestra colección de artículos curados por especialistas.
+                </p>
+            </div>
+
+            <div class="flex flex-col lg:flex-row gap-4 h-auto lg:h-[750px] w-full transition-all duration-500">
+                
+                <div class="flex flex-col gap-4 flex-1 lg:hover:grow-[1.5] transition-all duration-700 ease-out">
+                    {postsIzquierda.map((post) => (
+                        <a href={`/blog/${post.data.id}`} class="group relative flex-1 hover:grow-2 transition-all duration-500 rounded-4xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-2xl">
+                            <img loading="lazy" src={post.data.img} alt={post.data.titulo} class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                            <div class="absolute inset-0 bg-linear-to-t from-slate-900/90 via-slate-900/20 to-transparent opacity-80 group-hover:opacity-90 transition-opacity"></div>
+                            
+                            <div class="absolute bottom-0 left-0 p-8 w-full translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                                <span class="inline-block px-3 py-1 bg-somno backdrop-blur-md text-white text-[10px] font-bold uppercase tracking-wider rounded-full mb-3">
+                                    {post.data.categoria}
+                                </span>
+                                <h3 class="text-2xl font-bold text-white mb-2 leading-tight">
+                                    {post.data.titulo}
+                                </h3>
+                                <p class="text-slate-300 text-sm opacity-0 h-0 group-hover:h-auto group-hover:opacity-100 transition-all duration-500 delay-100 line-clamp-2">
+                                    {post.data.resumen}
+                                </p>
+                            </div>
+                        </a>
+                    ))}
+                </div>
+
+                {postCentral && (
+                    <div class="flex flex-col flex-[1.5] lg:hover:grow-[2.5] transition-all duration-700 ease-out gap-4">
+                        <a href={`/blog/${postCentral.data.id}`} class="group relative flex-1 rounded-4xl overflow-hidden border border-slate-100 shadow-lg hover:shadow-2xl transition-all duration-500">
+                            <img loading="lazy" src={postCentral.data.img} alt={postCentral.data.titulo} class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" />
+                            <div class="absolute inset-0 bg-linear-to-b from-transparent via-transparent to-slate-900/90"></div>
+                            
+                            {postCentral.data.destacado && (
+                                <div class="absolute top-8 left-8">
+                                    <span class="bg-somno text-white px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest shadow-lg shadow-somno/30">Destacado</span>
+                                </div>
+                            )}
+
+                            <div class="absolute bottom-0 left-0 p-10 md:p-12 w-full">
+                                <h3 class="text-4xl md:text-5xl font-black text-white mb-4 leading-none transition-colors">
+                                    {postCentral.data.titulo}
+                                </h3>
+                                <p class="text-lg text-slate-200 mb-6 max-w-md opacity-90 line-clamp-3">
+                                    {postCentral.data.resumen}
+                                </p>
+                                <span class="inline-flex items-center gap-3 bg-white text-slate-900 px-6 py-3 rounded-full font-bold text-sm hover:bg-somno hover:text-white transition-all group-hover:scale-105">
+                                    Leer artículo completo <i class="fas fa-arrow-right"></i>
+                                </span>
+                            </div>
+                        </a>
+                    </div>
+                )}
+
+                <div class="flex flex-col gap-4 flex-1 lg:hover:grow-[1.5] transition-all duration-700 ease-out">
+                    {postsDerecha.map((post) => (
+                        <a href={`/blog/${post.data.id}`} class="group relative flex-1 hover:grow-2 transition-all duration-500 rounded-4xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-2xl">
+                            <img loading="lazy" src={post.data.img} alt={post.data.titulo} class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                            <div class="absolute inset-0 bg-linear-to-t from-slate-900/90 via-slate-900/20 to-transparent opacity-80 group-hover:opacity-90 transition-opacity"></div>
+                            
+                            <div class="absolute bottom-0 left-0 p-8 w-full translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                                <span class="inline-block px-3 py-1 bg-somno text-white text-[10px] font-bold uppercase tracking-wider rounded-full mb-3">
+                                    {post.data.categoria}
+                                </span>
+                                <h3 class="text-2xl font-bold text-white mb-2 leading-tight">
+                                    {post.data.titulo}
+                                </h3>
+                                <p class="text-slate-300 text-sm opacity-0 h-0 group-hover:h-auto group-hover:opacity-100 transition-all duration-500 delay-100 line-clamp-2">
+                                    {post.data.resumen}
+                                </p>
+                            </div>
+                        </a>
+                    ))}
+                </div>
+
+            </div>
+
+            <div class="mt-12 text-center">
+                <a href="/blog" class="inline-block w-full md:w-auto px-8 py-4 bg-white text-slate-700 border border-slate-800 rounded-full text-lg font-semibold hover:border-somno hover:text-somno hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+                    Ver todos los artículos
+                </a>
+            </div>
+        </div>
+    </section>
 
     <div id="modal-info" class="hidden fixed inset-0 z-50 items-center justify-center bg-gray-900/60 backdrop-blur-sm p-4 transition-all duration-300">
         <div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden animate-fade-in-up border border-white/20">
@@ -135,10 +407,124 @@ import Layout from '../layouts/Layout.astro';
             </div>
         </div>
     </div>
-    
+
+    <div id="event-detail-modal" class="fixed inset-0 z-100 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity opacity-0" id="detail-backdrop"></div>
+
+        <div class="fixed inset-0 z-10 overflow-y-auto">
+            <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
+                
+                <div class="relative transform overflow-hidden rounded-[2.5rem] bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-2xl opacity-0 translate-y-4" id="detail-panel">
+                    
+                    <button onclick="closeEventModal()" class="absolute top-4 right-4 z-20 w-10 h-10 bg-white/80 backdrop-blur rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-100 hover:text-red-500 transition-colors">
+                        <i class="fas fa-times text-lg"></i>
+                    </button>
+
+                    <div class="h-48 sm:h-64 w-full relative">
+                        <img id="detail-img" src="" alt="" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-linear-to-t from-white via-transparent to-transparent"></div>
+                    </div>
+
+                    <div class="px-8 pb-8 sm:px-10 sm:pb-10 -mt-12 relative z-10">
+                        <span id="detail-category" class="inline-block bg-somno text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-4 shadow-lg shadow-somno/30">
+                            Categoria
+                        </span>
+                        
+                        <h3 id="detail-title" class="text-3xl font-black text-slate-800 leading-tight mb-6">Título del Evento</h3>
+                        
+                        <div class="grid grid-cols-2 gap-4 mb-6 bg-slate-50 p-6 rounded-2xl border border-slate-100">
+                            <div>
+                                <p class="text-xs text-slate-400 font-bold uppercase">Fecha</p>
+                                <p id="detail-date" class="font-bold text-slate-700">DD MMM</p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-slate-400 font-bold uppercase">Hora</p>
+                                <p id="detail-time" class="font-bold text-slate-700">00:00</p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-slate-400 font-bold uppercase">Lugar</p>
+                                <p id="detail-location" class="font-bold text-slate-700">Ubicación</p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-slate-400 font-bold uppercase">Costo</p>
+                                <p id="detail-price" class="font-bold text-somno">$$$</p>
+                            </div>
+                        </div>
+
+                        <div class="prose prose-slate prose-sm max-w-none mb-8">
+                            <p id="detail-desc" class="text-slate-600 leading-relaxed text-lg">
+                                Descripción detallada...
+                            </p>
+                        </div>
+
+                        <div class="flex gap-4">
+                            <a href="/citas" class="flex-1 bg-slate-900 text-white text-center py-4 rounded-xl font-bold hover:bg-slate-800 transition-all shadow-xl">
+                                Reservar Lugar
+                            </a>
+                            <button onclick="closeEventModal()" class="px-6 py-4 rounded-xl border border-slate-200 font-bold text-slate-500 hover:bg-slate-50">
+                                Cerrar
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
 </Layout>
 
 <script src="../scripts/scriptMain.js"></script>
+
+<script define:vars={{ eventsData: proximosEventos }}>
+    const modal = document.getElementById('event-detail-modal');
+    const backdrop = document.getElementById('detail-backdrop');
+    const panel = document.getElementById('detail-panel');
+
+    const mImg = document.getElementById('detail-img');
+    const mCat = document.getElementById('detail-category');
+    const mTitle = document.getElementById('detail-title');
+    const mDate = document.getElementById('detail-date');
+    const mTime = document.getElementById('detail-time');
+    const mLoc = document.getElementById('detail-location');
+    const mPrice = document.getElementById('detail-price');
+    const mDesc = document.getElementById('detail-desc');
+
+    window.openEventModal = (id) => {
+        const event = eventsData.find(e => e.id === id);
+        if (!event) return;
+
+        mImg.src = event.img;
+        mCat.textContent = event.categoria;
+        mTitle.textContent = event.titulo;
+        mDate.textContent = `${event.dia} ${event.mes}`;
+        mTime.textContent = event.hora;
+        mLoc.textContent = event.lugar;
+        mPrice.textContent = event.precio;
+        mDesc.textContent = event.descripcion;
+
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            backdrop.classList.remove('opacity-0');
+            panel.classList.remove('opacity-0', 'translate-y-4');
+        }, 10);
+    };
+
+    window.closeEventModal = () => {
+        backdrop.classList.add('opacity-0');
+        panel.classList.add('opacity-0', 'translate-y-4');
+        setTimeout(() => {
+            modal.classList.add('hidden');
+        }, 300);
+    };
+
+    window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+            closeEventModal();
+        }
+    });
+</script>
 
 <style>
     /* Estilos base para el semáforo */

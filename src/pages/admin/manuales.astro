@@ -1,0 +1,57 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Icon from '../../components/Icon.astro';
+import ReturnButton from '../../components/ReturnButton.astro';
+import ManualCard from '../../components/ManualCard.astro';
+
+interface Manual {
+    titulo: string;
+    descripcion: string;
+    url: string;
+    tipo: "CANVA" | "WORD" | "DRIVE" | "VIDEO" | "EXCEL" | "WEB"; 
+}
+
+const listaManuales: Manual[] = [
+    
+];
+---
+
+<Layout title="Manuales | SomnoLab" showFooter={false}>
+    <Icon />
+	<ReturnButton href="/admin/dashboard" text="Volver al dashboard" />
+    <div class="min-h-screen p-4 md:p-10">
+        
+        <div class="max-w-7xl mx-auto mb-12 text-center">
+            <h1 class="max-md:max-w-xs max-md:pt-10 max-lg:max-w-xl text-4xl md:text-6xl font-extrabold text-balance text-center">Biblioteca de <span class="bg-linear-to-r from-somno to-somno-light bg-clip-text text-transparent drop-shadow-[0_0_15px_rgba(59,130,246,0.5)]">SomnoLab</span></h1>
+            <p class=" pt-5 text-lg text-gray-400">
+                Todos los recursos, guías y documentos necesarios están aquí.
+            </p>
+        </div>
+
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        
+            {listaManuales.map((manual, index) => (
+                <ManualCard 
+                    titulo={manual.titulo}
+                    descripcion={manual.descripcion}
+                    url={manual.url}
+                    tipo={manual.tipo}
+                    delay={index * 100}
+                />
+            ))}
+        </div>
+    </div>
+</Layout>
+
+<style>
+    @keyframes enter-up { 
+        from { 
+            opacity: 0; transform: translateY(20px);
+        } to { 
+            opacity: 1; transform: translateY(0); 
+        } 
+    }
+    .animate-enter-up { 
+        animation: enter-up 0.6s ease-out forwards;
+    }
+</style>

@@ -9,8 +9,25 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/node": "^9.5.1",
+    "@astrojs/vercel": "^9.0.2",
+    "@clerk/astro": "^2.16.8",
+    "@clerk/localizations": "^3.31.0",
+    "@clerk/themes": "^2.4.44",
+    "@supabase/supabase-js": "^2.88.0",
     "@tailwindcss/vite": "^4.1.17",
     "astro": "^5.16.5",
-    "tailwindcss": "^4.1.17"
+    "pdf-lib": "^1.17.1",
+    "tailwindcss": "^4.2.2"
+  },
+  "devDependencies": {
+    "@tailwindcss/typography": "^0.5.19"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@clerk/shared",
+      "esbuild",
+      "sharp"
+    ]
   }
 }

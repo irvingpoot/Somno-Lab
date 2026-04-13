@@ -1,0 +1,231 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+
+const allPosts = await getCollection('blog');
+
+const categorias = ["Todas", "Higiene", "Apnea", "Ciencia", "Nutrición", "Tecnología", "Infantil"];
+
+const postDestacado = allPosts.find(p => p.data.destacado);
+const postsRegulares = allPosts.filter(p => !p.data.destacado);
+---
+
+<Layout title="Blog | SomnoLab">
+    <Navbar />
+
+    <main class="bg-slate-50 min-h-screen pt-32 pb-24">
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 mb-12">
+            <div class="text-center max-w-3xl mx-auto mb-10">
+                <span class="text-somno font-bold tracking-[0.2em] uppercase text-xs mb-4 block">SomnoBlog</span>
+                <h1 class="text-4xl md:text-6xl font-black text-slate-800 tracking-tight mb-6">
+                    Conocimiento para <span class="text-transparent bg-clip-text bg-linear-to-r from-somno to-somno-light">dormir mejor</span>
+                </h1>
+                
+            </div>
+
+            {postDestacado && (
+                <article class="relative rounded-[2.5rem] overflow-hidden shadow-2xl group mb-16 h-[400px] md:h-[500px]">
+                    
+                    <a href={`/blog/${postDestacado.data.id}`} class="absolute inset-0 z-30" aria-label={`Leer ${postDestacado.data.titulo}`}></a>
+
+                    <div class="absolute top-6 left-6 z-20 animate-fade-in-down pointer-events-none">
+                        <span class="bg-somno backdrop-blur-md text-slate-50 font-extrabold px-4 py-2 rounded-full uppercase text-[10px] tracking-widest shadow-lg flex items-center gap-2 border border-somno/10">
+                            Artículo Destacado
+                        </span>
+                    </div>
+
+                    <img 
+                        src={postDestacado.data.img} 
+                        alt={postDestacado.data.titulo} 
+                        loading="lazy"
+                        class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" 
+                    />
+                    <div class="absolute inset-0 bg-linear-to-t from-slate-900 via-slate-900/40 to-transparent opacity-90"></div>
+                    
+                    <div class="absolute bottom-0 left-0 p-8 md:p-12 w-full max-w-4xl z-20 pointer-events-none">
+                        <div class="flex items-center gap-4 mb-4 text-slate-50/80 text-sm font-medium">
+                            <span class="bg-somno px-3 py-1 rounded-lg text-slate-50 font-bold uppercase tracking-wider text-xs">
+                                {postDestacado.data.categoria}
+                            </span>
+                            <span><i class="far fa-calendar-alt mr-2"></i>{postDestacado.data.fecha}</span>
+                        </div>
+                        <h2 class="text-3xl md:text-5xl font-black text-slate-50 mb-6 leading-tight">
+                            {postDestacado.data.titulo}
+                        </h2>
+                        <span class="inline-flex items-center gap-3 bg-slate-50 text-slate-900 px-6 py-3 rounded-full font-bold transition-all shadow-lg text-sm md:text-base group-hover:bg-somno group-hover:text-slate-50 group-hover:scale-105">
+                            Leer artículo <i class="fas fa-arrow-right"></i>
+                        </span>
+                    </div>
+                </article>
+            )}
+
+            <div class="relative max-w-xl mx-auto group">
+                <input 
+                    id="search-input"
+                    type="text" 
+                    placeholder="Buscar tema..." 
+                    class="w-full py-4 pl-12 pr-4 rounded-full border border-slate-200 bg-white shadow-sm focus:ring-4 focus:ring-somno/10 focus:border-somno transition-all outline-none"
+                />
+                <i class="fas fa-search absolute left-5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+            </div>
+
+            <div class="flex flex-wrap justify-center gap-2 my-8" id="filters-container">
+                {categorias.map((cat, index) => (
+                    <button 
+                        data-category={cat}
+                        class={`filter-btn px-6 py-2 rounded-full font-bold text-sm transition-all border ${index === 0 ? 'bg-somno text-white border-somno shadow-lg shadow-somno/30 active-filter' : 'bg-white text-slate-500 border-slate-200 hover:border-somno hover:text-somno'}`}
+                    >
+                        {cat}
+                    </button>
+                ))}
+            </div>
+
+            <div id="posts-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 transition-all duration-300">
+                {postsRegulares.map(post => (
+                    <article 
+                        class="blog-post relative bg-white rounded-4xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-xl transition-all h-full flex flex-col group hover:-translate-y-1"
+                        data-category={post.data.categoria}
+                        data-title={post.data.titulo.toLowerCase()}
+                    >
+                        <a href={`/blog/${post.data.id}`} class="absolute inset-0 z-30" aria-label={`Leer ${post.data.titulo}`}></a>
+
+                        <div class="relative h-64 overflow-hidden">
+                            <span class="absolute top-4 left-4 z-20 bg-somno backdrop-blur-md px-3 py-1 rounded-lg text-xs font-bold text-slate-50 uppercase tracking-wide shadow-sm pointer-events-none">
+                                {post.data.categoria}
+                            </span>
+                            <img 
+                                src={post.data.img} 
+                                alt={post.data.titulo}
+                                loading="lazy" 
+                                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                            />
+                        </div>
+                        
+                        <div class="p-8 flex flex-col grow relative z-20 pointer-events-none">
+                            <div class="flex items-center gap-2 text-slate-400 text-xs font-medium mb-3">
+                                <i class="far fa-clock"></i> {post.data.fecha}
+                            </div>
+                            <h3 class="text-2xl font-bold text-slate-800 mb-3 leading-tight group-hover:text-somno transition-colors">
+                                {post.data.titulo}
+                            </h3>
+                            <p class="text-slate-500 text-sm mb-6 line-clamp-3 grow">
+                                {post.data.resumen}
+                            </p>
+                            
+                            <div class="mt-auto pt-4 border-t border-slate-50">
+                                <span class="inline-flex items-center gap-2 text-slate-600 font-bold text-sm group-hover:text-somno transition-colors">
+                                    Leer artículo 
+                                    <span class="bg-slate-100 p-1.5 rounded-full group-hover:bg-somno group-hover:text-white transition-all">
+                                        <i class="fas fa-chevron-right text-[10px]"></i>
+                                    </span>
+                                </span>
+                            </div>
+                        </div>
+                    </article>
+                ))}
+            </div>
+
+            <div id="no-results" class="hidden text-center py-10 fade-in">
+                <div class="inline-flex items-center justify-center w-20 h-20 bg-slate-100 rounded-full mb-6 animate-bounce">
+                    <i class="fas fa-search text-3xl text-slate-300"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-slate-800 mb-2">No encontramos artículos</h3>
+                <p class="text-slate-500 mb-6">Prueba con otro término de búsqueda o categoría.</p>
+                <button id="reset-filters" class="text-somno font-bold hover:underline bg-somno/10 px-6 py-2 rounded-full hover:bg-somno hover:text-white transition-all">Ver todos los artículos</button>
+            </div>
+
+        </div>
+    </main>
+</Layout>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const filterBtns = document.querySelectorAll<HTMLElement>('.filter-btn');
+        const posts = document.querySelectorAll('.blog-post');
+        const searchInput = document.getElementById('search-input') as HTMLInputElement;
+        const noResults = document.getElementById('no-results');
+        const resetBtn = document.getElementById('reset-filters');
+        const gridContainer = document.getElementById('posts-grid');
+
+        let currentCategory = 'Todas';
+        let currentSearch = '';
+
+        function filterPosts() {
+            let visibleCount = 0;
+            posts.forEach(post => {
+                const el = post as HTMLElement; 
+                const postCategory = el.getAttribute('data-category');
+                const postTitle = el.getAttribute('data-title');
+                
+                const matchesCategory = currentCategory === 'Todas' || postCategory === currentCategory;
+                const matchesSearch = postTitle ? postTitle.includes(currentSearch.toLowerCase()) : false;
+
+                if (matchesCategory && matchesSearch) {
+                    el.classList.remove('hidden');
+                    visibleCount++;
+                } else {
+                    el.classList.add('hidden');
+                }
+            });
+            
+            if (visibleCount === 0) {
+                noResults?.classList.remove('hidden');
+                gridContainer?.classList.add('hidden');
+            } else {
+                noResults?.classList.add('hidden');
+                gridContainer?.classList.remove('hidden');
+            }
+        }
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => {
+                    b.classList.replace('bg-somno', 'bg-white');
+                    b.classList.replace('text-white', 'text-slate-500');
+                    b.classList.remove('active-filter');
+                    b.classList.remove('shadow-lg');
+                    b.classList.add('border-slate-200');
+                });
+                
+                btn.classList.replace('bg-white', 'bg-somno');
+                btn.classList.replace('text-slate-500', 'text-white');
+                btn.classList.remove('border-slate-200');
+                btn.classList.add('active-filter', 'shadow-lg');
+
+                currentCategory = btn.getAttribute('data-category') || 'Todas';
+                filterPosts();
+            });
+        });
+
+        searchInput?.addEventListener('input', (e) => {
+            currentSearch = (e.target as HTMLInputElement).value;
+            filterPosts();
+        });
+
+        resetBtn?.addEventListener('click', () => {
+            currentCategory = 'Todas';
+            currentSearch = '';
+            if(searchInput) searchInput.value = '';
+            if(filterBtns.length > 0) (filterBtns[0] as HTMLElement).click();
+        });
+    });
+</script>
+
+<style>
+    .hidden { display: none !important; }
+    
+    .fade-in { animation: fadeIn 0.5s ease-in-out; }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Animación extra para la etiqueta */
+    .animate-fade-in-down { animation: fadeInDown 0.8s ease-out; }
+    @keyframes fadeInDown {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
