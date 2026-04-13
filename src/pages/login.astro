@@ -1,6 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { SignedIn, SignIn } from '@clerk/astro/components';
+import { SignIn } from '@clerk/astro/components';
 
 const redirectUrl = Astro.url.searchParams.get("redirect_url") || "/citas";
 ---
@@ -41,9 +41,6 @@ const redirectUrl = Astro.url.searchParams.get("redirect_url") || "/citas";
                     <SignIn 
                         forceRedirectUrl={redirectUrl}
                     />
-                    <SignedIn>
-                        <h1 class="z-100 text-2xl bg-amber-400">Holap</h1>
-                    </SignedIn>
                 </div>
                 
                 <div class="mt-10 text-center">
@@ -52,23 +49,6 @@ const redirectUrl = Astro.url.searchParams.get("redirect_url") || "/citas";
                     </p>
                 </div>
             </div>
-
-            <SignedIn>
-                <div class="absolute inset-0 z-50 flex flex-col items-center justify-center bg-white/90 backdrop-blur-sm transition-all duration-300">
-                    
-                    <div class="relative flex h-20 w-20 items-center justify-center">
-                        <div class="absolute h-full w-full rounded-full border-4 border-gray-100 opacity-50"></div>
-                        <div class="absolute h-full w-full animate-spin rounded-full border-4 border-transparent border-t-somno-primary border-r-somno-primary"></div>
-                    </div>
-
-                    <h3 class="mt-6 text-xl font-semibold text-somno-dark animate-pulse">
-                        Iniciando sesión...
-                    </h3>
-                    <p class="mt-2 text-sm text-gray-500">
-                        Te estamos redirigiendo al panel.
-                    </p>
-                </div>
-            </SignedIn>
 
         </main>
     </div>
