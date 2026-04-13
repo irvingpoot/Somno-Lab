@@ -56,7 +56,6 @@ const navItems = [
     const icon = document.getElementById('menu-icon');
     const section = document.getElementById('quienes-somos');
 
-    // Detectar si estamos en el index
     const isIndex = window.location.pathname === '/' || window.location.pathname === '/index.html';
 
     function updateNavbar() {
@@ -64,7 +63,6 @@ const navItems = [
         const isScrolled = window.scrollY > 50;
         const reachedSection = rect && rect.top <= 100;
 
-        // Si NO es el index, mostrar logo y fondo siempre
         if (!isIndex) {
             nav?.classList.add('bg-slate-50', 'py-2');
             nav?.classList.remove('py-4');
@@ -73,7 +71,6 @@ const navItems = [
             return;
         }
 
-        // Lógica original para el index
         if (isScrolled) {
             nav?.classList.add('bg-slate-50');
             nav?.classList.remove('py-4');
@@ -93,12 +90,10 @@ const navItems = [
         }
     }
 
-    // Ejecutar al cargar y al hacer scroll
     window.addEventListener('scroll', updateNavbar);
     window.addEventListener('load', updateNavbar);
-    updateNavbar(); // Ejecución inmediata
+    updateNavbar();
 
-    // Lógica del Menú Responsivo
     btn?.addEventListener('click', () => {
         const isOpening = menu?.classList.contains('hidden');
         menu?.classList.toggle('hidden');

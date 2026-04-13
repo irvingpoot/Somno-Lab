@@ -1,23 +1,16 @@
-// src/scripts/scriptCrono.js
-
 document.getElementById('submit-btn').addEventListener('click', function(event) {
     event.preventDefault();
 
-    // Obtener los valores del formulario
     const edad = parseInt(document.getElementById('edad').value);
 
     
 
-    // --- NUEVO: OBTENER Y COMBINAR VALORES ---
-    // Obtenemos Hora y Minuto por separado
     const dormirH = document.getElementById('dormir-h').value;
     const dormirM = document.getElementById('dormir-m').value;
     
     const despertarH = document.getElementById('despertar-h').value;
     const despertarM = document.getElementById('despertar-m').value;
 
-    // Combinamos para que el resto del script funcione igual ("HH:MM")
-    // Si no seleccionaron hora, la variable quedará vacía o incompleta
     let horaActual = "";
     let horaDeseada = "";
 
@@ -28,7 +21,6 @@ document.getElementById('submit-btn').addEventListener('click', function(event) 
     if (despertarH && despertarM) {
         horaDeseada = `${despertarH}:${despertarM}`;
     }
-    // ----------------------------------------
 
     function mostrarModal(mensaje) {
         const modal = document.getElementById('modal');
@@ -56,7 +48,6 @@ document.getElementById('submit-btn').addEventListener('click', function(event) 
         if(understandBtn) understandBtn.onclick = closeAction;
     }
 
-    // Validamos que se haya formado la hora completa
     if (!edad || !horaActual || !horaDeseada) {
         mostrarModal("Por favor, rellene todos los campos (Horas y Minutos)");
         return;
@@ -73,9 +64,6 @@ document.getElementById('submit-btn').addEventListener('click', function(event) 
         return;
     }
 
-    // ---------------------------------------------------------
-    //  LÓGICA DE CÁLCULO (NO TOCAR)
-    // ---------------------------------------------------------
     const rangosDeSueño = {
         '0-3': { idealMin: 14, idealMax: 17 },
         '4-11': { idealMin: 12, idealMax: 15 },
@@ -122,9 +110,7 @@ document.getElementById('submit-btn').addEventListener('click', function(event) 
     let dias = [];
     let tituloTexto = "";
 
-    // Cálculo de Días
     if (minutosDeseados > minutosActuales) {
-        // CASO: Despertar más tarde
 
         const minutosDormirActual = (minutosActuales - horasIdeales * 60 + 1440) % 1440;
         const minutosDormirDeseado = (minutosDeseados - horasIdeales * 60 + 1440) % 1440;
@@ -195,13 +181,10 @@ function showToast(message) {
     const toast = document.getElementById('toast');
     const toastMsg = document.getElementById('toast-message');
     
-    // Setear mensaje
     toastMsg.textContent = message;
     
-    // Mostrar (Quitamos opacidad 0 y el desplazamiento)
     toast.classList.remove('opacity-0', 'translate-y-10');
     
-    // Ocultar después de 3.5 segundos
     setTimeout(() => {
         toast.classList.add('opacity-0', 'translate-y-10');
     }, 3500);
@@ -215,7 +198,6 @@ document.querySelectorAll('input[type="time"]').forEach(input => {
         const [h, m] = this.value.split(':');
         let min = parseInt(m);
         
-        // Lógica de redondeo
         if (min < 15) min = '00';
         else if (min < 45) min = '30';
 

@@ -11,7 +11,6 @@
 <script>
     const btn = document.getElementById('to-top-btn');
 
-    // 1. Mostrar/Ocultar botón al hacer scroll
     window.addEventListener('scroll', () => {
         if (window.scrollY > 300) {
             btn?.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
@@ -20,7 +19,6 @@
         }
     });
 
-    // 2. Acción de subir suavemente
     btn?.addEventListener('click', () => {
         window.scrollTo({
             top: 0,

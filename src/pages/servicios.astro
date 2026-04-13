@@ -130,26 +130,20 @@ const servicios = [
 
 <script is:inline>
     function switchTab(btn) {
-        // 1. Obtener ID objetivo
         const targetId = btn.getAttribute('data-target');
 
-        // 2. Actualizar Botones
         document.querySelectorAll('.tab-btn').forEach(b => {
-            // Estilos Inactivos
             b.classList.remove('text-somno', 'border-somno', 'ring-2', 'ring-somno/10', 'shadow-md');
             b.classList.add('text-slate-500');
         });
-        // Estilos Activos (al botón clickeado)
         btn.classList.remove('text-slate-500');
         btn.classList.add('text-somno', 'border-somno', 'ring-2', 'ring-somno/10', 'shadow-md');
 
-        // 3. Actualizar Contenido
         document.querySelectorAll('.tab-content').forEach(content => {
             content.classList.remove('opacity-100', 'z-10', 'relative');
             content.classList.add('opacity-0', 'z-0', 'pointer-events-none', 'absolute');
             
             if (content.id === targetId) {
-                // Pequeño delay para permitir que el anterior se desvanezca suavemente si quisieras
                 content.classList.remove('opacity-0', 'z-0', 'pointer-events-none', 'absolute');
                 content.classList.add('opacity-100', 'z-10', 'relative');
             }
@@ -167,7 +161,6 @@ const servicios = [
         opacity: 0;
     }
 
-    /* Definimos la animación de movimiento */
     @keyframes shine {
         to {
             background-position: 200% center;

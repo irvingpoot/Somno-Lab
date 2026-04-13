@@ -1,4 +1,18 @@
 ---
+
+/**
+ * @component InfoCard
+ * @description Contenedor visual estándar para secciones de información.
+ * * PROPÓSITO:
+ * - Mantener consistencia visual en el expediente del paciente.
+ * - Provee un encabezado con título y subrayado degradado.
+ * * PROPS:
+ * @prop {string} title - El título de la sección (ej: "Antropométricos").
+ * @prop {string} [class] - Clases CSS adicionales opcionales para el contenedor externo.
+ * * SLOT:
+ * - Renderiza cualquier contenido hijo (tablas, listas, grids) dentro del cuerpo de la tarjeta.
+ */
+
 interface Props {
     title: string;
     className?: string;
@@ -7,8 +21,8 @@ interface Props {
 const { title, className = "" } = Astro.props;
 ---
 
-<div class={`bg-somno-light/50 border border-somno-dark rounded-2xl p-8 hover:border-somno transition duration-300 ${className}`}>
-    <h2 class="text-2xl font-bold text-somno-dark mb-6 border-b border-somno-dark pb-2">
+<div class={`bg-white border border-gray-200 rounded-2xl p-8 hover:border-somno transition duration-300 ${className}`}>
+    <h2 class="text-2xl font-bold text-somno-dark mb-6 border-b border-gray-200 pb-2">
         {title}
     </h2>
     <slot />

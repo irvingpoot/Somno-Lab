@@ -1,40 +1,33 @@
 document.getElementById('edad-hora').addEventListener('submit', function(event) {
     event.preventDefault();
     
-    // Obtener valores del formulario
     const edad = parseInt(document.getElementById('edad').value);
     const horaDespertar = document.getElementById('hora').value;
 
-    // --- LÓGICA DEL MODAL ---
     const modal = document.getElementById('modal-info');
     const closeModalBtn = document.getElementById('close-modal-btn');
 
-    // Función para cerrar modal
     const cerrarModal = () => {
         modal.classList.add('hidden');
         modal.classList.remove('flex');
     };
 
-    // Event listeners para cerrar
     closeModalBtn.onclick = cerrarModal;
     modal.onclick = (e) => {
         if (e.target === modal) cerrarModal();
     };
 
-    // Validación: Si faltan datos, mostramos el modal
     if (!edad || !horaDespertar) {
         modal.classList.remove('hidden');
         modal.classList.add('flex');
         return;
     }
     
-    // Convertir la hora de despertar a formato Date
     const [hora, minutos] = horaDespertar.split(':').map(Number);
     let despertar = new Date();
     despertar.setHours(hora);
     despertar.setMinutes(minutos);
     
-    // Diccionario con rangos de sueño
     const rangosDeSueño = {
         '0': { idealMin: 12, idealMax: 17, posibleMin: 10, posibleMax: 19 },
         '1-2': { idealMin: 11, idealMax: 14, posibleMin: 9, posibleMax: 16 },
@@ -57,7 +50,6 @@ document.getElementById('edad-hora').addEventListener('submit', function(event) 
         '65+': { grupo: 'Adulto mayor' }
     };
 
-    // Funciones helper originales
     function obtenerRangoDeSueño(edad) {
         if (edad <= 3) return rangosDeSueño['0'];
         if (edad <= 2) return rangosDeSueño['1-2'];
@@ -80,11 +72,9 @@ document.getElementById('edad-hora').addEventListener('submit', function(event) 
         return grupo_edad['65+'];
     }
 
-    // Obtener rangos
     const { idealMin, idealMax, posibleMin, posibleMax } = obtenerRangoDeSueño(edad);
     const { grupo } = obtenerGrupoEdad(edad);
 
-    // Cálculos de horas
     function calcularHoraAcostarse(horas) {
         let acostarse = new Date(despertar);
         acostarse.setHours(acostarse.getHours() - horas);

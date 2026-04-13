@@ -18,19 +18,17 @@ const supabase = createClient(
     import.meta.env.SUPABASE_KEY
 );
 
-// 3. Obtenemos los próximos 3 eventos (Fecha >= Hoy)
-const today = new Date().toISOString().split('T')[0]; // Formato YYYY-MM-DD
+const today = new Date().toISOString().split('T')[0];
 
 const { data: eventosRaw, error } = await supabase
     .from('eventos')
     .select('*')
-    .gte('fecha', today) // Solo eventos futuros o de hoy
+    .gte('fecha', today)
     .order('fecha', { ascending: true })
-    .limit(3); // Solo traemos 3
+    .limit(3);
 
 if (error) console.error("Error al obtener eventos del home:", error);
 
-// 4. Formateamos
 const meses = ["ENE", "FEB", "MAR", "ABR", "MAY", "JUN", "JUL", "AGO", "SEP", "OCT", "NOV", "DIC"];
 
 const proximosEventos = (eventosRaw || []).map(e => {
@@ -493,7 +491,6 @@ const proximosEventos = (eventosRaw || []).map(e => {
     const mPrice = document.getElementById('detail-price');
     const mDesc = document.getElementById('detail-desc');
 
-    // Función global para abrir el modal
     window.openEventModal = (id) => {
         const event = eventsData.find(e => e.id === id);
         if (!event) return;

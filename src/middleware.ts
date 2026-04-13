@@ -1,25 +1,29 @@
+/**
+ * @file middleware.ts
+ * @description Middleware de seguridad y control de sesiones (Clerk).
+ * * FUNCIÓN PRINCIPAL:
+ * - Intercepta todas las solicitudes al servidor (SSR) antes de renderizar la página.
+ * * LÓGICA DE PROTECCIÓN:
+ * 1. Rutas Protegidas (`isProtectedRoute`): Define la lista blanca de rutas que requieren sesión activa
+ * (ej: /dashboard, /lista, /registro). Si no hay usuario, redirige al inicio (/).
+ * 2. Redirección Inversa: Si un usuario YA logueado intenta entrar explícitamente a `/login`
+ * (o la landing page de login), lo redirige automáticamente al `/dashboard` para mejorar la UX.
+ */
+
 import { clerkMiddleware, createRouteMatcher } from "@clerk/astro/server";
-import { isUserAdmin } from "./lib/isAdmin";
 
-// 1. Definir rutas protegidas
-const isProtectedRoute = createRouteMatcher(["/dashboard(.*)", "/admin(.*)", "/mis-cursos(.*)", "/aula(.*)", "/lista", "/registro", "/paciente/:id", "/editar-cita/:id", "/citas", "/nueva-cita", "/gestion-eventos"]);
+const isProtectedRoute = createRouteMatcher([
+    '/admin(.*)',
+]);
 
-// 2. Definir rutas SOLO para Admin
-const isAdminRoute = createRouteMatcher(["/admin(.*)", "/dashboard(.*)", "/lista", "/registro", "/paciente/:id", "/editar-cita/:id", "/citas", "/nueva-cita", "/gestion-eventos"]);
+export const onRequest = clerkMiddleware((auth, context) => {
+    const { userId } = auth()
 
-export const onRequest = clerkMiddleware((auth, context, next) => {
-    const { userId, redirectToSignIn } = auth();
-
-    if (!userId && isProtectedRoute(context.request)) {
-        return redirectToSignIn();
+    if (isProtectedRoute(context.request) && !userId) {
+        return context.redirect("/login")
     }
 
-    if (userId && isAdminRoute(context.request)) {
-        // Usamos la función auxiliar que creamos
-        if (!isUserAdmin(userId)) {
-            return Response.redirect(new URL('/mis-cursos', context.request.url));
-        }
+    if (userId && context.url.pathname === "/login") {
+        return context.redirect("/admin/dashboard");
     }
-    
-    return next();
 });

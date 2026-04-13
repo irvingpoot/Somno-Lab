@@ -83,9 +83,8 @@ Las tablas son excelentes para comparar información técnica.
 Si alguna vez escribimos un artículo técnico para otros doctores o desarrolladores, así se ve el código:
 
 ```javascript
-// Función para calcular ciclos de sueño
 function calcularDespertar(horaDormir) {
-    const ciclo = 90; // minutos
+    const ciclo = 90;
     const ciclosRecomendados = 5;
     
     return horaDormir + (ciclo * ciclosRecomendados);

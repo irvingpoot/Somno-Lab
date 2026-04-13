@@ -1,9 +1,7 @@
 ---
 import { SignedIn } from '@clerk/astro/components';
-import { isUserAdmin } from '../lib/isAdmin'; // <--- Importamos
 
 const { userId } = Astro.locals.auth();
-const isAdmin = isUserAdmin(userId);
 
 const navItems = [
     { name: 'Quiénes Somos', href: '/quienes-somos' },
@@ -39,12 +37,6 @@ const navItems = [
                         <a href="/mis-cursos" class="px-4 py-2 text-slate-600 hover:text-somno rounded-full hover:bg-somno/5 transition-all duration-200 font-medium text-sm flex items-center gap-2">
                             <i class="fas fa-book-reader"></i> Mis Cursos
                         </a>
-
-                        {isAdmin && (
-                            <a href="/dashboard" class="text-sm font-bold text-somno bg-somno/10 px-4 py-2 rounded-full hover:bg-somno hover:text-white transition-all">
-                                Dashboard
-                            </a>
-                        )}
                     </div>
                 </SignedIn>
             </div>
@@ -70,12 +62,6 @@ const navItems = [
                     <a href="/mis-cursos" class="block px-4 py-3 rounded-2xl text-base font-medium text-slate-600 hover:text-somno hover:bg-slate-50">
                         <i class="fas fa-book-reader mr-2 text-somno"></i> Mis Cursos
                     </a>
-                    
-                    {isAdmin && (
-                        <a href="/dashboard" class="block px-4 py-3 rounded-2xl text-base font-bold text-somno hover:bg-somno/5">
-                            <i class="fas fa-columns mr-2"></i> Dashboard
-                        </a>
-                    )}
                 </div>
             </SignedIn>
         </div>
@@ -89,11 +75,8 @@ const navItems = [
     const btn = document.getElementById('mobile-menu-button');
     const icon = document.getElementById('menu-icon');
     
-    // IMPORTANTE: Asegúrate de que el ID 'quienes-somos' exista en tu index, 
-    // si no, cambia esto por otro ID o usa null para evitar errores.
     const section = document.getElementById('quienes-somos'); 
 
-    // Detectar si estamos en el index
     const isIndex = window.location.pathname === '/' || window.location.pathname === '/index.html';
 
     function updateNavbar() {
@@ -101,7 +84,6 @@ const navItems = [
         const isScrolled = window.scrollY > 50;
         const reachedSection = rect && rect.top <= 100;
 
-        // Si NO es el index, mostrar logo y fondo siempre
         if (!isIndex) {
             nav?.classList.add('bg-slate-50', 'py-2');
             nav?.classList.remove('py-4');
@@ -110,9 +92,8 @@ const navItems = [
             return;
         }
 
-        // Lógica original para el index
         if (isScrolled) {
-            nav?.classList.add('bg-slate-50', 'py-2'); // Agregué py-2 aquí para consistencia
+            nav?.classList.add('bg-slate-50', 'py-2');
             nav?.classList.remove('py-4');
         } else {
             if (menu?.classList.contains('hidden')) {
@@ -130,12 +111,10 @@ const navItems = [
         }
     }
 
-    // Ejecutar al cargar y al hacer scroll
     window.addEventListener('scroll', updateNavbar);
     window.addEventListener('load', updateNavbar);
-    updateNavbar(); // Ejecución inmediata
+    updateNavbar();
 
-    // Lógica del Menú Responsivo
     btn?.addEventListener('click', () => {
         const isOpening = menu?.classList.contains('hidden');
         menu?.classList.toggle('hidden');

@@ -1,0 +1,85 @@
+---
+/**
+ * @component PatientTypeModal.astro
+ * @description Modal para elegir entre paciente de Sueño o Ánimo antes de registrar
+ */
+
+import FaceIcon from "./icons/FaceIcon.astro";
+import RightArrow from "./icons/RightArrow.astro";
+import SleepIcon from "./icons/SleepIcon.astro";
+---
+
+<dialog id="modal-tipo-paciente" class="bg-white border border-gray-200 rounded-3xl p-0 shadow-2xl backdrop:backdrop-blur-sm w-full max-w-3xl text-left m-auto outline-none">
+    <div class="p-6 border-b border-gray-200 flex justify-between items-center bg-gray-50/80">
+        <h3 class="text-xl font-bold text-gray-900 flex items-center gap-3">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+            </svg>
+            Registrar nuevo paciente
+        </h3>
+        <button onclick="document.getElementById('modal-tipo-paciente').close()" class="text-gray-400 hover:text-gray-900 transition-colors cursor-pointer text-2xl leading-none">&times;</button>
+    </div>
+    
+    <div class="p-6">
+        <p class="text-gray-500 mb-6 text-sm">Seleccione el tipo de paciente que desea registrar.</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            
+            <a href="/admin/registro/sueno" class="block group relative bg-gray-50 hover:bg-somno/5 border border-gray-200 hover:border-somno/50 p-6 rounded-2xl transition-all cursor-pointer text-left no-underline">
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="p-3 bg-somno/10 rounded-xl text-somno-dark group-hover:bg-somno group-hover:text-white transition-colors">
+                        <SleepIcon class="size-8" />
+                    </div>
+                    <h4 class="text-xl font-bold text-gray-900 group-hover:text-somno-dark transition-colors">Trastornos del Sueño</h4>
+                </div>
+                <p class="text-sm text-gray-500 leading-relaxed mb-4">
+                    Polisomnografía, insomnio, apnea, titulación CPAP y trastornos del ritmo circadiano.
+                </p>
+                <span class="flex text-xs font-bold text-somno uppercase tracking-widest group-hover:translate-x-1 transition-transform">Seleccionar <RightArrow class="size-4" /></span>
+            </a>
+
+            <a href="/admin/registro/animo" class="block group relative bg-gray-50 hover:bg-purple-50 border border-gray-200 hover:border-purple-400/50 p-6 rounded-2xl transition-all cursor-pointer text-left no-underline">
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="p-3 bg-purple-100/80 rounded-xl text-purple-600 group-hover:bg-purple-500 group-hover:text-white transition-colors">
+                        <FaceIcon class="size-8" />
+                    </div>
+                    <h4 class="text-xl font-bold text-gray-900 group-hover:text-purple-600 transition-colors">Estado de Ánimo</h4>
+                </div>
+                <p class="text-sm text-gray-500 leading-relaxed mb-4">
+                    Depresión, ansiedad, evaluación de funciones ejecutivas y protocolos TMS.
+                </p>
+                <span class="flex text-xs font-bold text-purple-600 uppercase tracking-widest group-hover:translate-x-1 transition-transform">Seleccionar <RightArrow class="size-4" /></span>
+            </a>
+
+        </div>
+    </div>
+</dialog>
+
+<style>
+    #modal-tipo-paciente {
+        position: fixed;
+        inset: 0;
+        margin: auto;
+    }
+
+    #modal-tipo-paciente::backdrop {
+        background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(4px);
+    }
+
+    /* CAMBIO: Renombramos la animación para evitar conflictos con SystemUpdate */
+    #modal-tipo-paciente[open] {
+        animation: fade-in-patient-modal 0.3s ease-out;
+    }
+
+    @keyframes fade-in-patient-modal {
+        from { 
+            opacity: 0; 
+            transform: scale(0.95) translateY(10px); 
+        }
+        to { 
+            opacity: 1; 
+            transform: scale(1) translateY(0); 
+        }
+    }
+</style>
