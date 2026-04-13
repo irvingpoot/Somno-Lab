@@ -4,7 +4,7 @@ export const prerender = true;
 import { getCollection, render } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import NavBarSimple from '../../components/NavBarSimple.astro';
-import BackButton from '../../components/BackButton.astro';
+import ReturnButton from '../../components/ReturnButton.astro';
 
 export async function getStaticPaths() {
     const posts = await getCollection('blog');
@@ -40,7 +40,7 @@ const relacionados = posts
             />
             
             <div class="absolute top-24 left-4 md:left-8 z-50">
-                <BackButton href="/blog" label="Volver" className="bg-white/90 backdrop-blur-md py-2 px-4 rounded-full text-sm shadow-lg hover:bg-white hover:scale-105 transition transform" />
+                <ReturnButton href="/blog" text="Volver"/>
             </div>
 
             <div class="absolute bottom-0 left-0 w-full z-20 bg-linear-to-t from-slate-900/90 via-slate-900/50 to-transparent pt-32 pb-12 px-4">

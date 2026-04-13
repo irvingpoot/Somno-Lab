@@ -1,5 +1,5 @@
 ---
-import BackButton from '../../components/BackButton.astro';
+import ReturnButton from '../../components/ReturnButton.astro';
 import Layout from '../../layouts/Layout.astro';
 import { createClient } from "@supabase/supabase-js";
 
@@ -48,7 +48,7 @@ if (error) console.error("Error cargando eventos:", error);
 <Layout title="Gestión de Eventos | SomnoLab" showFooter={false}>
 
     <div class="absolute top-8 left-5 xs:p-5 animate-fade-in-down" style="animation-delay: 0.1s;">
-        <BackButton href="/dashboard" label="Volver al dashboard" />
+        <ReturnButton href="/admin/dashboard" text="Volver al dashboard" />
     </div>
     
     <div class="bg-slate-50 min-h-screen py-12">
