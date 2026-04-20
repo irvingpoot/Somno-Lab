@@ -92,7 +92,7 @@ const proximosEventos = (eventosRaw || []).map(e => {
                         <img 
                             src="https://images.unsplash.com/photo-1659989693409-5adc97274bed?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
                             alt="Equipo SomnoLab" 
-                            class="w-full h-[500px] object-cover"
+                            class="w-full h-125 object-cover"
                             loading="lazy"
                         />
                         <div class="absolute inset-0 bg-linear-to-t from-somno/20 to-transparent"></div>
@@ -192,7 +192,7 @@ const proximosEventos = (eventosRaw || []).map(e => {
                         
                         <div class="flex flex-col md:flex-row gap-8 items-stretch">
                             
-                            <div class="shrink-0 bg-black rounded-4xl p-6 flex md:flex-col items-center justify-between md:justify-center gap-6 shadow-2xl shadow-slate-300 min-w-[100px]">
+                            <div class="shrink-0 bg-black rounded-4xl p-6 flex md:flex-col items-center justify-between md:justify-center gap-6 shadow-2xl shadow-slate-300 min-w-25">
                                 <div id="rojo" class="w-16 h-16 rounded-full bg-[#ff0000] border-4 border-black shadow-[0_0_15px_rgba(255,0,0,0.6)]"></div>
                                 <div id="amarillo" class="w-16 h-16 rounded-full bg-[#ffe100] border-4 border-black shadow-[0_0_15px_rgba(255,225,0,0.6)]"></div>
                                 <div id="verde" class="w-16 h-16 rounded-full bg-[#21c500] border-4 border-black shadow-[0_0_15px_rgba(33,197,0,0.6)]"></div>
@@ -224,7 +224,7 @@ const proximosEventos = (eventosRaw || []).map(e => {
     <section class="py-24 bg-slate-50 relative overflow-hidden">
         <div class="absolute top-0 left-0 w-full h-px bg-linear-to-r from-transparent via-slate-200 to-transparent"></div>
 
-        <div class="max-w-[1400px] mx-auto px-4 sm:px-6">
+        <div class="max-w-350 mx-auto px-4 sm:px-6">
             
             <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
                 <div>
@@ -249,7 +249,7 @@ const proximosEventos = (eventosRaw || []).map(e => {
                         <div class="relative h-56 rounded-[1.8rem] overflow-hidden mb-5">
                             <img src={evento.img} alt={evento.titulo} class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                             
-                            <div class="absolute top-4 right-4 bg-white/95 backdrop-blur-md rounded-2xl p-2.5 text-center shadow-lg min-w-[65px]">
+                            <div class="absolute top-4 right-4 bg-white/95 backdrop-blur-md rounded-2xl p-2.5 text-center shadow-lg min-w-16.25">
                                 <span class="block text-xl font-black text-slate-800 leading-none">{evento.dia}</span>
                                 <span class="block text-[10px] font-bold text-somno uppercase">{evento.mes}</span>
                             </div>
@@ -294,7 +294,7 @@ const proximosEventos = (eventosRaw || []).map(e => {
     </section>
 
     <section id="somnoblog" class="py-24">
-        <div class="max-w-[1400px] mx-auto px-4 sm:px-6">
+        <div class="max-w-350 mx-auto px-4 sm:px-6">
             
             <div class="text-center mb-16">
                 <h2 class="text-4xl md:text-6xl font-bold text-slate-800 tracking-[0.2em] uppercase mb-4">
@@ -305,7 +305,7 @@ const proximosEventos = (eventosRaw || []).map(e => {
                 </p>
             </div>
 
-            <div class="flex flex-col lg:flex-row gap-4 h-auto lg:h-[750px] w-full transition-all duration-500">
+            <div class="flex flex-col lg:flex-row gap-4 h-auto lg:h-187.5 w-full transition-all duration-500">
                 
                 <div class="flex flex-col gap-4 flex-1 lg:hover:grow-[1.5] transition-all duration-700 ease-out">
                     {postsIzquierda.map((post) => (
