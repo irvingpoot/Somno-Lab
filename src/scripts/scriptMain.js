@@ -3,6 +3,7 @@ document.getElementById('edad-hora').addEventListener('submit', function(event) 
     
     const edad = parseInt(document.getElementById('edad').value);
     const horaDespertar = document.getElementById('hora').value;
+    const sexo = document.querySelector('input[name="sexo"]:checked')?.value || 'otro';
 
     const modal = document.getElementById('modal-info');
     const closeModalBtn = document.getElementById('close-modal-btn');
@@ -43,7 +44,7 @@ document.getElementById('edad-hora').addEventListener('submit', function(event) 
         '0': { grupo: 'Recien Nacido/Bebé' },
         '1-2': { grupo: 'Niño pequeño' },
         '3-5': { grupo: 'Preescolar' },
-        '6-13': { grupo: 'Edad escolar' },
+        '6-13': { grupo: 'niño en edad escolar' },
         '14-17': { grupo: 'Adolescentes' },
         '18-25': { grupo: 'Adulto Joven' },
         '26-64': { grupo: 'Adulto' },
@@ -99,5 +100,53 @@ document.getElementById('edad-hora').addEventListener('submit', function(event) 
     document.getElementById('mensaje-cerca').innerText = `Hora cerca del rango ideal: entre ${horaPosibleMin} y ${horaPosibleMax}. Sugerencia: ${horaMediaPosible}`;
     document.getElementById('mensaje-fuera').innerText = `Hora fuera del rango: antes de ${horaPosibleMin} o después de ${horaPosibleMax}`;
     
-    document.getElementById('pie-semaforo').innerHTML = `Las horas sugeridas de sueño para <span class="font-bold text-somno">${grupo}</span> es entre <span class="font-bold text-somno">${idealMin}</span> y <span class="font-bold text-somno">${idealMax}</span>, idealmente <span class="font-bold text-somno">${horaMediaIdeal}</span>`;
+    document.getElementById('pie-semaforo').classList.add('bg-slate-100/75');
+    document.getElementById('pie-semaforo').innerHTML = `Las horas sugeridas de sueño para un <span class="font-bold text-somno">${grupo}</span> es entre <span class="font-bold text-somno">${idealMin}</span> y <span class="font-bold text-somno">${idealMax}</span>, idealmente dormir a las <span class="font-bold text-somno">${horaMediaIdeal}</span>`;
+
+    
+    function obtenerEtapa(edad) {
+        if (edad <= 3)  return 'bebe';
+        if (edad <= 13) return 'nino';
+        if (edad <= 17) return 'adolescente';
+        if (edad <= 64) return 'adulto';
+        return 'mayor';
+    }
+
+    const avatarMap = {
+        'bebe-hombre':        '/avatares/bebe.svg',
+        'bebe-mujer':         '/avatares/bebe.svg',
+        'bebe-otro':          '/avatares/bebe.svg',
+        'nino-hombre':        '/avatares/nino-hombre.webp',
+        'nino-mujer':         '/avatares/nino-mujer.webp',
+        'nino-otro':          '',
+        'adolescente-hombre': '/avatares/adolescente-hombre.webp',
+        'adolescente-mujer':  '/avatares/adolescente-mujer.webp',
+        'adolescente-otro':   '',
+        'adulto-hombre':      '/avatares/adulto-hombre.webp',
+        'adulto-mujer':       '/avatares/adulto-mujer.webp',
+        'adulto-otro':        '',
+        'mayor-hombre':       '/avatares/mayor-hombre.webp',
+        'mayor-mujer':        '/avatares/mayor-mujer.webp',
+        'mayor-otro':         '',
+    };
+
+    const etapa = obtenerEtapa(edad);
+    const claveAvatar = `${etapa}-${sexo}`;
+    const srcAvatar = avatarMap[claveAvatar] ?? avatarMap[`${etapa}-otro`];
+
+    const avatarEl  = document.getElementById('semaforo-avatar');
+    const overlayEl = document.getElementById('semaforo-overlay');
+
+    avatarEl.style.opacity = '0';
+    overlayEl.style.opacity = '0';
+
+    setTimeout(() => {
+        avatarEl.src = srcAvatar;
+        avatarEl.alt = `Ilustración ${grupo}`;
+
+        avatarEl.onload = () => { avatarEl.style.opacity = '1'; };
+        if (avatarEl.complete) avatarEl.style.opacity = '1';
+
+        overlayEl.style.opacity = '1';
+    }, 200);
 });

@@ -4,6 +4,8 @@ import Navbar from '../components/Navbar.astro';
 import { createClient } from "@supabase/supabase-js";
 
 import { getCollection } from 'astro:content';
+import TrafficLightIcon from '../components/icons/TrafficLightIcon.astro';
+import ClockIcon from '../components/icons/ClockIcon.astro';
 
 const allPosts = await getCollection('blog');
 
@@ -63,14 +65,14 @@ const proximosEventos = (eventosRaw || []).map(e => {
                 <a href="#calculadora" 
                     class="group relative px-10 py-4 bg-somno text-white rounded-full text-lg font-semibold shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 hover:-translate-y-1 transition-all duration-300 overflow-hidden">
                     <span class="relative z-10 flex items-center justify-center gap-2">
-                        <i class="fas fa-calculator text-sm"></i> Calculadora
+                        <TrafficLightIcon /> Calculadora de sueño
                     </span>
                     <div class="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out"></div>
                 </a>
                 <a href="/cronograma" 
                     class="group px-10 py-4 bg-white text-slate-700 border border-slate-200 rounded-full text-lg font-semibold hover:border-somno hover:text-somno hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
                     <span class="flex items-center justify-center gap-2">
-                        <i class="fas fa-calendar-alt text-sm"></i> Crear Cronograma
+                        <ClockIcon /> Crear Cronograma
                     </span>
                 </a>
             </div>
@@ -181,6 +183,36 @@ const proximosEventos = (eventosRaw || []).map(e => {
                                 class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 font-medium focus:ring-2 focus:ring-somno focus:bg-white transition-all outline-none" />
                         </div>
 
+                        <div class="space-y-2">
+                            <label class="text-sm font-semibold text-slate-800 ml-1">Sexo</label>
+                            <div class="grid grid-cols-3 gap-3">
+                                <label class="sexo-opcion cursor-pointer">
+                                    <input type="radio" name="sexo" value="hombre" class="sr-only peer" />
+                                    <div class="flex flex-col items-center gap-1.5 p-3 bg-slate-50 border-2 border-slate-200 rounded-xl text-slate-500 font-semibold text-sm
+                                                peer-checked:border-somno peer-checked:bg-somno/5 peer-checked:text-somno transition-all duration-200 hover:border-slate-300">
+                                        <i class="fas fa-mars text-lg"></i>
+                                        Hombre
+                                    </div>
+                                </label>
+                                <label class="sexo-opcion cursor-pointer">
+                                    <input type="radio" name="sexo" value="mujer" class="sr-only peer" />
+                                    <div class="flex flex-col items-center gap-1.5 p-3 bg-slate-50 border-2 border-slate-200 rounded-xl text-slate-500 font-semibold text-sm
+                                                peer-checked:border-somno peer-checked:bg-somno/5 peer-checked:text-somno transition-all duration-200 hover:border-slate-300">
+                                        <i class="fas fa-venus text-lg"></i>
+                                        Mujer
+                                    </div>
+                                </label>
+                                <label class="sexo-opcion cursor-pointer">
+                                    <input type="radio" name="sexo" value="otro" class="sr-only peer" />
+                                    <div class="flex flex-col items-center gap-1.5 p-3 bg-slate-50 border-2 border-slate-200 rounded-xl text-slate-500 font-semibold text-sm
+                                                peer-checked:border-somno peer-checked:bg-somno/5 peer-checked:text-somno transition-all duration-200 hover:border-slate-300">
+                                        <i class="fas fa-genderless text-lg"></i>
+                                        Otro
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
                         <button type="submit" class="mt-4 w-full bg-somno text-white font-bold py-4 px-6 rounded-xl hover:bg-somno-light hover:shadow-lg hover:shadow-blue-500/30 transition-all duration-300 transform active:scale-[0.98]">
                             Calcular Hora Ideal
                         </button>
@@ -188,31 +220,43 @@ const proximosEventos = (eventosRaw || []).map(e => {
                 </div>
 
                 <div class="lg:col-span-7 w-full">
-                    <div class="bg-white rounded-[2.5rem] p-8 md:p-10 border border-slate-100 shadow-sm relative">
+                    <div id="semaforo-panel" class="rounded-[2.5rem] p-8 md:p-10 border border-slate-100 shadow-sm relative overflow-hidden transition-all duration-700 bg-white">
                         
-                        <div class="flex flex-col md:flex-row gap-8 items-stretch">
-                            
-                            <div class="shrink-0 bg-black rounded-4xl p-6 flex md:flex-col items-center justify-between md:justify-center gap-6 shadow-2xl shadow-slate-300 min-w-25">
-                                <div id="rojo" class="w-16 h-16 rounded-full bg-[#ff0000] border-4 border-black shadow-[0_0_15px_rgba(255,0,0,0.6)]"></div>
-                                <div id="amarillo" class="w-16 h-16 rounded-full bg-[#ffe100] border-4 border-black shadow-[0_0_15px_rgba(255,225,0,0.6)]"></div>
-                                <div id="verde" class="w-16 h-16 rounded-full bg-[#21c500] border-4 border-black shadow-[0_0_15px_rgba(33,197,0,0.6)]"></div>
+                        <img
+                            id="semaforo-avatar"
+                            src=""
+                            alt=""
+                            aria-hidden="true"
+                            class="absolute bottom-0 right-0 h-48 md:h-56 w-auto object-contain opacity-0 pointer-events-none select-none transition-opacity duration-700 z-0"
+                        />
+
+                        <div id="semaforo-overlay" class="absolute inset-0 opacity-0 transition-opacity duration-700 z-0 rounded-[2.5rem]"></div>
+
+                        <div class="relative z-10">
+                            <div class="flex flex-col md:flex-row gap-8 items-stretch">
+                                
+                                <div class="shrink-0 bg-black rounded-4xl p-6 flex md:flex-col items-center justify-between md:justify-center gap-6 shadow-2xl shadow-slate-300 min-w-25">
+                                    <div id="rojo" class="w-16 h-16 rounded-full bg-[#ff0000] border-4 border-black shadow-[0_0_15px_rgba(255,0,0,0.6)]"></div>
+                                    <div id="amarillo" class="w-16 h-16 rounded-full bg-[#ffe100] border-4 border-black shadow-[0_0_15px_rgba(255,225,0,0.6)]"></div>
+                                    <div id="verde" class="w-16 h-16 rounded-full bg-[#21c500] border-4 border-black shadow-[0_0_15px_rgba(33,197,0,0.6)]"></div>
+                                </div>
+
+                                <div class="grow flex flex-col justify-around gap-4 py-2">
+                                    <div class="bg-red-50/50 p-4 rounded-2xl border-l-4 border-red-500 flex items-center min-h-18">
+                                        <p class="text-red-600 font-semibold text-lg leading-tight" id="mensaje-fuera">Hora fuera del rango ideal</p>
+                                    </div>
+                                    <div class="bg-yellow-50/50 p-4 rounded-2xl border-l-4 border-yellow-400 flex items-center min-h-18">
+                                        <p class="text-yellow-600 font-semibold text-lg leading-tight" id="mensaje-cerca">Hora cerca del rango ideal</p>
+                                    </div>
+                                    <div class="bg-green-50/50 p-4 rounded-2xl border-l-4 border-green-500 flex items-center min-h-18">
+                                        <p class="text-green-600 font-semibold text-lg leading-tight" id="mensaje-ideal">Hora ideal</p>
+                                    </div>
+                                </div>
                             </div>
 
-                            <div class="grow flex flex-col justify-around gap-4 py-2">
-                                <div class="bg-red-50/50 p-4 rounded-2xl border-l-4 border-red-500 flex items-center min-h-18">
-                                    <p class="text-red-600 font-semibold text-lg leading-tight" id="mensaje-fuera">Hora fuera del rango ideal</p>
-                                </div>
-                                <div class="bg-yellow-50/50 p-4 rounded-2xl border-l-4 border-yellow-400 flex items-center min-h-18">
-                                    <p class="text-yellow-600 font-semibold text-lg leading-tight" id="mensaje-cerca">Hora cerca del rango ideal</p>
-                                </div>
-                                <div class="bg-green-50/50 p-4 rounded-2xl border-l-4 border-green-500 flex items-center min-h-18">
-                                    <p class="text-green-600 font-semibold text-lg leading-tight" id="mensaje-ideal">Hora ideal</p>
-                                </div>
+                            <div class="mt-8 pt-6 border-t border-slate-100 text-center">
+                                <p id="pie-semaforo" class="text-slate-600 rounded-2xl font-medium text-lg leading-relaxed p-4"></p>
                             </div>
-                        </div>
-
-                        <div class="mt-8 pt-6 border-t border-slate-100 text-center">
-                            <p id="pie-semaforo" class="text-slate-600 font-medium text-lg leading-relaxed px-4"></p>
                         </div>
                     </div>
                 </div>
@@ -220,6 +264,7 @@ const proximosEventos = (eventosRaw || []).map(e => {
             </div>
         </div>
     </section>
+
 
     <section class="py-24 bg-slate-50 relative overflow-hidden">
         <div class="absolute top-0 left-0 w-full h-px bg-linear-to-r from-transparent via-slate-200 to-transparent"></div>
@@ -265,20 +310,15 @@ const proximosEventos = (eventosRaw || []).map(e => {
                             <h3 class="text-xl font-bold text-slate-800 mb-3 leading-tight group-hover:text-somno transition-colors line-clamp-2">
                                 {evento.titulo}
                             </h3>
-                            
-                            <div class="flex flex-col gap-2 text-sm text-slate-500 border-t border-slate-50 pt-3 mt-auto">
-                                <div class="flex items-center gap-3">
-                                    <span class="w-6 h-6 rounded-full bg-somno/10 flex items-center justify-center text-somno text-xs">
-                                        <i class="far fa-clock"></i>
-                                    </span>
+                            <div class="flex items-center gap-3 text-sm text-slate-400 font-medium">
+                                <span class="flex items-center gap-1.5">
+                                    <i class="fas fa-clock text-somno/60"></i>
                                     {evento.hora}
-                                </div>
-                                <div class="flex items-center gap-3">
-                                    <span class="w-6 h-6 rounded-full bg-somno/10 flex items-center justify-center text-somno text-xs">
-                                        <i class="fas fa-map-marker-alt"></i>
-                                    </span>
+                                </span>
+                                <span class="flex items-center gap-1.5">
+                                    <i class="fas fa-map-marker-alt"></i>
                                     {evento.lugar}
-                                </div>
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -527,7 +567,6 @@ const proximosEventos = (eventosRaw || []).map(e => {
 </script>
 
 <style>
-    /* Estilos base para el semáforo */
     #rojo { background-color: #ff0000; }
     #amarillo { background-color: #ffe100; }
     #verde { background-color: #21c500; }
