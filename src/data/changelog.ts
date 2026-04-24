@@ -1,8 +1,8 @@
-export const currentVersion = "3.6.0";
+export const currentVersion = "3.7.0";
 
 export const isMajorUpdate = true;
 
-export const updateDate = "13 de Abril del 2026";
+export const updateDate = "21 de Abril del 2026";
 
 type Changes = {
     title: string;
@@ -12,23 +12,8 @@ type Changes = {
 
 export const changes: Changes[] = [
     {
-        title: "Informe de resultados (Apnea Link)",
-        description: "Ya es posible generar el informe de resultados del Apnea Link desde /reportes.",
+        title: "Semaforo de sueño",
+        description: "Se agregó el selector de genero para controlar las imagenes dinamicas al momento de mostrar los resultados.",
         type: "feature"
-    },
-    {
-        title: "Filtro de pacientes",
-        description: "Ya es posible filtrar los pacientes por sus alteraciones o transtornos registrados.",
-        type: "feature"
-    },
-    {
-        title: "Recordatorio de tareas",
-        description: "Ahora el recordatorio de tareas del dashboard aparece oculto y se abre si el usuario hace pasa el mouse sobre él.",
-        type: "style"
-    },
-    {
-        title: "Iconos",
-        description: "Se han actualizado algunos iconos genericos de la página.",
-        type: "style"
     }
 ];

@@ -2,7 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import { SignIn } from '@clerk/astro/components';
 
-const redirectUrl = Astro.url.searchParams.get("redirect_url") || "/citas";
+const redirectUrl = Astro.url.searchParams.get("redirect_url") || "/admin/dashboard";
 ---
 
 <Layout title="Acceso - Laboratorio del Sueño" showFooter={false}>
