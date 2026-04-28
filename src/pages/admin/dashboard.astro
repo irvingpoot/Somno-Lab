@@ -92,6 +92,10 @@ const fechaHoyTexto = new Date().toLocaleDateString("es-MX", {
                     <p class="text-gray-500 text-lg font-light max-w-lg leading-relaxed">
                         Que bueno tenerte de vuelta. ¿Qué quieres hacer hoy?
                     </p>
+
+                    <a href="/" class="px-5 py-2 border border-somno text-somno font-bold text-sm rounded-xl hover:bg-somno-light hover:text-white hover:border-none transition-colors shadow-sm">
+                        Volver a Somnolab
+                    </a>
                 </div>
 
                 <div class="hidden md:flex flex-col items-end gap-4 text-right">
@@ -386,6 +390,23 @@ const fechaHoyTexto = new Date().toLocaleDateString("es-MX", {
                     <div class="mt-6">
                         <h3 class="text-xl font-bold text-gray-900 mb-1 group-hover:text-cyan-600 transition-colors">Manuales</h3>
                         <p class="text-sm text-gray-500 font-medium group-hover:text-gray-600 transition-colors">Todos los manuales necesarios para el funcionamiento del laboratorio.</p>
+                    </div>
+                </div>
+            </a>
+
+            <a href="/admin/solicitudes" class="group relative bg-linear-to-br from-white to-gray-50 border border-gray-200/80 rounded-3xl p-6 overflow-hidden hover:border-somno/50 transition-all duration-300 hover:shadow-2xl hover:shadow-somno/20 hover:scale-[1.01]">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-somno/10 rounded-full blur-2xl -mr-8 -mt-8 transition-all group-hover:bg-somno/20"></div>
+                
+                <div class="relative z-10 h-full flex flex-col justify-between">
+                    <div class="flex justify-between items-start">
+                        <div class="p-2.5 bg-somno/20 rounded-xl text-somno group-hover:text-gray-900 group-hover:bg-somno transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" /></svg>
+                        </div>
+                        <span class="px-2.5 py-1 bg-amber-400 text-white rounded-full text-[10px] font-black uppercase tracking-wider animate-pulse">Nuevo</span>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-900 group-hover:text-somno transition-colors">Solicitudes</h3>
+                        <p class="text-xs text-gray-500 mt-1">Formulario de contacto público</p>
                     </div>
                 </div>
             </a>

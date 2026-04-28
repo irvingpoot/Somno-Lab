@@ -1,0 +1,316 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+
+const fechaActualizacion = "Abril 2026";
+const version = "1.0";
+---
+
+<Layout title="Aviso de Privacidad | SomnoLab">
+    <Navbar />
+
+    <main class="bg-slate-50 min-h-screen pt-32 pb-24 relative overflow-hidden">
+
+        <div class="absolute top-0 right-0 w-175 h-175 bg-somno/5 rounded-full blur-[120px] pointer-events-none -z-10 translate-x-1/3 -translate-y-1/4"></div>
+        <div class="absolute bottom-0 left-0 w-100 h-100 bg-somno-light/5 rounded-full blur-[100px] pointer-events-none -z-10 -translate-x-1/4"></div>
+
+        <div class="max-w-4xl mx-auto px-4 sm:px-6">
+
+            <div class="text-center mb-14 animate-fade-in-up">
+                <span class="text-somno font-bold tracking-[0.2em] uppercase text-xs mb-3 block">
+                    Versión {version} — Última actualización: {fechaActualizacion}
+                </span>
+                <h1 class="text-4xl md:text-5xl font-black text-slate-800 mb-5 tracking-tight">
+                    Aviso de
+                    <span class="text-transparent bg-clip-text bg-linear-to-r from-somno to-somno-light">Privacidad</span>
+                </h1>
+                <p class="text-slate-500 max-w-2xl mx-auto text-base leading-relaxed">
+                    En SomnoLab nos comprometemos con la protección de tus datos personales conforme a la
+                    <strong class="text-slate-700">Ley Federal de Protección de Datos Personales en Posesión de los Particulares (LFPDPPP)</strong>.
+                </p>
+            </div>
+
+            <nav class="bg-white rounded-3xl border border-slate-100 shadow-lg shadow-slate-200/50 p-8 mb-10 animate-fade-in-up" style="animation-delay: 80ms;" aria-label="Índice del aviso">
+                <p class="text-xs font-bold tracking-[0.2em] uppercase text-somno mb-4">Contenido</p>
+                <ol class="grid sm:grid-cols-2 gap-x-8 gap-y-2">
+                    {[
+                        ["I",   "Identidad del Responsable"],
+                        ["II",  "Datos que Recabamos"],
+                        ["III", "Finalidades del Tratamiento"],
+                        ["IV",  "Transferencia a Terceros"],
+                        ["V",   "Medidas de Seguridad"],
+                        ["VI",  "Derechos ARCO"],
+                        ["VII", "Revocación del Consentimiento"],
+                        ["VIII","Cookies"],
+                        ["IX",  "Modificaciones"],
+                        ["X",   "Autoridad Competente"],
+                    ].map(([num, titulo]) => (
+                        <li>
+                            <a href={`#sec-${num.toLowerCase()}`}
+                                class="flex items-center gap-2 text-sm text-slate-600 hover:text-somno transition-colors py-1 group">
+                                <span class="text-somno font-black text-xs w-8 shrink-0">{num}.</span>
+                                <span class="group-hover:underline underline-offset-2">{titulo}</span>
+                            </a>
+                        </li>
+                    ))}
+                </ol>
+            </nav>
+
+            <div class="bg-white rounded-3xl border border-slate-100 shadow-lg shadow-slate-200/50 divide-y divide-slate-100 animate-fade-in-up" style="animation-delay: 160ms;">
+
+                <section id="sec-i" class="p-8 md:p-10">
+                    <div class="flex items-start gap-4 mb-4">
+                        <span class="shrink-0 w-9 h-9 rounded-xl bg-somno/10 text-somno flex items-center justify-center font-black text-sm">I</span>
+                        <h2 class="text-xl font-black text-slate-800 pt-1">Identidad y Domicilio del Responsable</h2>
+                    </div>
+                    <div class="pl-13 space-y-3 text-slate-600 leading-relaxed text-sm">
+                        <p>
+                            El responsable del tratamiento de tus datos personales es
+                            <strong class="text-slate-800">[NOMBRE O RAZÓN SOCIAL DEL RESPONSABLE]</strong>,
+                            con domicilio en <strong class="text-slate-800">[DOMICILIO COMPLETO]</strong>,
+                            en adelante denominado <strong class="text-slate-800">"SomnoLab"</strong> o <strong class="text-slate-800">"el Responsable"</strong>.
+                        </p>
+                    </div>
+                </section>
+
+                <section id="sec-ii" class="p-8 md:p-10">
+                    <div class="flex items-start gap-4 mb-4">
+                        <span class="shrink-0 w-9 h-9 rounded-xl bg-somno/10 text-somno flex items-center justify-center font-black text-sm">II</span>
+                        <h2 class="text-xl font-black text-slate-800 pt-1">Datos Personales que Recabamos</h2>
+                    </div>
+                    <div class="pl-13 space-y-5 text-slate-600 leading-relaxed text-sm">
+
+                        <div>
+                            <p class="font-bold text-slate-700 mb-2">A) Datos de contacto (formulario público)</p>
+                            <ul class="space-y-1.5 list-none">
+                                {["Nombre completo","Número de teléfono celular (opcional si proporcionas correo)","Correo electrónico (opcional si proporcionas teléfono)","Motivo de consulta o descripción de síntomas","Dirección IP del dispositivo (fines de seguridad)"].map(d => (
+                                    <li class="flex items-start gap-2">
+                                        <i class="fas fa-check-circle text-somno text-xs mt-0.5 shrink-0"></i>
+                                        <span>{d}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+
+                        <div class="bg-red-50 border border-red-200 rounded-2xl p-5">
+                            <p class="flex items-center gap-2 font-bold text-red-700 mb-3 text-sm">
+                                <i class="fas fa-shield-alt"></i>
+                                B) Datos personales sensibles — Historial clínico (pacientes activos)
+                            </p>
+                            <p class="text-red-600 text-xs mb-3 leading-relaxed">
+                                Conforme al artículo 3, fracción VI de la LFPDPPP, estos datos requieren tu consentimiento expreso y están sujetos a especial protección.
+                            </p>
+                            <ul class="space-y-1.5">
+                                {[
+                                    "Nombre completo, edad, sexo y fecha de nacimiento",
+                                    "Diagnósticos médicos relacionados con trastornos del sueño",
+                                    "Resultados de estudios de poligrafía y polisomnografía",
+                                    "Historial de hábitos de sueño registrados en la plataforma",
+                                    "Evaluaciones de ánimo y cuestionarios validados (Berlin, PSQI, Epworth)",
+                                    "Información sobre medicamentos y tratamientos previos",
+                                    "Notas clínicas, citas y reportes de seguimiento",
+                                ].map(d => (
+                                    <li class="flex items-start gap-2 text-red-700 text-xs">
+                                        <i class="fas fa-dot-circle text-red-400 mt-0.5 shrink-0"></i>
+                                        <span>{d}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+
+                    </div>
+                </section>
+
+                <section id="sec-iii" class="p-8 md:p-10">
+                    <div class="flex items-start gap-4 mb-4">
+                        <span class="shrink-0 w-9 h-9 rounded-xl bg-somno/10 text-somno flex items-center justify-center font-black text-sm">III</span>
+                        <h2 class="text-xl font-black text-slate-800 pt-1">Finalidades del Tratamiento</h2>
+                    </div>
+                    <div class="pl-13 space-y-5 text-slate-600 leading-relaxed text-sm">
+                        <div>
+                            <p class="font-bold text-slate-700 mb-2">Finalidades primarias (necesarias para la atención)</p>
+                            <ul class="space-y-1.5">
+                                {[
+                                    "Atender y dar seguimiento a tu solicitud de consulta",
+                                    "Agendar, gestionar y registrar citas médicas",
+                                    "Elaborar y mantener el expediente clínico del paciente",
+                                    "Realizar diagnósticos y prescribir tratamientos",
+                                    "Aplicar y evaluar cuestionarios clínicos validados",
+                                    "Generar reportes médicos y estudios de sueño",
+                                    "Cumplir obligaciones legales en materia de salud",
+                                ].map(f => (
+                                    <li class="flex items-start gap-2">
+                                        <i class="fas fa-check-circle text-somno text-xs mt-0.5 shrink-0"></i>
+                                        <span>{f}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                        <div class="bg-slate-50 rounded-2xl p-5 border border-slate-200">
+                            <p class="font-bold text-slate-700 mb-2 flex items-center gap-2">
+                                <i class="fas fa-info-circle text-somno"></i>
+                                Finalidades secundarias (puedes oponerte)
+                            </p>
+                            <ul class="space-y-1.5">
+                                {[
+                                    "Envío de información sobre nuevos servicios, cursos o eventos de SomnoLab",
+                                    "Elaboración de estadísticas internas anónimas para mejorar la calidad del servicio",
+                                ].map(f => (
+                                    <li class="flex items-start gap-2">
+                                        <i class="fas fa-circle text-slate-400 text-xs mt-0.5 shrink-0"></i>
+                                        <span>{f}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                            <p class="text-xs text-slate-500 mt-3">Para oponerte a estas finalidades, escríbenos al canal indicado en el apartado VI.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="sec-iv" class="p-8 md:p-10">
+                    <div class="flex items-start gap-4 mb-4">
+                        <span class="shrink-0 w-9 h-9 rounded-xl bg-somno/10 text-somno flex items-center justify-center font-black text-sm">IV</span>
+                        <h2 class="text-xl font-black text-slate-800 pt-1">Transferencia de Datos a Terceros</h2>
+                    </div>
+                    <div class="pl-13 space-y-3 text-slate-600 leading-relaxed text-sm">
+                        <p>SomnoLab no vende ni cede tus datos a terceros con fines de lucro. Para el funcionamiento técnico de la plataforma, tus datos son procesados por los siguientes proveedores que actúan como encargados:</p>
+                        <ul class="space-y-2">
+                            <li class="flex items-start gap-2">
+                                <i class="fas fa-server text-somno text-xs mt-0.5 shrink-0"></i>
+                                <span><strong class="text-slate-700">Supabase Inc.</strong> — Base de datos y autenticación en la nube (servidores en EE. UU., bajo garantías de protección adecuada conforme al artículo 36 de la LFPDPPP).</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fas fa-globe text-somno text-xs mt-0.5 shrink-0"></i>
+                                <span><strong class="text-slate-700">Servicio de alojamiento web</strong> — Para la operación del sitio somnolab.com.</span>
+                            </li>
+                        </ul>
+                        <p>Estos proveedores están obligados contractualmente a tratar tus datos solo con las instrucciones del Responsable. No se realizan otras transferencias sin tu consentimiento previo, salvo requerimiento de autoridad competente.</p>
+                    </div>
+                </section>
+
+                <section id="sec-v" class="p-8 md:p-10">
+                    <div class="flex items-start gap-4 mb-4">
+                        <span class="shrink-0 w-9 h-9 rounded-xl bg-somno/10 text-somno flex items-center justify-center font-black text-sm">V</span>
+                        <h2 class="text-xl font-black text-slate-800 pt-1">Medidas de Seguridad</h2>
+                    </div>
+                    <div class="pl-13 text-slate-600 leading-relaxed text-sm">
+                        <p class="mb-3">Contamos con medidas administrativas, físicas y técnicas conforme al artículo 19 de la LFPDPPP, entre las que se incluyen:</p>
+                        <ul class="space-y-1.5">
+                            {[
+                                "Cifrado de comunicaciones mediante protocolo HTTPS/TLS",
+                                "Control de acceso por roles en la plataforma administrativa",
+                                "Autenticación segura para el personal autorizado",
+                                "Políticas de Row Level Security en la base de datos",
+                                "Separación de datos públicos y clínicos sensibles",
+                            ].map(m => (
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-lock text-somno text-xs mt-0.5 shrink-0"></i>
+                                    <span>{m}</span>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                </section>
+
+                <section id="sec-vi" class="p-8 md:p-10">
+                    <div class="flex items-start gap-4 mb-4">
+                        <span class="shrink-0 w-9 h-9 rounded-xl bg-somno/10 text-somno flex items-center justify-center font-black text-sm">VI</span>
+                        <h2 class="text-xl font-black text-slate-800 pt-1">Derechos ARCO</h2>
+                    </div>
+                    <div class="pl-13 space-y-4 text-slate-600 leading-relaxed text-sm">
+
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                            {[
+                                { letra: "A", nombre: "Acceso", desc: "Conocer qué datos tenemos y para qué" },
+                                { letra: "R", nombre: "Rectificación", desc: "Corregir datos inexactos o incompletos" },
+                                { letra: "C", nombre: "Cancelación", desc: "Solicitar la eliminación de tus datos" },
+                                { letra: "O", nombre: "Oposición", desc: "Oponerte a su uso para fines secundarios" },
+                            ].map(d => (
+                                <div class="bg-slate-50 rounded-2xl p-4 text-center border border-slate-100">
+                                    <span class="block text-2xl font-black text-somno mb-1">{d.letra}</span>
+                                    <span class="block font-bold text-slate-800 text-xs mb-1">{d.nombre}</span>
+                                    <span class="block text-slate-500 text-xs leading-tight">{d.desc}</span>
+                                </div>
+                            ))}
+                        </div>
+
+                        <p>Para ejercer cualquiera de estos derechos, envía una solicitud indicando tu nombre completo, identificación oficial y el derecho que deseas ejercer a:</p>
+
+                        <div class="bg-somno/5 border border-somno/20 rounded-2xl p-5 flex items-center gap-4">
+                            <i class="fas fa-envelope text-somno text-xl shrink-0"></i>
+                            <div>
+                                <p class="font-bold text-slate-800 text-sm">[CORREO O TELÉFONO PARA DERECHOS ARCO]</p>
+                                <p class="text-slate-500 text-xs mt-0.5">Responderemos en un máximo de 20 días hábiles a partir de la recepción de tu solicitud.</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
+                <section id="sec-vii" class="p-8 md:p-10">
+                    <div class="flex items-start gap-4 mb-4">
+                        <span class="shrink-0 w-9 h-9 rounded-xl bg-somno/10 text-somno flex items-center justify-center font-black text-sm">VII</span>
+                        <h2 class="text-xl font-black text-slate-800 pt-1">Revocación del Consentimiento</h2>
+                    </div>
+                    <div class="pl-13 text-slate-600 leading-relaxed text-sm space-y-2">
+                        <p>Puedes revocar en cualquier momento el consentimiento que nos hayas otorgado para el tratamiento de tus datos, siempre que no sea necesario para el cumplimiento de una obligación legal, enviando tu solicitud al canal indicado en el apartado VI.</p>
+                        <p>La revocación no tendrá efectos retroactivos sobre tratamientos realizados lícitamente con anterioridad.</p>
+                    </div>
+                </section>
+
+                <section id="sec-viii" class="p-8 md:p-10">
+                    <div class="flex items-start gap-4 mb-4">
+                        <span class="shrink-0 w-9 h-9 rounded-xl bg-somno/10 text-somno flex items-center justify-center font-black text-sm">VIII</span>
+                        <h2 class="text-xl font-black text-slate-800 pt-1">Uso de Cookies</h2>
+                    </div>
+                    <div class="pl-13 text-slate-600 leading-relaxed text-sm">
+                        <p>Nuestro sitio web utiliza únicamente cookies técnicas necesarias para su correcto funcionamiento. No empleamos cookies de rastreo publicitario de terceros. Puedes deshabilitar las cookies desde la configuración de tu navegador, aunque esto podría afectar algunas funciones del sitio.</p>
+                    </div>
+                </section>
+
+                <section id="sec-ix" class="p-8 md:p-10">
+                    <div class="flex items-start gap-4 mb-4">
+                        <span class="shrink-0 w-9 h-9 rounded-xl bg-somno/10 text-somno flex items-center justify-center font-black text-sm">IX</span>
+                        <h2 class="text-xl font-black text-slate-800 pt-1">Modificaciones al Aviso</h2>
+                    </div>
+                    <div class="pl-13 text-slate-600 leading-relaxed text-sm">
+                        <p>Nos reservamos el derecho de modificar este Aviso en cualquier momento para adaptarlo a cambios legales o de operación. Cualquier actualización se publicará en esta misma página con al menos 10 días de anticipación, indicando la nueva fecha de versión. El uso continuado del sitio tras la publicación implica tu aceptación.</p>
+                    </div>
+                </section>
+
+                <section id="sec-x" class="p-8 md:p-10">
+                    <div class="flex items-start gap-4 mb-4">
+                        <span class="shrink-0 w-9 h-9 rounded-xl bg-somno/10 text-somno flex items-center justify-center font-black text-sm">X</span>
+                        <h2 class="text-xl font-black text-slate-800 pt-1">Autoridad Competente</h2>
+                    </div>
+                    <div class="pl-13 space-y-3 text-slate-600 leading-relaxed text-sm">
+                        <p>Si consideras que tu derecho a la protección de datos ha sido vulnerado, puedes acudir al <strong class="text-slate-700">Instituto Nacional de Transparencia, Acceso a la Información y Protección de Datos Personales (INAI)</strong>:</p>
+                        <ul class="space-y-1.5">
+                            <li class="flex items-center gap-2"><i class="fas fa-globe text-somno text-xs shrink-0"></i><a href="https://www.inai.org.mx" target="_blank" rel="noopener" class="text-somno hover:underline">www.inai.org.mx</a></li>
+                            <li class="flex items-center gap-2"><i class="fas fa-envelope text-somno text-xs shrink-0"></i><span>atencionalciudadano@inai.org.mx</span></li>
+                            <li class="flex items-center gap-2"><i class="fas fa-phone text-somno text-xs shrink-0"></i><span>800 835 4324</span></li>
+                        </ul>
+                    </div>
+                </section>
+
+            </div>
+
+            <p class="text-center text-slate-400 text-xs mt-8">
+                © {new Date().getFullYear()} SomnoLab — Versión {version} — {fechaActualizacion}
+            </p>
+
+        </div>
+    </main>
+</Layout>
+
+<style>
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in-up {
+        animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        opacity: 0;
+    }
+    .pl-13 { padding-left: 3.25rem; }
+</style>

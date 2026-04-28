@@ -1,0 +1,319 @@
+---
+/**
+ * @component ContactForm
+ * @description Formulario de solicitud de servicio para la página pública de Servicios.
+ * Recibe el servicio preseleccionado como prop opcional.
+ */
+
+interface Props {
+    servicioInicial?: string;
+    servicios: { id: string; titulo: string }[];
+}
+
+const { servicioInicial = "", servicios } = Astro.props;
+---
+
+<section id="contacto" class="mt-20 scroll-mt-24 animate-fade-in-up" style="animation-delay: 350ms;">
+    <div class="bg-white rounded-[3rem] shadow-2xl shadow-slate-200/60 border border-slate-100 overflow-hidden">
+        
+        <div class="flex flex-col md:flex-row">
+            
+            <div class="relative w-full md:w-2/5 bg-linear-to-br from-somno to-somno-light p-10 md:p-14 flex flex-col justify-between overflow-hidden">
+                <div class="absolute -top-16 -right-16 w-56 h-56 bg-white/10 rounded-full"></div>
+                <div class="absolute bottom-0 -left-10 w-40 h-40 bg-white/10 rounded-full"></div>
+
+                <div class="relative z-10">
+                    <div class="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center text-white text-2xl mb-8">
+                        <i class="fas fa-paper-plane"></i>
+                    </div>
+                    <h2 class="text-3xl md:text-4xl font-black text-white leading-tight mb-4">
+                        Solicita tu <br />
+                        <span class="text-white/80">primera consulta</span>
+                    </h2>
+                    <p class="text-white/70 text-base leading-relaxed">
+                        Cuéntanos lo que necesitas y nos pondremos en contacto contigo a la brevedad.
+                    </p>
+                </div>
+
+                <ul class="relative z-10 mt-10 space-y-4">
+                    <li class="flex items-center gap-3 text-white/80 text-sm font-medium">
+                        <i class="fas fa-check-circle text-white"></i>
+                        Sin compromisos, primera consulta informativa
+                    </li>
+                    <li class="flex items-center gap-3 text-white/80 text-sm font-medium">
+                        <i class="fas fa-check-circle text-white"></i>
+                        Respuesta en menos de 24 horas
+                    </li>
+                    <li class="flex items-center gap-3 text-white/80 text-sm font-medium">
+                        <i class="fas fa-check-circle text-white"></i>
+                        Tus datos se mantienen privados
+                    </li>
+                </ul>
+            </div>
+
+            <div class="w-full md:w-3/5 p-10 md:p-14">
+                <p class="text-somno font-bold tracking-[0.2em] uppercase text-xs mb-2">Formulario de Contacto</p>
+                <h3 class="text-2xl font-black text-slate-800 mb-8">¿En qué podemos ayudarte?</h3>
+
+                <form id="contact-form" novalidate class="space-y-6">
+
+                    <div class="form-field">
+                        <label for="cf-nombre" class="block text-sm font-bold text-slate-700 mb-2">
+                            Nombre completo <span class="text-somno">*</span>
+                        </label>
+                        <input
+                            type="text"
+                            id="cf-nombre"
+                            name="nombre"
+                            autocomplete="name"
+                            maxlength="100"
+                            placeholder="Ej. María González"
+                            class="cf-input w-full px-5 py-3.5 rounded-xl border border-slate-200 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-somno/40 focus:border-somno transition-all duration-200 bg-slate-50 text-sm"
+                        />
+                        <p class="cf-error hidden text-red-500 text-xs mt-1.5 font-medium" id="error-nombre"></p>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="cf-servicio" class="block text-sm font-bold text-slate-700 mb-2">
+                            Servicio de interés <span class="text-somno">*</span>
+                        </label>
+                        <div class="relative">
+                            <select
+                                id="cf-servicio"
+                                name="servicio"
+                                class="cf-input w-full px-5 py-3.5 rounded-xl border border-slate-200 text-slate-800 focus:outline-none focus:ring-2 focus:ring-somno/40 focus:border-somno transition-all duration-200 bg-slate-50 text-sm appearance-none pr-10"
+                            >
+                                <option value="">Selecciona un servicio…</option>
+                                {servicios.map(s => (
+                                    <option value={s.id} selected={s.id === servicioInicial}>{s.titulo}</option>
+                                ))}
+                            </select>
+                            <i class="fas fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-xs"></i>
+                        </div>
+                        <p class="cf-error hidden text-red-500 text-xs mt-1.5 font-medium" id="error-servicio"></p>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="cf-motivo" class="block text-sm font-bold text-slate-700 mb-2">
+                            Cuéntanos tu situación <span class="text-somno">*</span>
+                        </label>
+                        <textarea
+                            id="cf-motivo"
+                            name="motivo"
+                            rows="4"
+                            maxlength="1000"
+                            placeholder="Describe brevemente los síntomas o motivos por los que buscas atención…"
+                            class="cf-input w-full px-5 py-3.5 rounded-xl border border-slate-200 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-somno/40 focus:border-somno transition-all duration-200 bg-slate-50 text-sm resize-none"
+                        ></textarea>
+                        <div class="flex justify-between items-center mt-1">
+                            <p class="cf-error hidden text-red-500 text-xs font-medium" id="error-motivo"></p>
+                            <p class="text-slate-400 text-xs ml-auto"><span id="motivo-count">0</span>/1000</p>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-slate-100 pt-2">
+                        <p class="text-xs text-slate-400 mb-4 font-medium">
+                            <i class="fas fa-info-circle text-somno mr-1"></i>
+                            Proporciona al menos un medio de contacto.
+                        </p>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                            <div class="form-field">
+                                <label for="cf-telefono" class="block text-sm font-bold text-slate-700 mb-2">
+                                    Teléfono / Celular
+                                </label>
+                                <input
+                                    type="tel"
+                                    id="cf-telefono"
+                                    name="telefono"
+                                    autocomplete="tel"
+                                    maxlength="20"
+                                    placeholder="Ej. +52 999 000 0000"
+                                    class="cf-input w-full px-5 py-3.5 rounded-xl border border-slate-200 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-somno/40 focus:border-somno transition-all duration-200 bg-slate-50 text-sm"
+                                />
+                                <p class="cf-error hidden text-red-500 text-xs mt-1.5 font-medium" id="error-telefono"></p>
+                            </div>
+
+                            <div class="form-field">
+                                <label for="cf-correo" class="block text-sm font-bold text-slate-700 mb-2">
+                                    Correo electrónico
+                                </label>
+                                <input
+                                    type="email"
+                                    id="cf-correo"
+                                    name="correo"
+                                    autocomplete="email"
+                                    maxlength="254"
+                                    placeholder="Ej. correo@ejemplo.com"
+                                    class="cf-input w-full px-5 py-3.5 rounded-xl border border-slate-200 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-somno/40 focus:border-somno transition-all duration-200 bg-slate-50 text-sm"
+                                />
+                                <p class="cf-error hidden text-red-500 text-xs mt-1.5 font-medium" id="error-correo"></p>
+                            </div>
+                        </div>
+                        <p class="cf-error hidden text-red-500 text-xs mt-2 font-medium" id="error-contacto"></p>
+                    </div>
+
+                    <div class="pt-2">
+                        <button
+                            type="submit"
+                            id="cf-submit"
+                            class="w-full sm:w-auto bg-slate-900 text-white px-10 py-4 rounded-xl font-bold hover:bg-somno transition-all duration-300 shadow-lg hover:shadow-somno/30 flex items-center justify-center gap-3 disabled:opacity-60 disabled:cursor-not-allowed"
+                        >
+                            <span id="cf-submit-text">Enviar solicitud</span>
+                            <i class="fas fa-arrow-right text-xs" id="cf-submit-icon"></i>
+                            <svg id="cf-spinner" class="hidden w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div id="cf-global-msg" class="hidden rounded-xl p-4 text-sm font-medium flex items-start gap-3"></div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script is:inline>
+(function () {
+    const form       = document.getElementById('contact-form');
+    const submitBtn  = document.getElementById('cf-submit');
+    const submitText = document.getElementById('cf-submit-text');
+    const submitIcon = document.getElementById('cf-submit-icon');
+    const spinner    = document.getElementById('cf-spinner');
+    const globalMsg  = document.getElementById('cf-global-msg');
+    const motivoTA   = document.getElementById('cf-motivo');
+    const motivoCount = document.getElementById('motivo-count');
+
+    motivoTA?.addEventListener('input', () => {
+        motivoCount.textContent = motivoTA.value.length;
+    });
+
+    function showError(id, msg) {
+        const el = document.getElementById('error-' + id);
+        if (!el) return;
+        el.textContent = msg;
+        el.classList.remove('hidden');
+        const input = document.getElementById('cf-' + id);
+        input?.classList.add('border-red-400', 'bg-red-50/40');
+        input?.classList.remove('border-slate-200');
+    }
+
+    function clearError(id) {
+        const el = document.getElementById('error-' + id);
+        if (!el) return;
+        el.classList.add('hidden');
+        el.textContent = '';
+        const input = document.getElementById('cf-' + id);
+        input?.classList.remove('border-red-400', 'bg-red-50/40');
+        input?.classList.add('border-slate-200');
+    }
+
+    function clearAllErrors() {
+        ['nombre','servicio','motivo','telefono','correo','contacto'].forEach(clearError);
+    }
+
+    function setLoading(loading) {
+        submitBtn.disabled = loading;
+        spinner.classList.toggle('hidden', !loading);
+        submitIcon.classList.toggle('hidden', loading);
+        submitText.textContent = loading ? 'Enviando…' : 'Enviar solicitud';
+    }
+
+    function showGlobal(msg, isError) {
+        globalMsg.className = isError
+            ? 'rounded-xl p-4 text-sm font-medium flex items-start gap-3 bg-red-50 text-red-700 border border-red-200'
+            : 'rounded-xl p-4 text-sm font-medium flex items-start gap-3 bg-green-50 text-green-700 border border-green-200';
+        globalMsg.innerHTML = `<i class="fas ${isError ? 'fa-exclamation-circle' : 'fa-check-circle'} mt-0.5 flex-shrink-0"></i><span>${msg}</span>`;
+        globalMsg.classList.remove('hidden');
+        globalMsg.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    const RE_NOMBRE   = /^[\p{L}\p{M}'\- ]{2,100}$/u;
+    const RE_TELEFONO = /^\+?[0-9()\- ]{7,20}$/;
+    const RE_CORREO   = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    const SERVICIOS   = ['insomnio','apnea','ritmo','parasomnias'];
+
+    function validate(data) {
+        let valid = true;
+
+        if (!data.nombre) {
+            showError('nombre', 'El nombre es obligatorio.'); valid = false;
+        } else if (!RE_NOMBRE.test(data.nombre)) {
+            showError('nombre', 'Solo letras, espacios y guiones.'); valid = false;
+        }
+
+        if (!data.servicio || !SERVICIOS.includes(data.servicio)) {
+            showError('servicio', 'Selecciona un servicio.'); valid = false;
+        }
+
+        if (!data.motivo || data.motivo.length < 10) {
+            showError('motivo', 'Describe brevemente tu situación (mínimo 10 caracteres).'); valid = false;
+        }
+
+        if (!data.telefono && !data.correo) {
+            showError('contacto', 'Proporciona teléfono, correo o ambos.');
+            showError('telefono', ''); showError('correo', ''); valid = false;
+        } else {
+            if (data.telefono && !RE_TELEFONO.test(data.telefono)) {
+                showError('telefono', 'Número no válido.'); valid = false;
+            }
+            if (data.correo && !RE_CORREO.test(data.correo)) {
+                showError('correo', 'Correo no válido.'); valid = false;
+            }
+        }
+
+        return valid;
+    }
+
+    form?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        clearAllErrors();
+        globalMsg.classList.add('hidden');
+
+        const data = {
+            nombre:   document.getElementById('cf-nombre').value.trim(),
+            servicio: document.getElementById('cf-servicio').value.trim(),
+            motivo:   document.getElementById('cf-motivo').value.trim(),
+            telefono: document.getElementById('cf-telefono').value.trim(),
+            correo:   document.getElementById('cf-correo').value.trim(),
+        };
+
+        if (!validate(data)) return;
+
+        setLoading(true);
+
+        try {
+            const res = await fetch('/api/solicitudes', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data),
+            });
+
+            const json = await res.json();
+
+            if (res.ok && json.ok) {
+                showGlobal('¡Solicitud enviada! Nos pondremos en contacto contigo pronto.', false);
+                form.reset();
+                motivoCount.textContent = '0';
+            } else {
+                showGlobal(json.error ?? 'Ocurrió un error al enviar. Inténtalo de nuevo.', true);
+            }
+        } catch {
+            showGlobal('Error de red. Verifica tu conexión e inténtalo de nuevo.', true);
+        } finally {
+            setLoading(false);
+        }
+    });
+
+    ['cf-nombre','cf-servicio','cf-motivo','cf-telefono','cf-correo'].forEach(id => {
+        document.getElementById(id)?.addEventListener('input', () => {
+            const field = id.replace('cf-', '');
+            clearError(field);
+            clearError('contacto');
+        });
+    });
+})();
+</script>
