@@ -26,7 +26,7 @@ const postsRegulares = allPosts.filter(p => !p.data.destacado);
             </div>
 
             {postDestacado && (
-                <article class="relative rounded-[2.5rem] overflow-hidden shadow-2xl group mb-16 h-[400px] md:h-[500px]">
+                <article class="relative rounded-[2.5rem] overflow-hidden shadow-2xl group mb-16 h-100 md:h-125">
                     
                     <a href={`/blog/${postDestacado.data.id}`} class="absolute inset-0 z-30" aria-label={`Leer ${postDestacado.data.titulo}`}></a>
 
