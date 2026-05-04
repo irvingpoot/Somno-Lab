@@ -48,7 +48,7 @@ if (eventosDestacados.length === 0 && eventos.length > 0) {
         </div>
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 mb-20">
-            <div class="relative rounded-[2.5rem] overflow-hidden shadow-2xl bg-slate-900 h-[500px] group" id="hero-carousel">
+            <div class="relative rounded-[2.5rem] overflow-hidden shadow-2xl bg-slate-900 h-125 group" id="hero-carousel">
                 {eventosDestacados.map((evento, index) => (
                     <div 
                         class={`carousel-slide absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}
@@ -110,7 +110,7 @@ if (eventosDestacados.length === 0 && eventos.length > 0) {
                                 </div>
                             )}
 
-                            <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-md rounded-2xl p-3 text-center min-w-[70px] shadow-lg">
+                            <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-md rounded-2xl p-3 text-center min-w-17.5 shadow-lg">
                                 <span class="block text-2xl font-black text-slate-800 leading-none">{evento.dia}</span>
                                 <span class="block text-xs font-bold text-somno uppercase">{evento.mes}</span>
                             </div>

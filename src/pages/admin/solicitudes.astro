@@ -1,0 +1,302 @@
+---
+/**
+ * @file solicitudes.astro
+ * @description Página de administración para visualizar y gestionar las
+ *              solicitudes de contacto recibidas desde el formulario público.
+ */
+
+import Icon from "../../components/Icon.astro";
+import ReturnButton from "../../components/ReturnButton.astro";
+import Layout from "../../layouts/Layout.astro";
+import { createClient } from "@supabase/supabase-js";
+
+if (Astro.request.method === "POST") {
+    const formData = await Astro.request.formData();
+    const id     = formData.get("id")     as string;
+    const estado = formData.get("estado") as string;
+
+    const estadosValidos = ["pendiente", "contactado", "cerrado"];
+    if (id && estadosValidos.includes(estado)) {
+        const supabase = createClient(
+            import.meta.env.PUBLIC_SUPABASE_URL,
+            import.meta.env.SUPABASE_KEY
+        );
+        await supabase.from("solicitudes").update({ estado }).eq("id", id);
+    }
+    return Astro.redirect(Astro.url.pathname);
+}
+
+const filtroEstado   = Astro.url.searchParams.get("estado")   ?? "todos";
+const filtroServicio = Astro.url.searchParams.get("servicio") ?? "todos";
+const busqueda       = Astro.url.searchParams.get("q")        ?? "";
+
+const supabase = createClient(
+    import.meta.env.PUBLIC_SUPABASE_URL,
+    import.meta.env.SUPABASE_KEY
+);
+
+let query = supabase
+    .from("solicitudes")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+if (filtroEstado !== "todos")   query = query.eq("estado",   filtroEstado);
+if (filtroServicio !== "todos") query = query.eq("servicio", filtroServicio);
+if (busqueda)                   query = query.ilike("nombre", `%${busqueda}%`);
+
+const { data: solicitudes = [], error } = await query;
+
+const { data: stats } = await supabase
+    .from("solicitudes")
+    .select("estado");
+
+const totalPendientes  = stats?.filter(s => s.estado === "pendiente").length  ?? 0;
+const totalContactados = stats?.filter(s => s.estado === "contactado").length ?? 0;
+const totalCerrados    = stats?.filter(s => s.estado === "cerrado").length    ?? 0;
+const total            = stats?.length ?? 0;
+
+const servicioLabel: Record<string, string> = {
+    insomnio:    "Insomnio",
+    apnea:       "Apnea de Sueño",
+    ritmo:       "Ritmo Circadiano",
+    parasomnias: "Parasomnias",
+};
+
+const formatFecha = (iso: string) =>
+    new Date(iso).toLocaleDateString("es-MX", {
+        timeZone: "America/Merida",
+        day: "2-digit", month: "short", year: "numeric",
+        hour: "2-digit", minute: "2-digit",
+    });
+---
+
+<Layout title="Solicitudes | SomnoLab" showFooter={false}>
+    <main class="max-w-7xl mx-auto pt-10 pb-20 px-6">
+        <Icon />
+        <ReturnButton href="/admin/dashboard" text="Volver al dashboard" />
+        <div class="relative mb-8 pb-6 border-b border-gray-200">
+            <div class="absolute -top-10 -left-10 w-64 h-64 bg-somno/10 rounded-full blur-[80px] pointer-events-none"></div>
+
+            <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+                <div class="mt-7">
+                    <h1 class="text-4xl font-black text-gray-900 tracking-tight">Solicitudes</h1>
+                    <p class="text-gray-500 text-sm mt-1">Gestiona y da seguimiento a las solicitudes del formulario público.</p>
+                </div>
+
+                <div class="flex flex-wrap gap-3">
+                    {[
+                        { label: "Total",       valor: total,            color: "bg-gray-100 text-gray-700 border-gray-200" },
+                        { label: "Pendientes",  valor: totalPendientes,  color: "bg-amber-50 text-amber-700 border-amber-200" },
+                        { label: "Contactados", valor: totalContactados, color: "bg-blue-50 text-blue-700 border-blue-200" },
+                        { label: "Cerrados",    valor: totalCerrados,    color: "bg-emerald-50 text-emerald-700 border-emerald-200" },
+                    ].map(s => (
+                        <div class={`flex flex-col items-center px-5 py-3 rounded-2xl border ${s.color} min-w-18`}>
+                            <span class="text-2xl font-black leading-none">{s.valor}</span>
+                            <span class="text-[10px] font-bold uppercase tracking-wider mt-0.5 opacity-70">{s.label}</span>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </div>
+
+        <form method="GET" class="flex flex-col sm:flex-row gap-3 mb-6" id="filtros-form">
+            <div class="relative flex-1">
+                <svg xmlns="http://www.w3.org/2000/svg" class="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+                <input
+                    type="text"
+                    name="q"
+                    value={busqueda}
+                    placeholder="Buscar por nombre…"
+                    class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-somno/40 focus:border-somno transition-all"
+                />
+            </div>
+
+            <select name="estado" onchange="this.form.submit()" class="px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-somno/40 focus:border-somno transition-all appearance-none pr-8 cursor-pointer">
+                <option value="todos"      selected={filtroEstado === "todos"}>Todos los estados</option>
+                <option value="pendiente"  selected={filtroEstado === "pendiente"}>Pendiente</option>
+                <option value="contactado" selected={filtroEstado === "contactado"}>Contactado</option>
+                <option value="cerrado"    selected={filtroEstado === "cerrado"}>Cerrado</option>
+            </select>
+
+            <select name="servicio" onchange="this.form.submit()" class="px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-somno/40 focus:border-somno transition-all appearance-none pr-8 cursor-pointer">
+                <option value="todos"       selected={filtroServicio === "todos"}>Todos los servicios</option>
+                <option value="insomnio"    selected={filtroServicio === "insomnio"}>Insomnio</option>
+                <option value="apnea"       selected={filtroServicio === "apnea"}>Apnea de Sueño</option>
+                <option value="ritmo"       selected={filtroServicio === "ritmo"}>Ritmo Circadiano</option>
+                <option value="parasomnias" selected={filtroServicio === "parasomnias"}>Parasomnias</option>
+            </select>
+
+            <button type="submit" class="px-5 py-2.5 bg-somno text-white font-bold text-sm rounded-xl hover:bg-somno-light transition-colors shadow-sm">
+                Buscar
+            </button>
+
+            {(filtroEstado !== "todos" || filtroServicio !== "todos" || busqueda) && (
+                <a href="/admin/solicitudes" class="px-4 py-2.5 bg-gray-100 text-gray-600 font-medium text-sm rounded-xl hover:bg-gray-200 transition-colors flex items-center gap-1.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    Limpiar
+                </a>
+            )}
+        </form>
+
+        {error && (
+            <div class="bg-red-50 border border-red-200 rounded-2xl p-5 mb-6 flex items-center gap-3 text-red-700 text-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                <span>Error al cargar solicitudes. Verifica la conexión con Supabase.</span>
+            </div>
+        )}
+
+        {solicitudes && solicitudes.length > 0 ? (
+            <div class="space-y-3">
+                {solicitudes.map((s: any) => {
+                    const estadoConfig = {
+                        pendiente:  { label: "Pendiente",  bg: "bg-amber-50",   border: "border-amber-200",   text: "text-amber-700",   dot: "bg-amber-400" },
+                        contactado: { label: "Contactado", bg: "bg-blue-50",    border: "border-blue-200",    text: "text-blue-700",    dot: "bg-blue-400" },
+                        cerrado:    { label: "Cerrado",    bg: "bg-emerald-50", border: "border-emerald-200", text: "text-emerald-700", dot: "bg-emerald-400" },
+                    }[s.estado as string] ?? { label: s.estado, bg: "bg-gray-50", border: "border-gray-200", text: "text-gray-700", dot: "bg-gray-400" };
+
+                    return (
+                        <details class="group bg-white border border-gray-200 rounded-2xl overflow-hidden hover:border-somno/40 hover:shadow-md hover:shadow-somno/5 transition-all duration-200">
+                            <summary class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-5 cursor-pointer list-none select-none">
+                                <div class="flex items-center gap-4 flex-1 min-w-0">
+                                    <div class={`shrink-0 w-2.5 h-2.5 rounded-full ${estadoConfig.dot}`}></div>
+
+                                    <div class="min-w-0">
+                                        <p class="font-bold text-gray-900 truncate">{s.nombre}</p>
+                                        <div class="flex flex-wrap items-center gap-2 mt-0.5">
+                                            <span class="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full font-medium">
+                                                {servicioLabel[s.servicio] ?? s.servicio}
+                                            </span>
+                                            <span class="text-xs text-gray-400">{formatFecha(s.created_at)}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center gap-3 shrink-0 ml-auto">
+                                    <div class="hidden sm:flex items-center gap-2">
+                                        {s.telefono && (
+                                            <a href={`tel:${s.telefono}`} class="text-xs text-gray-500 hover:text-somno transition-colors flex items-center gap-1.5 bg-gray-50 border border-gray-200 px-3 py-1.5 rounded-lg" onclick="event.stopPropagation()">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                                                {s.telefono}
+                                            </a>
+                                        )}
+                                        {s.correo && (
+                                            <a href={`mailto:${s.correo}`} class="text-xs text-gray-500 hover:text-somno transition-colors flex items-center gap-1.5 bg-gray-50 border border-gray-200 px-3 py-1.5 rounded-lg" onclick="event.stopPropagation()">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                                {s.correo}
+                                            </a>
+                                        )}
+                                    </div>
+
+                                    <span class={`text-xs font-bold px-3 py-1.5 rounded-full border ${estadoConfig.bg} ${estadoConfig.border} ${estadoConfig.text}`}>
+                                        {estadoConfig.label}
+                                    </span>
+
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 transition-transform duration-200 group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                    </svg>
+                                </div>
+                            </summary>
+
+                            <div class="border-t border-gray-100 px-5 py-5 bg-gray-50/50">
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                                    <div class="md:col-span-2">
+                                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Motivo de consulta</p>
+                                        <p class="text-sm text-gray-700 leading-relaxed bg-white border border-gray-200 rounded-xl p-4">
+                                            {s.motivo}
+                                        </p>
+                                    </div>
+
+                                    <div class="space-y-4">
+                                        <div>
+                                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Contacto</p>
+                                            <div class="space-y-2">
+                                                {s.telefono ? (
+                                                    <a href={`tel:${s.telefono}`} class="flex items-center gap-2 text-sm text-gray-700 hover:text-somno transition-colors">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                                                        {s.telefono}
+                                                    </a>
+                                                ) : (
+                                                    <span class="flex items-center gap-2 text-sm text-gray-400 italic">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                                                        Sin teléfono
+                                                    </span>
+                                                )}
+                                                {s.correo ? (
+                                                    <a href={`mailto:${s.correo}`} class="flex items-center gap-2 text-sm text-gray-700 hover:text-somno transition-colors break-all">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                                        {s.correo}
+                                                    </a>
+                                                ) : (
+                                                    <span class="flex items-center gap-2 text-sm text-gray-400 italic">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                                        Sin correo
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Cambiar estado</p>
+                                            <form method="POST" class="flex flex-wrap gap-2">
+                                                <input type="hidden" name="id" value={s.id} />
+                                                {["pendiente", "contactado", "cerrado"].map(est => {
+                                                    const cfg = {
+                                                        pendiente:  { label: "Pendiente",  cls: s.estado === "pendiente"  ? "bg-amber-500 text-white border-amber-500"   : "bg-white text-amber-600 border-amber-200 hover:bg-amber-50" },
+                                                        contactado: { label: "Contactado", cls: s.estado === "contactado" ? "bg-blue-500 text-white border-blue-500"    : "bg-white text-blue-600 border-blue-200 hover:bg-blue-50" },
+                                                        cerrado:    { label: "Cerrado",    cls: s.estado === "cerrado"    ? "bg-emerald-500 text-white border-emerald-500" : "bg-white text-emerald-600 border-emerald-200 hover:bg-emerald-50" },
+                                                    }[est];
+                                                    return (
+                                                        <button
+                                                            type="submit"
+                                                            name="estado"
+                                                            value={est}
+                                                            class={`text-xs font-bold px-3 py-1.5 rounded-lg border transition-all cursor-pointer ${cfg!.cls} ${s.estado === est ? "cursor-default" : ""}`}
+                                                            disabled={s.estado === est}
+                                                        >
+                                                            {cfg!.label}
+                                                        </button>
+                                                    );
+                                                })}
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </details>
+                    );
+                })}
+            </div>
+        ) : (
+            <div class="flex flex-col items-center justify-center py-24 text-center">
+                <div class="w-16 h-16 rounded-2xl bg-gray-100 flex items-center justify-center mb-5">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
+                    </svg>
+                </div>
+                <p class="text-gray-900 font-bold text-lg mb-1">
+                    {(filtroEstado !== "todos" || filtroServicio !== "todos" || busqueda)
+                        ? "Sin resultados para estos filtros"
+                        : "Aún no hay solicitudes"}
+                </p>
+                <p class="text-gray-500 text-sm max-w-xs">
+                    {(filtroEstado !== "todos" || filtroServicio !== "todos" || busqueda)
+                        ? "Prueba ajustando los filtros o limpiando la búsqueda."
+                        : "Cuando alguien complete el formulario de contacto aparecerá aquí."}
+                </p>
+                {(filtroEstado !== "todos" || filtroServicio !== "todos" || busqueda) && (
+                    <a href="/admin/solicitudes" class="mt-4 px-5 py-2.5 bg-somno text-white font-bold text-sm rounded-xl hover:bg-somno-light transition-colors">
+                        Limpiar filtros
+                    </a>
+                )}
+            </div>
+        )}
+
+    </main>
+</Layout>
+
+<style>
+    details > summary::-webkit-details-marker { display: none; }
+</style>

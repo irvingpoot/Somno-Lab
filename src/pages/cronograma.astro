@@ -9,14 +9,12 @@ const horas = Array.from({ length: 24 }, (_, i) => i.toString().padStart(2, '0')
 <Layout title="SOMNOMID - Cronograma">
     <div class="min-h-screen bg-slate-50 py-12 px-4 sm:px-6 flex flex-col items-center relative overflow-hidden">
         
-        <div class="absolute top-0 right-0 -translate-y-1/4 translate-x-1/4 w-[800px] h-[800px] bg-somno-dark/10 rounded-full blur-[120px] pointer-events-none"></div>
-        <div class="absolute bottom-0 left-0 translate-y-1/4 -translate-x-1/4 w-[600px] h-[600px] bg-somno/10 rounded-full blur-[100px] pointer-events-none"></div>
+        <div class="absolute top-0 right-0 -translate-y-1/4 translate-x-1/4 w-200 h-200 bg-somno-dark/10 rounded-full blur-[120px] pointer-events-none"></div>
+        <div class="absolute bottom-0 left-0 translate-y-1/4 -translate-x-1/4 w-150 h-150 bg-somno/10 rounded-full blur-[100px] pointer-events-none"></div>
+        
+        <ReturnButton href="/" text="Volver al inicio" />
 
         <div class="w-full max-w-5xl space-y-8 relative z-10">
-            
-            <div class="flex justify-start px-2 animate-fade-in-down" style="animation-delay: 0.1s;">
-                <ReturnButton href="/" text="Volver al inicio" />
-            </div>
 
             <div class="text-center space-y-3 animate-fade-in-down">
                 <h1 class="text-4xl md:text-5xl font-bold text-gray-800 tracking-tight">
@@ -95,19 +93,19 @@ const horas = Array.from({ length: 24 }, (_, i) => i.toString().padStart(2, '0')
                 <h3 id="titulo-crono" class="text-2xl md:text-3xl font-semibold text-center text-gray-800 min-h-8"></h3>
                 
                 <div class="crono grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
-                    <div class="border-2 border-dashed border-slate-200 rounded-3xl p-6 flex flex-col items-center justify-center text-slate-300 min-h-[140px] animate-pulse">
+                    <div class="border-2 border-dashed border-slate-200 rounded-3xl p-6 flex flex-col items-center justify-center text-slate-300 min-h-35 animate-pulse">
                         <i class="fas fa-calendar-day text-2xl mb-2 opacity-50"></i>
                         <span class="text-sm font-medium">Día 1</span>
                     </div>
-                    <div class="border-2 border-dashed border-slate-200 rounded-3xl p-6 flex flex-col items-center justify-center text-slate-300 min-h-[140px] animate-pulse" style="animation-delay: 0.1s">
+                    <div class="border-2 border-dashed border-slate-200 rounded-3xl p-6 flex flex-col items-center justify-center text-slate-300 min-h-35 animate-pulse" style="animation-delay: 0.1s">
                         <i class="fas fa-calendar-day text-2xl mb-2 opacity-50"></i>
                         <span class="text-sm font-medium">Día 2</span>
                     </div>
-                    <div class="border-2 border-dashed border-slate-200 rounded-3xl p-6 flex flex-col items-center justify-center text-slate-300 min-h-[140px] animate-pulse" style="animation-delay: 0.2s">
+                    <div class="border-2 border-dashed border-slate-200 rounded-3xl p-6 flex flex-col items-center justify-center text-slate-300 min-h-35 animate-pulse" style="animation-delay: 0.2s">
                         <i class="fas fa-calendar-day text-2xl mb-2 opacity-50"></i>
                         <span class="text-sm font-medium">Día 3</span>
                     </div>
-                    <div class="border-2 border-dashed border-slate-200 rounded-3xl p-6 flex flex-col items-center justify-center text-slate-300 min-h-[140px] animate-pulse" style="animation-delay: 0.3s">
+                    <div class="border-2 border-dashed border-slate-200 rounded-3xl p-6 flex flex-col items-center justify-center text-slate-300 min-h-35 animate-pulse" style="animation-delay: 0.3s">
                         <i class="fas fa-ellipsis-h text-2xl mb-2 opacity-50"></i>
                         <span class="text-sm font-medium">...</span>
                     </div>
