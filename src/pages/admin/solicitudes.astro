@@ -5,10 +5,11 @@
  *              solicitudes de contacto recibidas desde el formulario público.
  */
 
+import Icon from "../../components/Icon.astro";
+import ReturnButton from "../../components/ReturnButton.astro";
 import Layout from "../../layouts/Layout.astro";
 import { createClient } from "@supabase/supabase-js";
 
-// ── Manejo de cambio de estado vía POST ──────────────────────────────────────
 if (Astro.request.method === "POST") {
     const formData = await Astro.request.formData();
     const id     = formData.get("id")     as string;
@@ -25,12 +26,10 @@ if (Astro.request.method === "POST") {
     return Astro.redirect(Astro.url.pathname);
 }
 
-// ── Lectura de filtros desde la URL ──────────────────────────────────────────
 const filtroEstado   = Astro.url.searchParams.get("estado")   ?? "todos";
 const filtroServicio = Astro.url.searchParams.get("servicio") ?? "todos";
 const busqueda       = Astro.url.searchParams.get("q")        ?? "";
 
-// ── Consulta a Supabase ──────────────────────────────────────────────────────
 const supabase = createClient(
     import.meta.env.PUBLIC_SUPABASE_URL,
     import.meta.env.SUPABASE_KEY
@@ -47,7 +46,6 @@ if (busqueda)                   query = query.ilike("nombre", `%${busqueda}%`);
 
 const { data: solicitudes = [], error } = await query;
 
-// ── Contadores para el header ─────────────────────────────────────────────────
 const { data: stats } = await supabase
     .from("solicitudes")
     .select("estado");
@@ -57,7 +55,6 @@ const totalContactados = stats?.filter(s => s.estado === "contactado").length ??
 const totalCerrados    = stats?.filter(s => s.estado === "cerrado").length    ?? 0;
 const total            = stats?.length ?? 0;
 
-// ── Helpers ──────────────────────────────────────────────────────────────────
 const servicioLabel: Record<string, string> = {
     insomnio:    "Insomnio",
     apnea:       "Apnea de Sueño",
@@ -75,29 +72,17 @@ const formatFecha = (iso: string) =>
 
 <Layout title="Solicitudes | SomnoLab" showFooter={false}>
     <main class="max-w-7xl mx-auto pt-10 pb-20 px-6">
-
-        <!-- ── Encabezado ── -->
+        <Icon />
+        <ReturnButton href="/admin/dashboard" text="Volver al dashboard" />
         <div class="relative mb-8 pb-6 border-b border-gray-200">
             <div class="absolute -top-10 -left-10 w-64 h-64 bg-somno/10 rounded-full blur-[80px] pointer-events-none"></div>
 
             <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
-                <div>
-                    <a href="/admin/dashboard" class="inline-flex items-center gap-1.5 text-xs font-bold text-gray-400 hover:text-somno transition-colors mb-3 uppercase tracking-widest">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-                        Dashboard
-                    </a>
-                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-somno/10 border border-somno/30 text-somno text-[10px] font-bold uppercase tracking-widest mb-3">
-                        <span class="relative flex h-2 w-2">
-                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                            <span class="relative inline-flex rounded-full h-2 w-2 bg-somno-light"></span>
-                        </span>
-                        Solicitudes de Contacto
-                    </div>
+                <div class="mt-7">
                     <h1 class="text-4xl font-black text-gray-900 tracking-tight">Solicitudes</h1>
                     <p class="text-gray-500 text-sm mt-1">Gestiona y da seguimiento a las solicitudes del formulario público.</p>
                 </div>
 
-                <!-- Estadísticas rápidas -->
                 <div class="flex flex-wrap gap-3">
                     {[
                         { label: "Total",       valor: total,            color: "bg-gray-100 text-gray-700 border-gray-200" },
@@ -114,9 +99,7 @@ const formatFecha = (iso: string) =>
             </div>
         </div>
 
-        <!-- ── Filtros ── -->
         <form method="GET" class="flex flex-col sm:flex-row gap-3 mb-6" id="filtros-form">
-            <!-- Búsqueda -->
             <div class="relative flex-1">
                 <svg xmlns="http://www.w3.org/2000/svg" class="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
@@ -130,7 +113,6 @@ const formatFecha = (iso: string) =>
                 />
             </div>
 
-            <!-- Estado -->
             <select name="estado" onchange="this.form.submit()" class="px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-somno/40 focus:border-somno transition-all appearance-none pr-8 cursor-pointer">
                 <option value="todos"      selected={filtroEstado === "todos"}>Todos los estados</option>
                 <option value="pendiente"  selected={filtroEstado === "pendiente"}>Pendiente</option>
@@ -138,7 +120,6 @@ const formatFecha = (iso: string) =>
                 <option value="cerrado"    selected={filtroEstado === "cerrado"}>Cerrado</option>
             </select>
 
-            <!-- Servicio -->
             <select name="servicio" onchange="this.form.submit()" class="px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-somno/40 focus:border-somno transition-all appearance-none pr-8 cursor-pointer">
                 <option value="todos"       selected={filtroServicio === "todos"}>Todos los servicios</option>
                 <option value="insomnio"    selected={filtroServicio === "insomnio"}>Insomnio</option>
@@ -159,7 +140,6 @@ const formatFecha = (iso: string) =>
             )}
         </form>
 
-        <!-- ── Error de BD ── -->
         {error && (
             <div class="bg-red-50 border border-red-200 rounded-2xl p-5 mb-6 flex items-center gap-3 text-red-700 text-sm">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
@@ -167,7 +147,6 @@ const formatFecha = (iso: string) =>
             </div>
         )}
 
-        <!-- ── Lista de solicitudes ── -->
         {solicitudes && solicitudes.length > 0 ? (
             <div class="space-y-3">
                 {solicitudes.map((s: any) => {
@@ -181,10 +160,8 @@ const formatFecha = (iso: string) =>
                         <details class="group bg-white border border-gray-200 rounded-2xl overflow-hidden hover:border-somno/40 hover:shadow-md hover:shadow-somno/5 transition-all duration-200">
                             <summary class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-5 cursor-pointer list-none select-none">
                                 <div class="flex items-center gap-4 flex-1 min-w-0">
-                                    <!-- Indicador de estado -->
                                     <div class={`shrink-0 w-2.5 h-2.5 rounded-full ${estadoConfig.dot}`}></div>
 
-                                    <!-- Nombre y servicio -->
                                     <div class="min-w-0">
                                         <p class="font-bold text-gray-900 truncate">{s.nombre}</p>
                                         <div class="flex flex-wrap items-center gap-2 mt-0.5">
@@ -197,7 +174,6 @@ const formatFecha = (iso: string) =>
                                 </div>
 
                                 <div class="flex items-center gap-3 shrink-0 ml-auto">
-                                    <!-- Contacto rápido -->
                                     <div class="hidden sm:flex items-center gap-2">
                                         {s.telefono && (
                                             <a href={`tel:${s.telefono}`} class="text-xs text-gray-500 hover:text-somno transition-colors flex items-center gap-1.5 bg-gray-50 border border-gray-200 px-3 py-1.5 rounded-lg" onclick="event.stopPropagation()">
@@ -213,23 +189,19 @@ const formatFecha = (iso: string) =>
                                         )}
                                     </div>
 
-                                    <!-- Badge estado -->
                                     <span class={`text-xs font-bold px-3 py-1.5 rounded-full border ${estadoConfig.bg} ${estadoConfig.border} ${estadoConfig.text}`}>
                                         {estadoConfig.label}
                                     </span>
 
-                                    <!-- Chevron -->
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 transition-transform duration-200 group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                                     </svg>
                                 </div>
                             </summary>
 
-                            <!-- Detalle expandido -->
                             <div class="border-t border-gray-100 px-5 py-5 bg-gray-50/50">
                                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-                                    <!-- Motivo -->
                                     <div class="md:col-span-2">
                                         <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Motivo de consulta</p>
                                         <p class="text-sm text-gray-700 leading-relaxed bg-white border border-gray-200 rounded-xl p-4">
@@ -237,9 +209,7 @@ const formatFecha = (iso: string) =>
                                         </p>
                                     </div>
 
-                                    <!-- Datos y acciones -->
                                     <div class="space-y-4">
-                                        <!-- Contacto (mobile también) -->
                                         <div>
                                             <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Contacto</p>
                                             <div class="space-y-2">
@@ -268,7 +238,6 @@ const formatFecha = (iso: string) =>
                                             </div>
                                         </div>
 
-                                        <!-- Cambiar estado -->
                                         <div>
                                             <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Cambiar estado</p>
                                             <form method="POST" class="flex flex-wrap gap-2">
@@ -301,7 +270,6 @@ const formatFecha = (iso: string) =>
                 })}
             </div>
         ) : (
-            <!-- Estado vacío -->
             <div class="flex flex-col items-center justify-center py-24 text-center">
                 <div class="w-16 h-16 rounded-2xl bg-gray-100 flex items-center justify-center mb-5">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
