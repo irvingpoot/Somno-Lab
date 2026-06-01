@@ -1,0 +1,566 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import NavbarTransparente from '../../components/NavbarTransparente.astro';
+import ReturnButton from '../../components/ReturnButton.astro';
+
+type VideoPodio = {
+    posicion: number;
+    titulo: string;
+    thumb: string;
+    tipo: "drive" | "youtube" | "onedrive";
+    videoId: string;
+}
+
+type Video = {
+    titulo: string;
+    thumb: string;
+    tipo: "drive" | "youtube" | "onedrive";
+    videoId: string;
+}
+
+type medalla = {
+    label: string;
+    color: string;
+    glow: string;
+    ring: string;
+}
+
+const ganadores: VideoPodio[] = [
+    {
+        posicion: 1,
+        titulo: "Detrás de la mascara",
+        thumb: "/eventos/suenoscortos/detrasmascara.PNG",
+        tipo: "drive",
+        videoId: "1Ew9TnjWvpn3dreU-F6D9hTJZq01US-ax",
+    },
+    {
+        posicion: 2,
+        titulo: "Neuro-ritmo",
+        thumb: "/eventos/suenoscortos/neuroritmo.PNG",
+        tipo: "youtube",
+        videoId: "tcABTvLxO24",
+    },
+    {
+        posicion: 3,
+        titulo: "Cambio de ritmo",
+        thumb: "/eventos/suenoscortos/cambioderitmo.png",
+        tipo: "youtube",
+        videoId: "1U-xTmPRL7EbG1t_2XkInU22GRcULEWkm",
+    },
+];
+
+const seleccionOficial: Video[] = [
+    {
+        titulo: "Sueño",
+        thumb: "/eventos/suenoscortos/sueno.PNG",
+        tipo: "drive",
+        videoId: "1KWKuYnT8oeaZX7KMyBbtaGMrvuczgPs4",
+    },
+    {
+        titulo: "¿Por qué ahora si te importa?",
+        thumb: "/eventos/suenoscortos/siteimporta.webp",
+        tipo: "drive",
+        videoId: "1qf2Tmp9DgD4Omvy7FmjYK95pifPaJPHX",
+    },
+    {
+        titulo: "Phineas Gage",
+        thumb: "/eventos/suenoscortos/PhineasGage.webp",
+        tipo: "drive",
+        videoId: "1OYhY3u8uQWegoWvRMH03RtftokFpKmn2",
+    },
+    {
+        titulo: "Volvemos a empezar",
+        thumb: "/eventos/suenoscortos/VolvemosEmpezar.webp",
+        tipo: "drive",
+        videoId: "1Z43kq90eMuN0cdeu5kyWX88QumpL5zMA",
+    },
+    {
+        titulo: "Sosie",
+        thumb: "/eventos/suenoscortos/sosie.webp",
+        tipo: "drive",
+        videoId: "1J5o8ShhU8bq7BGw1Z61LolJqJFMxeRkg",
+    },
+    {
+        titulo: "Heminegligencia",
+        thumb: "/eventos/suenoscortos/heminegligencia.webp",
+        tipo: "drive",
+        videoId: "1J1U8TxYnLhz0RTrt4pF1ssDRbAeh7GPf",
+    },
+    {
+        titulo: "Modo Supervivencia",
+        thumb: "/eventos/suenoscortos/modosuper.webp",
+        tipo: "drive",
+        videoId: "1228UOy6GmkWjO0P_GU1Vy9iWiV6IqycA",
+    },
+    {
+        titulo: "El llamado de tus células",
+        thumb: "/eventos/suenoscortos/elllamado.webp",
+        tipo: "drive",
+        videoId: "1T8h4F_MQwPVQk8iLbOGAAS9dlwglBJiY",
+    },
+    {
+        titulo: "Pesadillas",
+        thumb: "/eventos/suenoscortos/pesadillas.webp",
+        tipo: "drive",
+        videoId: "1oaT9mtRaUv35DSJilKt2vNMKomRLbj84",
+    },
+    {
+        titulo: "El peso de estar despierto",
+        thumb: "/eventos/suenoscortos/pesodespierto.webp",
+        tipo: "drive",
+        videoId: "1roTtbmpTX3IUUp8_3R3ojQ50NeVuLN9A",
+    },
+    {
+        titulo: "Trastornos Anónimos del Sueño",
+        thumb: "/eventos/suenoscortos/trastornosanonimos.webp",
+        tipo: "drive",
+        videoId: "1wUQfOEi2iVHXorcyZldf1MLVqyKauAJs",
+    },
+    {
+        titulo: "Sustos de algodón",
+        thumb: "/eventos/suenoscortos/sustosalgodon.webp",
+        tipo: "drive",
+        videoId: "1nseTBuOOu4S_BeJKRYxFaO-BskPz4GFx",
+    },
+    {
+        titulo: "Sonambulismo",
+        thumb: "/eventos/suenoscortos/sonambulismo.webp",
+        tipo: "drive",
+        videoId: "1cQ7TdCC1vBL_n90FsXKKKMx_GYhPQlIH",
+    },
+    {
+        titulo: "No estoy dormido",
+        thumb: "/eventos/suenoscortos/nodormido.webp",
+        tipo: "drive",
+        videoId: "1p-myf-t1MvzbB5ZsnI1d7brWCMHY4zsS",
+    },
+    {
+        titulo: "Vértigo de almohada",
+        thumb: "/eventos/suenoscortos/vertigoalmohada.webp",
+        tipo: "drive",
+        videoId: "10ZGiOI3O9RAYAgoRe274Vym6WoiGA5Wn",
+    },
+    {
+        titulo: "Noches Oscuras",
+        thumb: "/eventos/suenoscortos/nochesoscuras.webp",
+        tipo: "drive",
+        videoId: "1xQM3LwTHn3eaavkOLwjhEsQclElaw55o",
+    },
+    {
+        titulo: "Parálisis del sueño",
+        thumb: "/eventos/suenoscortos/paralisis.webp",
+        tipo: "drive",
+        videoId: "1piPj65v4yHPIVsLg6DjC_92ahoTsjtSX",
+    },
+    {
+        titulo: "Entre sueños y ronquidos",
+        thumb: "/eventos/suenoscortos/suenosronquidos.webp",
+        tipo: "drive",
+        videoId: "1bQ4zD3lz65kaSMzdL10CdzlHBPhblu3Q",
+    },
+    {
+        titulo: "Esto no es un sueño",
+        thumb: "/eventos/suenoscortos/estonoessueno.webp",
+        tipo: "drive",
+        videoId: "1PJ1cfKzOE65CGZ8YGQhJOFQud2SMqVia",
+    },
+    {
+        titulo: "No Molestar",
+        thumb: "/eventos/suenoscortos/nomolestar.webp",
+        tipo: "drive",
+        videoId: "1D4ffoo_s-2CXUOMnRqEwOdSKaeRGALJC",
+    },
+    {
+        titulo: "Tardes de Primavera",
+        thumb: "/eventos/suenoscortos/tardesprimavera.webp",
+        tipo: "drive",
+        videoId: "1q939b2usyMFIGv4eMAVghNgLsarW6bk3",
+    },
+    {
+        titulo: "Un chocolate",
+        thumb: "/eventos/suenoscortos/unchocolate.webp",
+        tipo: "drive",
+        videoId: "18SOf6Rg1SvJp84toDZA9W872WIbtZvdI",
+    },
+    {
+        titulo: "Parkinson no solo es temblor",
+        thumb: "/eventos/suenoscortos/parkinsontemblor.webp",
+        tipo: "drive",
+        videoId: "1y7Rx-bbmUoU79002M5QR_W68jI2paxnD",
+    },
+    {
+        titulo: "Apraxia ideomotora",
+        thumb: "/eventos/suenoscortos/apraxia.webp",
+        tipo: "drive",
+        videoId: "1S7H5Rvamg5EyDZj_YTGMH1FdOyThX6yB",
+    },
+    {
+        titulo: "Nunca fue un sueño",
+        thumb: "/eventos/suenoscortos/nuncasueno.webp",
+        tipo: "drive",
+        videoId: "1S7H5Rvamg5EyDZj_YTGMH1FdOyThX6yB",
+    },
+    {
+        titulo: "Plantando semillas",
+        thumb: "/eventos/suenoscortos/plantandosemillas.webp",
+        tipo: "drive",
+        videoId: "1gilZ3qEbO-Umi9AMRh11t0Y-nVHwaAUp",
+    },
+    {
+        titulo: "Una noche más",
+        thumb: "/eventos/suenoscortos/unanochemas.webp",
+        tipo: "drive",
+        videoId: "1ZCIUhI71wbBVqvkxMN4b5cLyzlqMzSjj",
+    },
+    {
+        titulo: "El dominio de las estampas",
+        thumb: "/eventos/suenoscortos/estampas.webp",
+        tipo: "drive",
+        videoId: "129NumW6q6_XwebLkSYsfMFKQRXtR3sKm",
+    },
+    {
+        titulo: "El cerebro que nunca descansó",
+        thumb: "/eventos/suenoscortos/cerebrodescanso.webp",
+        tipo: "drive",
+        videoId: "1WrC3RG57oU9LmW7FLI839TIDqQb6asLr",
+    },
+];
+
+const medallaData: Record<number, medalla> = {
+    1: { label: "Primer lugar",  color: "#F4C430", glow: "rgba(244,196,48,0.55)",  ring: "rgba(244,196,48,0.25)" },
+    2: { label: "Segundo lugar", color: "#C8C8C8", glow: "rgba(200,200,200,0.40)", ring: "rgba(200,200,200,0.18)" },
+    3: { label: "Tercer lugar",  color: "#CD7F32", glow: "rgba(205,127,50,0.45)",  ring: "rgba(205,127,50,0.20)" },
+};
+
+const ordenPodio = [ganadores[1], ganadores[0], ganadores[2]];
+
+const podioHeights: Record<number, string> = { 1: "160px", 2: "110px", 3: "80px" };
+---
+
+<Layout title="Sueños Cortos 2026 | SomnoLab" showFooter={false}>
+    <NavbarTransparente />
+
+    <main class="bg-[#07091a] min-h-screen overflow-x-hidden relative">
+        <ReturnButton href="/eventos" text="Volver a los eventos" />
+
+        <div class="star-field fixed inset-0 pointer-events-none z-0" aria-hidden="true"></div>
+
+        <div class="fixed top-[5%]  left-[5%] w-150 h-150 rounded-full blur-[160px] bg-indigo-950/60 pointer-events-none z-0"></div>
+        <div class="fixed top-[45%] right-[0%] w-112.5 h-112.5 rounded-full blur-[130px] bg-violet-950/50 pointer-events-none z-0"></div>
+        <div class="fixed bottom-[5%] left-[25%] w-100 h-100 rounded-full blur-[120px] bg-blue-950/40 pointer-events-none z-0"></div>
+
+        <section class="relative z-10 min-h-[70vh] flex flex-col items-center justify-center pt-28 pb-16 px-4">
+
+            <div class="absolute top-24 left-6 md:left-16 opacity-25 text-5xl md:text-7xl select-none pointer-events-none animate-float-slow">🌙</div>
+            <div class="absolute bottom-16 right-8 md:right-20 opacity-15 text-4xl md:text-6xl select-none pointer-events-none animate-float-mid">🌛</div>
+
+            <div class="relative text-center max-w-3xl mx-auto">
+                <span class="inline-flex items-center gap-2 text-[#F4C430]/70 font-bold uppercase tracking-[0.3em] text-xs mb-6">
+                    <span>✦</span> SomnoLab Presenta <span>✦</span>
+                </span>
+
+                <img src="/eventos/suenoscortos/suenosCortosIcon.png" alt="Sueños Cortos 2026" class="w-120 h-auto mb-4"/>
+
+                <p class="text-white/55 text-lg max-w-lg mx-auto leading-relaxed">
+                    Un festival de cortometrajes sobre el sueño, los sueños y las neurociencias. Esta es la memoria de una noche memorable.
+                </p>
+
+                <div class="flex flex-wrap items-center justify-center gap-5 mt-8 text-white/35 text-sm">
+                    <span class="flex items-center gap-2"><i class="far fa-calendar-alt text-amber-400/60"></i> 18 MAY 2026</span>
+                    <span class="text-white/15 hidden sm:inline">·</span>
+                    <span class="flex items-center gap-2"><i class="fas fa-map-marker-alt text-amber-400/60"></i> Facultad de Psicología - UADY</span>
+                </div>
+            </div>
+        </section>
+        <section class="relative z-10 py-20 px-4">
+
+            <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-200 h-56 bg-amber-500/5 blur-[100px] rounded-full pointer-events-none"></div>
+
+            <div class="max-w-5xl mx-auto relative">
+                <div class="text-center mb-16 relative z-20">
+                    <span class="text-amber-400/60 uppercase tracking-[0.25em] text-xs font-bold mb-3 block">✦ Ganadores ✦</span>
+                    <h2 class="text-4xl md:text-5xl font-black text-white tracking-tight drop-shadow-lg">Edición 2026</h2>
+                </div>
+
+                <div class="hidden md:flex items-end justify-center gap-6 relative">
+                    <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[85%] h-4 rounded-[100%] bg-white/5 blur-md border-b border-white/10 pointer-events-none"></div>
+
+                    {ordenPodio.map((g) => {
+                        const m = medallaData[g.posicion];
+                        const isFirst = g.posicion === 1;
+                        const colH = podioHeights[g.posicion];
+
+                        return (
+                            <div class="flex flex-col items-center relative z-10" style={`flex: 1; max-width: ${isFirst ? '340px' : '290px'};`}>
+                                
+                                <button
+                                    class="video-trigger group w-full rounded-2xl overflow-hidden cursor-pointer focus:outline-none transition-all duration-500 hover:-translate-y-4 relative z-20"
+                                    style={`border: 1px solid ${m.color}50; box-shadow: 0 10px 30px -10px ${m.glow}, 0 0 0 1px rgba(255,255,255,0.05) inset;`}
+                                    data-titulo={g.titulo}
+                                    data-tipo={g.tipo}
+                                    data-videoid={g.videoId}
+                                    data-posicion={g.posicion}
+                                    aria-label={`Ver ${g.titulo}`}
+                                >
+                                    <div class="relative aspect-4/3 overflow-hidden">
+                                        <img src={g.thumb} loading="lazy" alt={g.titulo} class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                                        
+                                        <div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-500"></div>
+                                        <div class="absolute inset-0 bg-linear-to-t from-[#07091a] via-[#07091a]/40 to-transparent opacity-90"></div>
+
+                                        <div class="absolute top-4 left-4 flex flex-col items-start gap-1">
+                                            <span class="text-[10px] font-black uppercase tracking-widest backdrop-blur-md px-2.5 py-1 rounded-md border border-white/10 shadow-xl mt-1" style={`color: ${m.color}; background: rgba(0,0,0,0.5);`}>
+                                                {m.label}
+                                            </span>
+                                        </div>
+
+                                        <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 scale-75 group-hover:scale-100 transition-all duration-300">
+                                            <div class="w-16 h-16 rounded-full flex items-center justify-center backdrop-blur-md" style={`background: ${m.ring}; border: 1px solid ${m.color}; box-shadow: 0 0 30px ${m.glow};`}>
+                                                <i class="fas fa-play text-white text-xl ml-1"></i>
+                                            </div>
+                                        </div>
+
+                                        <div class="absolute bottom-0 left-0 right-0 p-5 transform transition-transform duration-300">
+                                            <p class="text-white font-black text-lg leading-tight drop-shadow-md mb-1">{g.titulo}</p>
+                                        </div>
+                                    </div>
+                                </button>
+
+                                <div
+                                    class="w-[90%] flex flex-col justify-end items-center relative overflow-hidden rounded-t-sm"
+                                    style={`height: ${colH}; margin-top: -10px;`}
+                                >
+                                    <div class="absolute inset-0 backdrop-blur-sm" style={`background: linear-gradient(to bottom, ${m.color}25 0%, ${m.color}05 100%); border-top: 2px solid ${m.color}60; border-left: 1px solid ${m.color}20; border-right: 1px solid ${m.color}20; border-radius: 4px 4px 0 0;`}></div>
+                                    
+                                    <span class="relative z-10 text-6xl md:text-8xl font-black tracking-tighter leading-none translate-y-4 select-none mix-blend-overlay" style={`color: ${m.color}; opacity: 0.4;`}>
+                                        {g.posicion === 1 ? '01' : g.posicion === 2 ? '02' : '03'}
+                                    </span>
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
+
+                <div class="flex flex-col gap-5 md:hidden">
+                    {ganadores.map((g) => {
+                        const m = medallaData[g.posicion];
+                        const isFirst = g.posicion === 1;
+                        
+                        return (
+                            <button
+                                class={`video-trigger group w-full overflow-hidden cursor-pointer focus:outline-none transition-all duration-300 text-left relative ${isFirst ? 'rounded-3xl' : 'rounded-2xl'}`}
+                                style={`border: 1px solid ${m.color}40; box-shadow: 0 8px 24px -8px ${m.glow}; background: linear-gradient(145deg, rgba(255,255,255,0.03) 0%, rgba(0,0,0,0.4) 100%);`}
+                                data-titulo={g.titulo}
+                                data-tipo={g.tipo}
+                                data-videoid={g.videoId}
+                                data-posicion={g.posicion}
+                            >
+                                {isFirst ? (
+                                    <div class="relative flex flex-col">
+                                        <div class="relative aspect-video w-full overflow-hidden">
+                                            <img src={g.thumb} alt={g.titulo} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                                            <div class="absolute inset-0 bg-linear-to-t from-[#07091a] via-black/20 to-transparent"></div>
+                                            <div class="absolute top-3 left-3 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-lg border border-white/10 flex items-center gap-2">
+                                                <span class="text-xl">🥇</span>
+                                                <span class="text-[10px] font-black uppercase tracking-widest" style={`color: ${m.color}`}>{m.label}</span>
+                                            </div>
+                                            <div class="absolute bottom-4 right-4 w-12 h-12 rounded-full flex items-center justify-center backdrop-blur-md transition-transform group-hover:scale-110" style={`background: ${m.ring}; border: 1px solid ${m.color}70;`}>
+                                                <i class="fas fa-play text-white text-sm ml-0.5"></i>
+                                            </div>
+                                        </div>
+                                        <div class="p-5 pt-2 relative z-10">
+                                            <p class="text-white font-black text-xl leading-snug mb-1">{g.titulo}</p>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div class="flex items-stretch h-28">
+                                        <div class="relative w-1/3 min-w-27.5 overflow-hidden">
+                                            <img src={g.thumb} alt={g.titulo} class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                                            <div class="absolute inset-0 bg-black/30 flex items-center justify-center">
+                                                <div class="w-10 h-10 rounded-full flex items-center justify-center backdrop-blur-sm" style={`background: ${m.ring}; border: 1px solid ${m.color}50;`}>
+                                                    <i class="fas fa-play text-white text-xs ml-0.5"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="flex-1 p-4 flex flex-col justify-center">
+                                            <div class="flex items-center gap-2 mb-1.5">
+                                                <span class="text-lg">{g.posicion === 2 ? '🥈' : '🥉'}</span>
+                                                <span class="text-[9px] font-black uppercase tracking-widest" style={`color: ${m.color}`}>{m.label}</span>
+                                            </div>
+                                            <p class="text-white font-black text-sm leading-snug line-clamp-1">{g.titulo}</p>
+                                        </div>
+                                    </div>
+                                )}
+                            </button>
+                        );
+                    })}
+                </div>
+            </div>
+        </section>
+
+        {seleccionOficial.length > 0 && (
+            <section class="relative z-10 py-20 px-4">
+                <div class="absolute top-0 left-0 right-0 h-px bg-linear-to-r from-transparent via-white/10 to-transparent"></div>
+
+                <div class="max-w-6xl mx-auto">
+                    <div class="text-center mb-14">
+                        <span class="text-indigo-400/70 uppercase tracking-[0.25em] text-xs font-bold mb-3 block">✦ Contendientes ✦</span>
+                        <h2 class="text-4xl md:text-5xl font-black text-white tracking-tight">Clasificados</h2>
+                        <p class="text-white/40 mt-3 text-base">Todos los cortometrajes presentados en el festival</p>
+                    </div>
+
+                    <div class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        {seleccionOficial.map((v, i) => (
+                            <button
+                                class="video-trigger group text-left rounded-2xl overflow-hidden border border-white/8 hover:border-indigo-500/40 bg-white/3 hover:bg-white/6 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-indigo-900/30 focus:outline-none"
+                                data-titulo={v.titulo}
+                                data-tipo={v.tipo}
+                                data-videoid={v.videoId}
+                                aria-label={`Ver ${v.titulo}`}
+                            >
+                                <div class="relative aspect-video overflow-hidden">
+                                    <img src={v.thumb} alt={v.titulo} class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                                    <div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors duration-300"></div>
+                                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                        <div class="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center">
+                                            <i class="fas fa-play text-white text-sm ml-0.5"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="p-4">
+                                    <p class="text-white font-bold text-sm leading-snug mb-1 group-hover:text-indigo-200 transition-colors">{v.titulo}</p>
+                                </div>
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            </section>
+        )}
+
+        {seleccionOficial.length === 0 && (
+            <section class="relative z-10 py-12 px-4 text-center">
+                <div class="absolute top-0 left-0 right-0 h-px bg-linear-to-r from-transparent via-white/8 to-transparent"></div>
+                <span class="text-4xl block mb-4 opacity-20">🎞️</span>
+                <p class="text-white/25 text-sm italic">Los demás cortometrajes se publicarán pronto.</p>
+            </section>
+        )}
+
+        <div class="h-24 relative z-10"></div>
+    </main>
+
+    <div id="video-modal" class="fixed inset-0 z-200 hidden" role="dialog" aria-modal="true" aria-labelledby="modal-video-title">
+        <div id="modal-backdrop" class="absolute inset-0 bg-black/85 backdrop-blur-md opacity-0 transition-opacity duration-300"></div>
+        <div class="fixed inset-0 flex items-center justify-center p-4">
+            <div id="modal-panel" class="relative w-full max-w-4xl opacity-0 translate-y-6 transition-all duration-300">
+                <div class="flex items-start justify-between mb-4 px-1">
+                    <div>
+                        <p id="modal-badge" class="text-xs font-bold uppercase tracking-widest text-amber-400/80 mb-1"></p>
+                        <h3 id="modal-video-title" class="text-white font-black text-xl md:text-2xl leading-snug"></h3>
+                        <p id="modal-autor" class="text-white/50 text-sm mt-1"></p>
+                    </div>
+                    <button id="modal-close" class="shrink-0 ml-4 mt-1 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 border border-white/10 flex items-center justify-center text-white/70 hover:text-white transition-all" aria-label="Cerrar">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="relative w-full aspect-video rounded-2xl overflow-hidden bg-black shadow-2xl shadow-black/60 border border-white/10">
+                    <iframe id="video-iframe" class="absolute inset-0 w-full h-full" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen title="Reproductor de video"></iframe>
+                </div>
+                <p id="modal-aviso" class="hidden mt-3 text-center text-white/30 text-xs">
+                    <i class="fas fa-info-circle mr-1"></i>
+                    Si el video no carga, verifica que el archivo esté compartido públicamente.
+                </p>
+            </div>
+        </div>
+    </div>
+</Layout>
+
+<script is:inline>
+    (function() {
+        const field = document.querySelector('.star-field');
+        if (!field) return;
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('width', '100%');
+        svg.setAttribute('height', '100%');
+        svg.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;';
+        for (let i = 0; i < 220; i++) {
+            const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            const r = Math.random() * 1.3 + 0.2;
+            c.setAttribute('cx', (Math.random() * 100) + '%');
+            c.setAttribute('cy', (Math.random() * 100) + '%');
+            c.setAttribute('r', r.toString());
+            c.setAttribute('fill', 'white');
+            c.setAttribute('opacity', (Math.random() * 0.65 + 0.1).toString());
+            c.style.animation = `twinkle ${(Math.random()*4+2).toFixed(1)}s ${(Math.random()*6).toFixed(1)}s ease-in-out infinite alternate`;
+            svg.appendChild(c);
+        }
+        field.appendChild(svg);
+    })();
+
+    const modal    = document.getElementById('video-modal');
+    const backdrop = document.getElementById('modal-backdrop');
+    const panel    = document.getElementById('modal-panel');
+    const iframe   = document.getElementById('video-iframe');
+    const titleEl  = document.getElementById('modal-video-title');
+    const autorEl  = document.getElementById('modal-autor');
+    const badgeEl  = document.getElementById('modal-badge');
+    const avisoEl  = document.getElementById('modal-aviso');
+    const closeBtn = document.getElementById('modal-close');
+    const labels   = { '1': 'Primer lugar', '2': 'Segundo lugar', '3': 'Tercer lugar' };
+
+    function buildSrc(tipo, videoId) {
+        if (tipo === 'youtube')  return 'https://www.youtube.com/embed/' + videoId + '?autoplay=1&rel=0';
+        if (tipo === 'drive')    return 'https://drive.google.com/file/d/' + videoId + '/preview';
+        if (tipo === 'onedrive') return videoId.replace('view.aspx','embed').replace('redir','embed');
+        return '';
+    }
+
+    function openModal(titulo, tipo, videoId, posicion) {
+        titleEl.textContent = titulo;
+        badgeEl.textContent = posicion ? (labels[posicion] || '') : '';
+        iframe.src = buildSrc(tipo, videoId);
+        avisoEl.classList.toggle('hidden', tipo === 'youtube');
+        modal.classList.remove('hidden');
+        requestAnimationFrame(() => {
+            backdrop.classList.remove('opacity-0');
+            panel.classList.remove('opacity-0','translate-y-6');
+        });
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+        backdrop.classList.add('opacity-0');
+        panel.classList.add('opacity-0','translate-y-6');
+        setTimeout(() => { modal.classList.add('hidden'); iframe.src = ''; document.body.style.overflow = ''; }, 300);
+    }
+
+    document.querySelectorAll('.video-trigger').forEach(btn => {
+        btn.addEventListener('click', () => openModal(btn.dataset.titulo, btn.dataset.tipo, btn.dataset.videoid, btn.dataset.posicion || null));
+    });
+    closeBtn.addEventListener('click', closeModal);
+    backdrop.addEventListener('click', closeModal);
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal(); });
+</script>
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@900&display=swap');
+    .font-display { font-family: 'Playfair Display', serif; }
+
+    @keyframes twinkle {
+        from { opacity: 0.08; transform: scale(0.7); }
+        to   { opacity: 0.85; transform: scale(1.3); }
+    }
+    @keyframes floatSlow {
+        0%, 100% { transform: translateY(0) rotate(-5deg); }
+        50%       { transform: translateY(-14px) rotate(5deg); }
+    }
+    @keyframes floatMid {
+        0%, 100% { transform: translateY(0) rotate(8deg); }
+        50%       { transform: translateY(-10px) rotate(-4deg); }
+    }
+    .animate-float-slow { animation: floatSlow 7s ease-in-out infinite; }
+    .animate-float-mid  { animation: floatMid  5s ease-in-out infinite; }
+
+    .video-trigger:hover { transform: translateY(-3px); }
+
+    html { scrollbar-color: #2a2d4a #07091a; }
+</style>
