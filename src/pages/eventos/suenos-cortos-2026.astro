@@ -1,0 +1,454 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/Navbar.astro';
+
+/**
+ * ─────────────────────────────────────────────
+ *  SUEÑOS CORTOS 2026 — Página del evento
+ *
+ *  Para cada video, rellena:
+ *    titulo   → nombre del cortometraje
+ *    autor    → nombre del creador / equipo
+ *    thumb    → URL de la imagen de portada
+ *    tipo     → "youtube" | "drive" | "onedrive"
+ *    videoId  → según el tipo:
+ *               youtube  → el ID del video (lo que va después de ?v=)
+ *               drive    → el FILE_ID (drive.google.com/file/d/FILE_ID/view)
+ *               onedrive → la URL completa del enlace de compartir
+ *
+ *  Los tres primeros del array son los ganadores (1°, 2°, 3°).
+ *  El resto aparece en la sección "Selección oficial".
+ * ─────────────────────────────────────────────
+ */
+
+const ganadores = [
+    {
+        posicion: 1,
+        titulo: "Detrás de la mascara",
+        autor: "Nombre del autor",
+        thumb: "/eventos/suenoscortos/detrasmascara.PNG",
+        tipo: "drive",
+        videoId: "1Ew9TnjWvpn3dreU-F6D9hTJZq01US-ax",
+    },
+    {
+        posicion: 2,
+        titulo: "Neuro-ritmo",
+        autor: "Nombre del autor",
+        thumb: "/eventos/suenoscortos/neuroritmo.PNG",
+        tipo: "youtube",
+        videoId: "tcABTvLxO24",
+    },
+    {
+        posicion: 3,
+        titulo: "Cambio de ritmo",
+        autor: "Nombre del autor",
+        thumb: "/eventos/suenoscortos/cambioderitmo.png",
+        tipo: "youtube",
+        videoId: "1U-xTmPRL7EbG1t_2XkInU22GRcULEWkm",
+    },
+];
+
+const seleccionOficial = [
+    {
+        titulo: "Sueño",
+        autor: "Nombre del autor",
+        thumb: "/eventos/suenoscortos/sueno.PNG",
+        tipo: "drive",
+        videoId: "1KWKuYnT8oeaZX7KMyBbtaGMrvuczgPs4",
+    },
+    {
+        titulo: "Nombre del cortometraje",
+        autor: "Nombre del autor",
+        thumb: "https://...",
+        tipo: "drive",
+        videoId: "XXXX",
+    },
+    {
+        titulo: "Nombre del cortometraje",
+        autor: "Nombre del autor",
+        thumb: "https://...",
+        tipo: "onedrive",
+        videoId: "https://...",
+    },
+];
+
+const medallaData: Record<number, { label: string; color: string; glow: string; starSize: string; height: string }> = {
+    1: { label: "Primer lugar",   color: "#F4C430", glow: "rgba(244,196,48,0.5)",  starSize: "text-4xl", height: "h-44 md:h-52" },
+    2: { label: "Segundo lugar",  color: "#C0C0C0", glow: "rgba(192,192,192,0.4)", starSize: "text-3xl", height: "h-32 md:h-40" },
+    3: { label: "Tercer lugar",   color: "#CD7F32", glow: "rgba(205,127,50,0.4)",  starSize: "text-3xl", height: "h-24 md:h-32" },
+};
+
+const ordenPodio = [ganadores[1], ganadores[0], ganadores[2]];
+---
+
+<Layout title="Sueños Cortos 2026 | SomnoLab">
+    <Navbar />
+
+    <main class="bg-[#07091a] min-h-screen overflow-x-hidden">
+
+        <section class="relative min-h-[70vh] flex flex-col items-center justify-center pt-28 pb-16 px-4 overflow-hidden">
+
+            <div class="star-field absolute inset-0 pointer-events-none" aria-hidden="true"></div>
+
+            <div class="absolute top-24 left-6 md:left-16 opacity-30 text-5xl md:text-7xl select-none pointer-events-none animate-float-slow">🌙</div>
+            <div class="absolute bottom-16 right-8 md:right-20 opacity-20 text-4xl md:text-6xl select-none pointer-events-none animate-float-mid">🌛</div>
+
+            <div class="absolute top-1/4 left-1/4 w-96 h-96 rounded-full blur-[120px] bg-indigo-900/40 pointer-events-none"></div>
+            <div class="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full blur-[100px] bg-violet-900/30 pointer-events-none"></div>
+
+            <div class="relative z-10 text-center max-w-3xl mx-auto">
+                <span class="inline-flex items-center gap-2 text-[#F4C430]/80 font-bold uppercase tracking-[0.3em] text-xs mb-6">
+                    <span class="text-base">✦</span> SomnoLab Presenta <span class="text-base">✦</span>
+                </span>
+
+                <h1 class="font-display text-6xl sm:text-7xl md:text-8xl font-black tracking-tighter text-white mb-4 leading-[0.95]">
+                    Sueños<br/>
+                    <span class="text-transparent bg-clip-text bg-linear-to-r from-[#F4C430] via-amber-300 to-[#F4C430]">Cortos</span>
+                </h1>
+                <p class="text-2xl md:text-3xl font-light text-white/40 tracking-widest mb-8">2026</p>
+
+                <p class="text-white/60 text-lg max-w-lg mx-auto leading-relaxed">
+                    Un festival de cortometrajes sobre el sueño, los sueños y la ciencia del descanso. Esta es la memoria de una noche memorable.
+                </p>
+
+                <div class="flex items-center justify-center gap-6 mt-8 text-white/40 text-sm">
+                    <span class="flex items-center gap-2"><i class="far fa-calendar-alt text-amber-400/70"></i> 12 SEP 2026</span>
+                    <span class="text-white/20">·</span>
+                    <span class="flex items-center gap-2"><i class="fas fa-map-marker-alt text-amber-400/70"></i> Centro Cultural de Mérida</span>
+                </div>
+            </div>
+
+            <div class="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/30 animate-bounce">
+                <span class="text-[9px] uppercase tracking-[0.25em]">Descubrir</span>
+                <i class="fas fa-chevron-down text-xs"></i>
+            </div>
+        </section>
+
+        <section class="relative py-20 px-4 overflow-hidden">
+
+            <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[600px] h-40 bg-amber-500/10 blur-[80px] rounded-full pointer-events-none"></div>
+
+            <div class="max-w-5xl mx-auto">
+                <div class="text-center mb-14">
+                    <span class="text-amber-400/70 uppercase tracking-[0.25em] text-xs font-bold mb-3 block">✦ Ganadores ✦</span>
+                    <h2 class="text-4xl md:text-5xl font-black text-white tracking-tight">El Podio</h2>
+                </div>
+
+                <div class="hidden md:flex items-end justify-center gap-6">
+                    {ordenPodio.map((g) => {
+                        const m = medallaData[g.posicion];
+                        const isFirst = g.posicion === 1;
+                        return (
+                            <div class={`podio-card group flex flex-col items-center ${isFirst ? 'scale-105' : ''}`} style="flex: 1; max-width: 320px;">
+
+                                <!-- Tarjeta del ganador -->
+                                <button
+                                    class="video-trigger w-full rounded-3xl overflow-hidden relative mb-0 cursor-pointer border-2 transition-all duration-300 focus:outline-none"
+                                    style={`border-color: ${m.color}40; box-shadow: 0 0 30px ${m.glow};`}
+                                    data-titulo={g.titulo}
+                                    data-autor={g.autor}
+                                    data-tipo={g.tipo}
+                                    data-videoid={g.videoId}
+                                    data-posicion={g.posicion}
+                                    aria-label={`Ver ${g.titulo}`}
+                                >
+                                    <div class="relative aspect-video overflow-hidden">
+                                        <img src={g.thumb} alt={g.titulo} class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                                        <div class="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors duration-300"></div>
+                                        <!-- Play button -->
+                                        <div class="absolute inset-0 flex items-center justify-center">
+                                            <div class="w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110"
+                                                 style={`background: ${m.color}30; border: 2px solid ${m.color}80; backdrop-filter: blur(4px);`}>
+                                                <i class="fas fa-play text-white text-lg ml-0.5"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="bg-white/5 backdrop-blur-sm px-5 py-4 text-left border-t" style={`border-color: ${m.color}20`}>
+                                        <p class="text-white font-black text-sm leading-snug mb-1">{g.titulo}</p>
+                                        <p class="text-white/50 text-xs">{g.autor}</p>
+                                    </div>
+                                </button>
+
+                                <div
+                                    class={`w-full rounded-t-2xl flex flex-col items-center justify-start pt-4 transition-all duration-300 ${m.height}`}
+                                    style={`background: linear-gradient(to bottom, ${m.color}18, ${m.color}06); border-top: 3px solid ${m.color}50;`}
+                                >
+                                    <span class={`${m.starSize} drop-shadow-lg`} style={`filter: drop-shadow(0 0 10px ${m.glow})`}>
+                                        {g.posicion === 1 ? '🥇' : g.posicion === 2 ? '🥈' : '🥉'}
+                                    </span>
+                                    <span class="text-xs font-bold uppercase tracking-widest mt-2" style={`color: ${m.color}90`}>
+                                        {m.label}
+                                    </span>
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
+
+                <div class="flex flex-col gap-5 md:hidden">
+                    {ganadores.map((g) => {
+                        const m = medallaData[g.posicion];
+                        return (
+                            <button
+                                class="video-trigger group w-full rounded-3xl overflow-hidden cursor-pointer border-2 transition-all duration-300 text-left focus:outline-none"
+                                style={`border-color: ${m.color}40; box-shadow: 0 0 20px ${m.glow};`}
+                                data-titulo={g.titulo}
+                                data-autor={g.autor}
+                                data-tipo={g.tipo}
+                                data-videoid={g.videoId}
+                                data-posicion={g.posicion}
+                                aria-label={`Ver ${g.titulo}`}
+                            >
+                                <div class="flex items-center gap-4 p-4 pr-5" style={`background: linear-gradient(to right, ${m.color}15, transparent)`}>
+
+                                    <div class="relative w-24 h-16 rounded-xl overflow-hidden flex-shrink-0">
+                                        <img src={g.thumb} alt={g.titulo} class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                                        <div class="absolute inset-0 flex items-center justify-center bg-black/20">
+                                            <div class="w-8 h-8 rounded-full flex items-center justify-center" style={`background: ${m.color}30; border: 1.5px solid ${m.color}70;`}>
+                                                <i class="fas fa-play text-white text-xs ml-0.5"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex-1 min-w-0">
+                                        <div class="flex items-center gap-2 mb-1">
+                                            <span class="text-xl">{g.posicion === 1 ? '🥇' : g.posicion === 2 ? '🥈' : '🥉'}</span>
+                                            <span class="text-[10px] font-bold uppercase tracking-wider" style={`color: ${m.color}`}>{m.label}</span>
+                                        </div>
+                                        <p class="text-white font-black text-sm leading-snug truncate">{g.titulo}</p>
+                                        <p class="text-white/50 text-xs truncate">{g.autor}</p>
+                                    </div>
+
+                                    <i class="fas fa-chevron-right text-white/30 text-sm flex-shrink-0 group-hover:text-white/60 transition-colors"></i>
+                                </div>
+                            </button>
+                        );
+                    })}
+                </div>
+            </div>
+        </section>
+
+        {seleccionOficial.length > 0 && (
+            <section class="relative py-20 px-4">
+
+                <div class="absolute top-0 left-0 right-0 h-px bg-linear-to-r from-transparent via-white/10 to-transparent"></div>
+
+                <div class="max-w-6xl mx-auto">
+                    <div class="text-center mb-14">
+                        <span class="text-indigo-400/70 uppercase tracking-[0.25em] text-xs font-bold mb-3 block">✦ En competencia ✦</span>
+                        <h2 class="text-4xl md:text-5xl font-black text-white tracking-tight">Selección Oficial</h2>
+                        <p class="text-white/40 mt-3 text-base">Todos los cortometrajes presentados en el festival</p>
+                    </div>
+
+                    <div class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        {seleccionOficial.map((v, i) => (
+                            <button
+                                class="video-trigger group text-left rounded-2xl overflow-hidden border border-white/8 hover:border-indigo-500/40 bg-white/3 hover:bg-white/6 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-indigo-900/30 focus:outline-none"
+                                data-titulo={v.titulo}
+                                data-autor={v.autor}
+                                data-tipo={v.tipo}
+                                data-videoid={v.videoId}
+                                aria-label={`Ver ${v.titulo}`}
+                            >
+                                <div class="relative aspect-video overflow-hidden">
+                                    <img src={v.thumb} alt={v.titulo} class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                                    <div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors duration-300"></div>
+                                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                        <div class="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center">
+                                            <i class="fas fa-play text-white text-sm ml-0.5"></i>
+                                        </div>
+                                    </div>
+                                    <span class="absolute top-3 left-3 w-7 h-7 rounded-full bg-black/50 backdrop-blur-sm text-white/60 text-xs font-bold flex items-center justify-center">
+                                        {i + 4}
+                                    </span>
+                                </div>
+
+                                <div class="p-4">
+                                    <p class="text-white font-bold text-sm leading-snug mb-1 group-hover:text-indigo-200 transition-colors">{v.titulo}</p>
+                                    <p class="text-white/40 text-xs">{v.autor}</p>
+                                </div>
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            </section>
+        )}
+
+        {seleccionOficial.length === 0 && (
+            <section class="py-16 px-4 text-center">
+                <div class="max-w-md mx-auto">
+                    <div class="absolute top-0 left-0 right-0 h-px bg-linear-to-r from-transparent via-white/10 to-transparent"></div>
+                    <span class="text-5xl block mb-4 opacity-30">🎞️</span>
+                    <p class="text-white/30 text-sm italic">Los demás cortometrajes se publicarán pronto.</p>
+                </div>
+            </section>
+        )}
+
+        <div class="h-24"></div>
+
+    </main>
+
+    <div id="video-modal" class="fixed inset-0 z-[200] hidden" role="dialog" aria-modal="true" aria-labelledby="modal-video-title">
+
+        <div id="modal-backdrop" class="absolute inset-0 bg-black/85 backdrop-blur-md opacity-0 transition-opacity duration-300"></div>
+
+        <div class="fixed inset-0 flex items-center justify-center p-4">
+            <div id="modal-panel" class="relative w-full max-w-4xl opacity-0 translate-y-6 transition-all duration-300">
+
+                <div class="flex items-start justify-between mb-4 px-1">
+                    <div>
+                        <p id="modal-badge" class="text-xs font-bold uppercase tracking-widest text-amber-400/80 mb-1"></p>
+                        <h3 id="modal-video-title" class="text-white font-black text-xl md:text-2xl leading-snug"></h3>
+                        <p id="modal-autor" class="text-white/50 text-sm mt-1"></p>
+                    </div>
+                    <button
+                        id="modal-close"
+                        class="flex-shrink-0 ml-4 mt-1 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 border border-white/10 flex items-center justify-center text-white/70 hover:text-white transition-all"
+                        aria-label="Cerrar"
+                    >
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <div class="relative w-full aspect-video rounded-2xl overflow-hidden bg-black shadow-2xl shadow-black/60 border border-white/10">
+                    <iframe
+                        id="video-iframe"
+                        class="absolute inset-0 w-full h-full"
+                        src=""
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen
+                        title="Reproductor de video"
+                    ></iframe>
+                </div>
+
+                <p id="modal-aviso" class="hidden mt-3 text-center text-white/30 text-xs">
+                    <i class="fas fa-info-circle mr-1"></i>
+                    Si el video no carga, es posible que necesite permisos adicionales. Verifica que el archivo esté compartido públicamente.
+                </p>
+            </div>
+        </div>
+    </div>
+</Layout>
+
+<script is:inline>
+
+    (function() {
+        const field = document.querySelector('.star-field');
+        if (!field) return;
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('width', '100%');
+        svg.setAttribute('height', '100%');
+        svg.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;';
+        const count = 180;
+        for (let i = 0; i < count; i++) {
+            const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            const x = Math.random() * 100;
+            const y = Math.random() * 100;
+            const r = Math.random() * 1.2 + 0.3;
+            const opacity = Math.random() * 0.7 + 0.1;
+            const dur = (Math.random() * 4 + 2).toFixed(1);
+            const delay = (Math.random() * 5).toFixed(1);
+            circle.setAttribute('cx', x + '%');
+            circle.setAttribute('cy', y + '%');
+            circle.setAttribute('r', r.toString());
+            circle.setAttribute('fill', 'white');
+            circle.setAttribute('opacity', opacity.toString());
+            circle.style.animation = `twinkle ${dur}s ${delay}s ease-in-out infinite alternate`;
+            svg.appendChild(circle);
+        }
+        field.appendChild(svg);
+    })();
+
+    const modal      = document.getElementById('video-modal');
+    const backdrop   = document.getElementById('modal-backdrop');
+    const panel      = document.getElementById('modal-panel');
+    const iframe     = document.getElementById('video-iframe');
+    const titleEl    = document.getElementById('modal-video-title');
+    const autorEl    = document.getElementById('modal-autor');
+    const badgeEl    = document.getElementById('modal-badge');
+    const avisoEl    = document.getElementById('modal-aviso');
+    const closeBtn   = document.getElementById('modal-close');
+
+    const posLabels  = { '1': '🥇 Primer lugar', '2': '🥈 Segundo lugar', '3': '🥉 Tercer lugar' };
+
+    function buildSrc(tipo, videoId) {
+        if (tipo === 'youtube')  return `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+        if (tipo === 'drive')    return `https://drive.google.com/file/d/${videoId}/preview`;
+        if (tipo === 'onedrive') return videoId.replace('view.aspx', 'embed').replace('redir', 'embed');
+        return '';
+    }
+
+    function openModal(titulo, autor, tipo, videoId, posicion) {
+        titleEl.textContent  = titulo;
+        autorEl.textContent  = autor;
+        badgeEl.textContent  = posicion ? (posLabels[posicion] || '') : '';
+        iframe.src           = buildSrc(tipo, videoId);
+        avisoEl.classList.toggle('hidden', tipo === 'youtube');
+
+        modal.classList.remove('hidden');
+        requestAnimationFrame(() => {
+            backdrop.classList.remove('opacity-0');
+            panel.classList.remove('opacity-0', 'translate-y-6');
+        });
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+        backdrop.classList.add('opacity-0');
+        panel.classList.add('opacity-0', 'translate-y-6');
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            iframe.src = '';
+            document.body.style.overflow = '';
+        }, 300);
+    }
+
+    document.querySelectorAll('.video-trigger').forEach(btn => {
+        btn.addEventListener('click', () => {
+            openModal(
+                btn.dataset.titulo,
+                btn.dataset.autor,
+                btn.dataset.tipo,
+                btn.dataset.videoid,
+                btn.dataset.posicion || null
+            );
+        });
+    });
+
+    closeBtn.addEventListener('click', closeModal);
+    backdrop.addEventListener('click', closeModal);
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal();
+    });
+</script>
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@900&display=swap');
+    .font-display { font-family: 'Playfair Display', serif; }
+
+    @keyframes twinkle {
+        from { opacity: 0.1; transform: scale(0.8); }
+        to   { opacity: 0.9; transform: scale(1.2); }
+    }
+
+    @keyframes floatSlow {
+        0%, 100% { transform: translateY(0) rotate(-5deg); }
+        50%       { transform: translateY(-14px) rotate(5deg); }
+    }
+    @keyframes floatMid {
+        0%, 100% { transform: translateY(0) rotate(8deg); }
+        50%       { transform: translateY(-10px) rotate(-4deg); }
+    }
+    .animate-float-slow { animation: floatSlow 7s ease-in-out infinite; }
+    .animate-float-mid  { animation: floatMid  5s ease-in-out infinite; }
+
+    .video-trigger:hover {
+        transform: translateY(-3px);
+    }
+    .podio-card .video-trigger:hover {
+        transform: translateY(-4px);
+    }
+
+    html { scrollbar-color: #2a2d4a #07091a; }
+</style>

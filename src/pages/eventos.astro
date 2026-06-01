@@ -1,266 +1,263 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Navbar from '../components/Navbar.astro';
-import { createClient } from "@supabase/supabase-js";
 
-const supabase = createClient(
-    import.meta.env.PUBLIC_SUPABASE_URL,
-    import.meta.env.SUPABASE_KEY
-);
+const eventos = [
+    {
+        slug: "suenos-cortos-2026",
+        titulo: "Sueños Cortos 2026",
+        categoria: "Festival",
+        fecha: "2026-05-18",
+        dia: "18",
+        mes: "MAY",
+        hora: "10:00 hrs",
+        lugar: "Facultad de psicología, UADY",
+        precio: "Entrada libre",
+        descripcion: "Una noche de cine con cortometrajes dedicados a las neurociencias, salud y el sueño",
+        img: "/eventos/suenoscortos/suenosCortosIcon.png",
+        destacado: true,
+        tag_color: "bg-somno",
+    },
+];
 
-const { data: eventosRaw, error } = await supabase
-    .from('eventos')
-    .select('*')
-    .order('fecha', { ascending: true });
+const hoy = new Date();
+hoy.setHours(0, 0, 0, 0);
 
-if (error) console.error("Error al obtener eventos:", error);
-
-const meses = ["ENE", "FEB", "MAR", "ABR", "MAY", "JUN", "JUL", "AGO", "SEP", "OCT", "NOV", "DIC"];
-
-const eventos = (eventosRaw || []).map(e => {
-    const d = new Date(e.fecha + 'T00:00:00'); 
-    return {
-        ...e,
-        dia: d.getDate().toString(),
-        mes: meses[d.getMonth()]
-    };
-});
-
-let eventosDestacados = eventos.filter(e => e.destacado);
-
-if (eventosDestacados.length === 0 && eventos.length > 0) {
-    eventosDestacados.push(eventos[0]);
-}
-
+const proximos  = eventos.filter(e => new Date(e.fecha + 'T00:00:00') >= hoy);
+const pasados   = eventos.filter(e => new Date(e.fecha + 'T00:00:00') <  hoy);
+const destacados = proximos.filter(e => e.destacado);
 ---
 
 <Layout title="Eventos | SomnoLab">
     <Navbar />
 
-    <main class="bg-slate-50 min-h-screen pt-24 pb-24">
-        
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 mb-12 text-center">
-            <span class="text-somno font-bold uppercase tracking-widest text-sm mb-4 block">Eventos SomnoLab</span>
-            <h1 class="text-4xl md:text-6xl font-black text-slate-800 tracking-tight mb-4">
-                Calendario <span class="text-somno">Oficial</span>
+    <main class="bg-slate-50 min-h-screen pt-24 pb-28 overflow-x-hidden">
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 mb-14 text-center animate-fade-in-up">
+            <span class="inline-block text-somno font-bold uppercase tracking-[0.25em] text-xs mb-4">
+                Eventos SomnoLab
+            </span>
+            <h1 class="text-5xl md:text-7xl font-black tracking-tighter text-slate-900 mb-4 leading-[1.05]">
+                Calendario <span class="text-transparent bg-clip-text bg-linear-to-r from-somno-dark via-somno to-somno-light">Oficial</span>
             </h1>
-            <p class="text-slate-500">Talleres, webinars y encuentros para mejorar tu calidad de vida.</p>
+            <p class="text-slate-500 text-lg max-w-xl mx-auto">
+                Talleres, webinars, festivales y encuentros para transformar tu relación con el sueño.
+            </p>
         </div>
 
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 mb-20">
-            <div class="relative rounded-[2.5rem] overflow-hidden shadow-2xl bg-slate-900 h-125 group" id="hero-carousel">
-                {eventosDestacados.map((evento, index) => (
-                    <div 
-                        class={`carousel-slide absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}
-                        data-index={index}
-                    >
-                        <img src={evento.img} alt={evento.titulo} class="absolute inset-0 w-full h-full object-cover transition-transform duration-10000 ease-linear scale-100 group-hover:scale-110" />
-                        <div class="absolute inset-0 bg-linear-to-r from-slate-900 via-slate-900/60 to-transparent"></div>
-                        
-                        <div class="absolute inset-0 p-8 md:p-16 flex flex-col justify-center max-w-2xl z-20">
-                            <span class="inline-block bg-somno text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-6 w-fit animate-pulse">
+        {destacados.length > 0 && (
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 mb-20 animate-fade-in-up" style="animation-delay:0.1s">
+                {destacados.map(evento => (
+                    <a href={`/eventos/${evento.slug}`} class="group relative flex rounded-[2.5rem] overflow-hidden shadow-2xl h-120 md:h-130 bg-slate-900 cursor-pointer block">
+
+                        <img
+                            src={evento.img}
+                            alt={evento.titulo}
+                            class="absolute inset-0 w-full h-full object-cover transition-transform duration-[8s] ease-linear scale-100 group-hover:scale-110"
+                        />
+
+                        <div class="absolute inset-0 bg-linear-to-r from-slate-900/90 via-slate-900/50 to-transparent"></div>
+                        <div class="absolute inset-0 bg-linear-to-t from-slate-900/60 via-transparent to-transparent"></div>
+
+                        <div class="absolute top-7 left-8 z-20 flex items-center gap-2">
+                            <span class="bg-somno text-white text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-widest shadow-lg shadow-somno/40 flex items-center gap-1.5">
+                                <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse inline-block"></span>
                                 Evento Destacado
                             </span>
-                            <h2 class="text-4xl md:text-6xl font-black text-white mb-6 leading-tight drop-shadow-lg">
+                        </div>
+
+                        <div class="relative z-10 flex flex-col justify-end p-8 md:p-14 max-w-2xl">
+                            <span class="text-somno-light text-xs font-bold uppercase tracking-widest mb-3">{evento.categoria}</span>
+                            <h2 class="text-4xl md:text-6xl font-black text-white leading-tight mb-5 drop-shadow-lg">
                                 {evento.titulo}
                             </h2>
-                            <div class="flex flex-wrap gap-6 text-white/90 text-lg font-medium mb-8">
-                                <span class="flex items-center gap-2"><i class="far fa-calendar-alt text-somno"></i> {evento.dia} {evento.mes}</span>
-                                <span class="flex items-center gap-2"><i class="far fa-clock text-somno"></i> {evento.hora}</span>
+                            <div class="flex flex-wrap gap-5 text-white/80 font-medium text-sm mb-8">
+                                <span class="flex items-center gap-2">
+                                    <i class="far fa-calendar-alt text-somno-light"></i>
+                                    {evento.dia} {evento.mes}
+                                </span>
+                                <span class="flex items-center gap-2">
+                                    <i class="far fa-clock text-somno-light"></i>
+                                    {evento.hora}
+                                </span>
+                                <span class="flex items-center gap-2">
+                                    <i class="fas fa-map-marker-alt text-somno-light"></i>
+                                    {evento.lugar}
+                                </span>
                             </div>
-                            <button onclick={`openModal(${evento.id})`} class="bg-white text-slate-900 px-8 py-4 rounded-full font-bold hover:bg-somno hover:text-white transition-all w-fit shadow-lg transform hover:scale-105">
-                                Ver todos los detalles
-                            </button>
-                        </div>
-                    </div>
-                ))}
 
-                {eventosDestacados.length > 1 && (
-                    <>
-                        <button id="prev-btn" class="absolute left-4 top-1/2 -translate-y-1/2 z-30 w-12 h-12 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-white hover:text-slate-900 transition-all opacity-0 group-hover:opacity-100">
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                        <button id="next-btn" class="absolute right-4 top-1/2 -translate-y-1/2 z-30 w-12 h-12 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-white hover:text-slate-900 transition-all opacity-0 group-hover:opacity-100">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
-                        <div class="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 flex gap-3">
-                            {eventosDestacados.map((_, i) => (
-                                <button class={`carousel-dot w-3 h-3 rounded-full transition-all ${i === 0 ? 'bg-somno w-8' : 'bg-white/50 hover:bg-white'}`} data-target={i}></button>
-                            ))}
+                            <span class="inline-flex items-center gap-2 bg-white text-slate-900 px-7 py-3.5 rounded-full font-bold text-sm hover:bg-somno hover:text-white transition-all w-fit shadow-xl shadow-black/20 group-hover:bg-somno group-hover:text-white">
+                                Ver todos los detalles
+                                <i class="fas fa-arrow-right text-xs transition-transform group-hover:translate-x-1"></i>
+                            </span>
                         </div>
-                    </>
-                )}
+
+                        <div class="absolute bottom-7 right-8 z-20 hidden md:block text-right">
+                            <span class="text-7xl font-black text-white/10 leading-none select-none">{evento.dia}</span>
+                            <span class="block text-somno font-black text-xl tracking-widest -mt-2">{evento.mes}</span>
+                        </div>
+                    </a>
+                ))}
             </div>
-        </div>
+        )}
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6">
-            <h3 class="text-2xl font-bold text-slate-800 mb-8 pl-4 border-l-4 border-somno">Calendario General</h3>
-            
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {eventos.map((evento) => (
-                    <div class="group bg-white rounded-4xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 flex flex-col">
-                        
-                        <div class="relative h-64 overflow-hidden">
-                            <img src={evento.img} alt={evento.titulo} class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                            <div class="absolute inset-0 bg-slate-900/20 group-hover:bg-transparent transition-colors"></div>
-                            
-                            {evento.destacado && (
-                                <div class="absolute top-4 left-4 bg-yellow-400 text-slate-900 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-lg">
-                                    ★ Destacado
-                                </div>
-                            )}
 
-                            <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-md rounded-2xl p-3 text-center min-w-17.5 shadow-lg">
-                                <span class="block text-2xl font-black text-slate-800 leading-none">{evento.dia}</span>
-                                <span class="block text-xs font-bold text-somno uppercase">{evento.mes}</span>
-                            </div>
-                        </div>
-
-                        <div class="p-8 flex flex-col grow relative">
-                            <span class="text-xs font-bold text-somno group-hover:text-slate-800 uppercase tracking-wider mb-2">{evento.categoria}</span>
-                            <h3 class="text-xl font-bold text-slate-800 mb-4 leading-tight group-hover:text-somno transition-colors">
-                                {evento.titulo}
-                            </h3>
-
-                            <div class="space-y-2 mb-6 text-sm text-slate-500">
-                                <div class="flex items-center gap-3"><i class="far fa-clock w-5 text-center text-somno"></i> {evento.hora}</div>
-                                <div class="flex items-center gap-3"><i class="fas fa-map-marker-alt w-5 text-center text-somno"></i> {evento.lugar}</div>
-                                <div class="flex items-center gap-3"><i class="fas fa-ticket-alt w-5 text-center text-somno"></i> {evento.precio}</div>
-                            </div>
-
-                            <button onclick={`openModal(${evento.id})`} class="mt-auto w-full py-3 rounded-xl border border-slate-200 text-center font-bold text-slate-600 hover:bg-somno hover:border-somno hover:text-white transition-all cursor-pointer">
-                                Ver Detalles
-                            </button>
-                        </div>
-                    </div>
-                ))}
+            <div class="flex items-center gap-4 mb-10">
+                <div class="h-px flex-1 bg-slate-200"></div>
+                <span class="flex items-center gap-2 text-sm font-bold text-slate-800 uppercase tracking-widest px-2 whitespace-nowrap">
+                    <span class="w-2 h-2 rounded-full bg-somno animate-pulse inline-block"></span>
+                    Próximos eventos
+                </span>
+                <div class="h-px flex-1 bg-slate-200"></div>
             </div>
-        </div>
-    </main>
 
-    <div id="event-modal" class="fixed inset-0 z-100 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity opacity-0" id="modal-backdrop"></div>
-        <div class="fixed inset-0 z-10 overflow-y-auto">
-            <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
-                <div class="relative transform overflow-hidden rounded-[2.5rem] bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-2xl opacity-0 translate-y-4" id="modal-panel">
-                    <button onclick="closeModal()" class="absolute top-4 right-4 z-20 w-10 h-10 bg-white/80 backdrop-blur rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-100 hover:text-red-500 transition-colors"><i class="fas fa-times text-lg"></i></button>
-                    <div class="h-48 sm:h-64 w-full relative">
-                        <img id="modal-img" src="" alt="" class="w-full h-full object-cover">
-                        <div class="absolute inset-0 bg-linear-to-t from-white via-transparent to-transparent"></div>
+            {proximos.length === 0 ? (
+                <div class="text-center py-20 bg-white rounded-3xl border border-slate-100 shadow-sm mb-16">
+                    <div class="w-16 h-16 rounded-full bg-somno/10 flex items-center justify-center text-somno text-2xl mx-auto mb-5">
+                        <i class="fas fa-moon"></i>
                     </div>
-                    <div class="px-8 pb-8 sm:px-10 sm:pb-10 -mt-12 relative z-10">
-                        <span id="modal-category" class="inline-block bg-somno text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-4 shadow-lg shadow-somno/30">Categoria</span>
-                        <h3 id="modal-title" class="text-3xl font-black text-slate-800 leading-tight mb-6">Título del Evento</h3>
-                        <div class="grid grid-cols-2 gap-4 mb-6 bg-slate-50 p-6 rounded-2xl border border-slate-100">
-                            <div><p class="text-xs text-slate-400 font-bold uppercase">Fecha</p><p id="modal-date" class="font-bold text-slate-700">DD MMM</p></div>
-                            <div><p class="text-xs text-slate-400 font-bold uppercase">Hora</p><p id="modal-time" class="font-bold text-slate-700">00:00</p></div>
-                            <div><p class="text-xs text-slate-400 font-bold uppercase">Lugar</p><p id="modal-location" class="font-bold text-slate-700">Ubicación</p></div>
-                            <div><p class="text-xs text-slate-400 font-bold uppercase">Costo</p><p id="modal-price" class="font-bold text-somno">$$$</p></div>
-                        </div>
-                        <div class="prose prose-slate prose-sm max-w-none mb-8"><p id="modal-desc" class="text-slate-600 leading-relaxed text-lg">Descripción detallada...</p></div>
-                        <div class="flex gap-4">
-                            <a href="/citas" class="flex-1 bg-slate-900 text-white text-center py-4 rounded-xl font-bold hover:bg-slate-800 transition-all shadow-xl">Reservar Lugar</a>
-                            <button onclick="closeModal()" class="px-6 py-4 rounded-xl border border-slate-200 font-bold text-slate-500 hover:bg-slate-50">Cerrar</button>
-                        </div>
+                    <h3 class="text-xl font-black text-slate-700 mb-2">Sin eventos próximos</h3>
+                    <p class="text-slate-400 text-sm">Pronto anunciaremos nuevas actividades. ¡Mantente atento!</p>
+                </div>
+            ) : (
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-24">
+                    {proximos.map((evento, i) => (
+                        <a
+                            href={`/eventos/${evento.slug}`}
+                            class="group bg-white rounded-4xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 flex flex-col animate-fade-in-up"
+                            style={`animation-delay: ${0.15 + i * 0.07}s`}
+                        >
+                            <div class="relative h-60 overflow-hidden">
+                                <img src={evento.img} alt={evento.titulo} class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                                <div class="absolute inset-0 bg-slate-900/20 group-hover:bg-slate-900/0 transition-colors duration-300"></div>
+                                {evento.destacado && (
+                                    <div class="absolute top-4 left-4 bg-yellow-400 text-slate-900 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-lg">★ Destacado</div>
+                                )}
+                                <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-md rounded-2xl px-3.5 py-2.5 text-center shadow-lg min-w-13">
+                                    <span class="block text-2xl font-black text-slate-800 leading-none">{evento.dia}</span>
+                                    <span class="block text-[10px] font-bold text-somno uppercase tracking-wider mt-0.5">{evento.mes}</span>
+                                </div>
+                            </div>
+                            <div class="p-7 flex flex-col grow">
+                                <span class="text-[11px] font-bold text-somno uppercase tracking-widest mb-2">{evento.categoria}</span>
+                                <h3 class="text-xl font-black text-slate-800 mb-4 leading-snug group-hover:text-somno transition-colors duration-300">{evento.titulo}</h3>
+                                <div class="space-y-2 mb-6 text-sm text-slate-500">
+                                    <div class="flex items-center gap-3"><i class="far fa-clock w-4 text-center text-somno"></i>{evento.hora}</div>
+                                    <div class="flex items-center gap-3"><i class="fas fa-map-marker-alt w-4 text-center text-somno"></i>{evento.lugar}</div>
+                                    <div class="flex items-center gap-3"><i class="fas fa-ticket-alt w-4 text-center text-somno"></i>{evento.precio}</div>
+                                </div>
+                                <span class="mt-auto w-full py-3 rounded-xl border border-slate-200 text-center font-bold text-slate-600 group-hover:bg-somno group-hover:border-somno group-hover:text-white transition-all duration-300 block">
+                                    Ver Detalles →
+                                </span>
+                            </div>
+                        </a>
+                    ))}
+                </div>
+            )}
+        </div>
+
+        {pasados.length > 0 && (
+            <div class="max-w-7xl mx-auto px-4 sm:px-6">
+
+                <div class="flex items-center gap-4 mb-10">
+                    <div class="h-px flex-1 bg-slate-200"></div>
+                    <span class="flex items-center gap-2 text-sm font-bold text-slate-400 uppercase tracking-widest px-2 whitespace-nowrap">
+                        <i class="fas fa-archive text-slate-300 text-xs"></i>
+                        Eventos anteriores
+                    </span>
+                    <div class="h-px flex-1 bg-slate-200"></div>
+                </div>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-24">
+                    {pasados.map((evento, i) => (
+                        <a href={`/eventos/${evento.slug}`} class="group relative rounded-4xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 flex flex-col h-80 animate-fade-in-up" style={`animation-delay: ${0.1 + i * 0.06}s`}>
+                            <img
+                                src={evento.img}
+                                alt={evento.titulo}
+                                class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                            />
+
+                            <div class="absolute inset-0 bg-linear-to-t from-slate-900/90 via-slate-900/30 to-transparent"></div>
+
+                            <div class="absolute top-4 left-4 z-10">
+                                <span class="inline-flex items-center gap-1.5 bg-slate-950/25 backdrop-blur-md border border-white/20 text-white text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-wider">
+                                    <i class="fas fa-images text-somno-light text-[9px]"></i>
+                                    Ver memorias
+                                </span>
+                            </div>
+
+                            <div class="absolute top-4 right-4 z-10 text-right">
+                                <span class="block text-3xl font-black text-white/20 leading-none select-none">{evento.dia}</span>
+                                <span class="block text-[10px] font-black text-white/50 uppercase tracking-widest -mt-1">{evento.mes}</span>
+                            </div>
+
+                            <div class="relative z-10 mt-auto p-6">
+                                <span class="text-[10px] font-bold text-somno-light uppercase tracking-widest mb-1 block">{evento.categoria}</span>
+                                <h3 class="text-xl font-black text-white leading-snug mb-3">
+                                    {evento.titulo}
+                                </h3>
+                                <div class="flex items-center justify-between">
+                                    <span class="flex items-center gap-1.5 text-white/60 text-xs">
+                                        <i class="fas fa-map-marker-alt text-somno-light"></i>
+                                        {evento.lugar}
+                                    </span>
+                                    <span class="flex items-center gap-1 text-white font-bold text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                        Ver galería <i class="fas fa-arrow-right text-[10px]"></i>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="absolute inset-0 rounded-4xl ring-2 ring-somno/0 group-hover:ring-somno/60 transition-all duration-300 pointer-events-none"></div>
+                        </a>
+                    ))}
+                </div>
+            </div>
+        )}
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 mt-4">
+            <div class="relative rounded-[2.5rem] overflow-hidden bg-slate-900 shadow-2xl shadow-slate-900/30">
+
+                <div class="absolute inset-0 bg-linear-to-br from-somno-dark/30 via-transparent to-somno/20 pointer-events-none"></div>
+                <div class="absolute top-0 right-0 w-80 h-80 bg-somno/10 rounded-full blur-[80px] -translate-y-1/3 translate-x-1/4 pointer-events-none"></div>
+                <div class="absolute bottom-0 left-0 w-56 h-56 bg-somno-dark/20 rounded-full blur-[60px] translate-y-1/3 -translate-x-1/4 pointer-events-none"></div>
+
+                <div class="relative z-10 flex flex-col md:flex-row items-center gap-10 p-10 md:p-14">
+
+                    <div class="shrink-0 w-20 h-20 rounded-3xl bg-somno/20 border border-somno/30 flex items-center justify-center text-somno text-4xl shadow-lg shadow-somno/10">
+                        <i class="fas fa-stethoscope"></i>
+                    </div>
+
+                    <div class="flex-1 text-center md:text-left">
+                        <span class="text-somno-light font-bold uppercase tracking-[0.2em] text-xs mb-3 block">Después del evento</span>
+                        <h2 class="text-2xl md:text-3xl font-black text-white mb-3 leading-tight tracking-tight">
+                            ¿Listo para dar el siguiente paso?
+                        </h2>
+                        <p class="text-slate-400 text-base max-w-lg">
+                            Nuestros eventos son solo el inicio. Conoce los servicios clínicos de SomnoLab y transforma tu sueño con acompañamiento especializado.
+                        </p>
+                    </div>
+
+                    <div class="shrink-0">
+                        <a href="/servicios" class="group inline-flex items-center gap-3 bg-somno text-white font-bold px-8 py-4 rounded-2xl hover:bg-somno-dark transition-all shadow-xl shadow-somno/30 hover:shadow-somno/50 hover:-translate-y-0.5 whitespace-nowrap">
+                            Ver Servicios
+                            <i class="fas fa-arrow-right text-xs transition-transform group-hover:translate-x-1"></i>
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+
+    </main>
 </Layout>
 
-<script define:vars={{ eventsData: eventos }}>
-    
-    const slides = document.querySelectorAll('.carousel-slide');
-    const dots = document.querySelectorAll('.carousel-dot');
-    const prevBtn = document.getElementById('prev-btn');
-    const nextBtn = document.getElementById('next-btn');
-    
-    let currentIndex = 0;
-    let autoSlideInterval;
-
-    const showSlide = (index) => {
-        if (index >= slides.length) index = 0;
-        if (index < 0) index = slides.length - 1;
-        currentIndex = index;
-        slides.forEach((slide, i) => {
-            if (i === currentIndex) {
-                slide.classList.remove('opacity-0', 'z-0', 'pointer-events-none');
-                slide.classList.add('opacity-100', 'z-10');
-            } else {
-                slide.classList.add('opacity-0', 'z-0', 'pointer-events-none');
-                slide.classList.remove('opacity-100', 'z-10');
-            }
-        });
-        dots.forEach((dot, i) => {
-            if (i === currentIndex) {
-                dot.classList.remove('bg-white/50', 'w-3');
-                dot.classList.add('bg-somno', 'w-8');
-            } else {
-                dot.classList.add('bg-white/50', 'w-3');
-                dot.classList.remove('bg-somno', 'w-8');
-            }
-        });
-    };
-
-    const nextSlide = () => { showSlide(currentIndex + 1); resetAutoSlide(); };
-    const prevSlide = () => { showSlide(currentIndex - 1); resetAutoSlide(); };
-
-    const startAutoSlide = () => {
-        if (slides.length > 1) {
-            autoSlideInterval = setInterval(() => { showSlide(currentIndex + 1); }, 5000);
-        }
-    };
-    const resetAutoSlide = () => { clearInterval(autoSlideInterval); startAutoSlide(); };
-
-    if (prevBtn) prevBtn.addEventListener('click', prevSlide);
-    if (nextBtn) nextBtn.addEventListener('click', nextSlide);
-
-    dots.forEach(dot => {
-        dot.addEventListener('click', (e) => {
-            const index = parseInt(e.target.dataset.target);
-            showSlide(index);
-            resetAutoSlide();
-        });
-    });
-    startAutoSlide();
-
-    const modal = document.getElementById('event-modal');
-    const backdrop = document.getElementById('modal-backdrop');
-    const panel = document.getElementById('modal-panel');
-    const mImg = document.getElementById('modal-img');
-    const mCat = document.getElementById('modal-category');
-    const mTitle = document.getElementById('modal-title');
-    const mDate = document.getElementById('modal-date');
-    const mTime = document.getElementById('modal-time');
-    const mLoc = document.getElementById('modal-location');
-    const mPrice = document.getElementById('modal-price');
-    const mDesc = document.getElementById('modal-desc');
-
-    window.openModal = (id) => {
-        const event = eventsData.find(e => e.id === id);
-        if (!event) return;
-        mImg.src = event.img;
-        mCat.textContent = event.categoria;
-        mTitle.textContent = event.titulo;
-        mDate.textContent = `${event.dia} ${event.mes}`;
-        mTime.textContent = event.hora;
-        mLoc.textContent = event.lugar;
-        mPrice.textContent = event.precio;
-        mDesc.textContent = event.descripcion;
-        modal.classList.remove('hidden');
-        setTimeout(() => {
-            backdrop.classList.remove('opacity-0');
-            panel.classList.remove('opacity-0', 'translate-y-4');
-        }, 10);
-    };
-
-    window.closeModal = () => {
-        backdrop.classList.add('opacity-0');
-        panel.classList.add('opacity-0', 'translate-y-4');
-        setTimeout(() => { modal.classList.add('hidden'); }, 300);
-    };
-
-    window.addEventListener('click', (e) => { if (e.target === backdrop) closeModal(); });
-    window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal(); });
-</script>
+<style>
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(28px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in-up {
+        opacity: 0;
+        animation: fadeInUp 0.75s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    }
+</style>
