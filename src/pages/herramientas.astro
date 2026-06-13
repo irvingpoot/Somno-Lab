@@ -1,0 +1,79 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+
+const herramientas = [
+    {
+        slug: '/herramientas/habitos-sueno',
+        titulo: 'Hábitos para mejorar mi sueño',
+        descripcion: 'Registra y da seguimiento a tus hábitos de sueño durante cuatro semanas. Imprimible y fácil de usar.',
+        icono: 'fa-moon',
+        etiqueta: 'Plantilla',
+    },
+];
+---
+
+<Layout title="Herramientas | SomnoLab">
+    <Navbar />
+
+    <section class="relative min-h-dvh bg-slate-50 pt-32 pb-24 overflow-x-clip">
+
+        <div class="absolute top-[-5%] right-[-5%] w-96 h-96 bg-somno-light/20 rounded-full blur-[120px] pointer-events-none"></div>
+        <div class="absolute bottom-[-5%] left-[-10%] w-120 h-120 bg-somno/10 rounded-full blur-[100px] pointer-events-none"></div>
+
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <div class="text-center mb-16 space-y-4 animate-fade-in-up">
+                <span class="inline-block text-somno font-bold tracking-wider uppercase text-sm">
+                    Recursos gratuitos
+                </span>
+                <h1 class="text-5xl sm:text-6xl font-black tracking-tighter text-slate-900 leading-[1.1]">
+                    Herramientas para<br/>
+                    <span class="text-transparent bg-clip-text bg-linear-to-r from-somno-dark via-somno to-somno-light">
+                        mejorar tu sueño
+                    </span>
+                </h1>
+                <p class="text-xl text-slate-600 max-w-2xl mx-auto font-light leading-relaxed">
+                    Recursos diseñados por nuestros especialistas para que puedas trabajar en tu descanso desde casa.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {herramientas.map((h) => (
+                    <a
+                        href={h.slug}
+                        class="group bg-white rounded-3xl border border-slate-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 p-8 flex flex-col gap-6"
+                    >
+                        <div class="w-14 h-14 rounded-2xl bg-somno/10 flex items-center justify-center text-somno border border-somno/10">
+                            <i class={`fas ${h.icono} text-2xl`}></i>
+                        </div>
+
+                        <div class="flex flex-col gap-2 grow">
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-somno bg-somno/10 px-2.5 py-1 rounded-full w-fit">
+                                {h.etiqueta}
+                            </span>
+                            <h2 class="text-xl font-black text-slate-800 tracking-tight">{h.titulo}</h2>
+                            <p class="text-slate-500 text-sm leading-relaxed font-light">{h.descripcion}</p>
+                        </div>
+
+                        <div class="flex items-center gap-2 text-somno font-bold text-sm group-hover:gap-3 transition-all duration-300">
+                            Ver herramienta
+                            <i class="fas fa-arrow-right text-xs"></i>
+                        </div>
+                    </a>
+                ))}
+            </div>
+
+        </div>
+    </section>
+</Layout>
+
+<style>
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in-up {
+        animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    }
+</style>
