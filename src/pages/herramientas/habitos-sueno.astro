@@ -1,0 +1,161 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import ReturnButton from '../../components/ReturnButton.astro';
+---
+
+<Layout title="Hábitos para mejorar mi sueño | SomnoLab" showFooter={false}>
+
+    <div class="no-print fixed left-0 right-0 z-40 bg-slate-50/90 backdrop-blur-sm border-b border-slate-200">
+        <div class="max-w-2xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-center gap-4">
+            <ReturnButton href="/herramientas" />
+
+            <button
+                onclick="window.print()"
+                class="shrink-0 flex items-center gap-2 bg-somno hover:bg-somno-dark transition-colors text-white text-sm font-bold px-5 py-2 rounded-full shadow-sm shadow-somno/20"
+            >
+                <i class="fas fa-print"></i>
+                Imprimir
+            </button>
+        </div>
+    </div>
+
+    <main class="bg-white min-h-screen pt-20 pb-20 px-6 sm:px-10">
+
+        <div class="no-print max-w-2xl mx-auto mb-10 text-center space-y-2">
+            <span class="inline-block text-somno font-bold tracking-wider uppercase text-xs">Plantilla</span>
+            <h1 class="text-4xl font-black tracking-tighter text-slate-900">Hábitos para mejorar mi sueño</h1>
+            <p class="text-slate-500 font-light">
+                Escribe un hábito en cada campo, imprime la hoja y marca un casillero por cada día que lo cumplas.
+            </p>
+        </div>
+
+        <div class="tracker-grid max-w-2xl mx-auto space-y-10">
+
+            {[1, 2, 3].map((_) => (
+                <div class="tracker-block rounded-3xl border-2 border-somno/20 overflow-hidden shadow-sm">
+
+                    <!-- Header del bloque -->
+                    <div class="block-header px-6 py-4 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-white/80">
+                                <path fill-rule="evenodd" d="M9.528 1.718a.75.75 0 01.162.819A8.97 8.97 0 009 6a9 9 0 009 9 8.97 8.97 0 003.463-.69.75.75 0 01.981.98 10.503 10.503 0 01-9.694 6.46c-5.799 0-10.5-4.701-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 01.818.162z" clip-rule="evenodd" />
+                            </svg>
+                            <span class="text-white font-black tracking-tight text-sm uppercase">
+                                Compromiso de hábitos para mejorar mi sueño
+                            </span>
+                        </div>
+                        <span class="text-white/60 font-black text-xs tracking-tighter">SomnoLab</span>
+                    </div>
+
+                    <div class="px-6 py-5 space-y-5 bg-white">
+
+                        <div class="habit-row space-y-1.5">
+                            <div class="flex items-baseline gap-2">
+                                <span class="text-somno font-bold text-xs uppercase tracking-wider shrink-0">Hábito:</span>
+                                <div class="flex-1 border-b-2 border-slate-200"></div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Semana 1</p>
+                                    <div class="flex gap-1.5">
+                                        {Array(7).fill(0).map(() => (
+                                            <div class="checkbox w-6 h-6 rounded border-2 border-somno/40 shrink-0"></div>
+                                        ))}
+                                    </div>
+                                </div>
+                                <div>
+                                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Semana 2</p>
+                                    <div class="flex gap-1.5">
+                                        {Array(7).fill(0).map(() => (
+                                            <div class="checkbox w-6 h-6 rounded border-2 border-slate-200 shrink-0"></div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="border-t border-slate-100"></div>
+
+                        <div class="habit-row space-y-1.5">
+                            <div class="flex items-baseline gap-2">
+                                <span class="text-somno font-bold text-xs uppercase tracking-wider shrink-0">Hábito:</span>
+                                <div class="flex-1 border-b-2 border-slate-200"></div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Semana 3</p>
+                                    <div class="flex gap-1.5">
+                                        {Array(7).fill(0).map(() => (
+                                            <div class="checkbox w-6 h-6 rounded border-2 border-slate-200 shrink-0"></div>
+                                        ))}
+                                    </div>
+                                </div>
+                                <div>
+                                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Semana 4</p>
+                                    <div class="flex gap-1.5">
+                                        {Array(7).fill(0).map(() => (
+                                            <div class="checkbox w-6 h-6 rounded border-2 border-slate-200 shrink-0"></div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            ))}
+
+        </div>
+    </main>
+</Layout>
+
+<style>
+    .block-header {
+        background: linear-gradient(to right, #1a6b8a, #3e8cb1);
+    }
+
+    @media print {
+        .no-print,
+        nav,
+        header,
+        #main-nav,
+        #scroll-to-top {
+            display: none !important;
+        }
+
+        main {
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+        }
+
+        @page {
+            size: A4 portrait;
+            margin: 1.2cm 1.5cm;
+        }
+
+        body {
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        .tracker-block {
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+
+        .tracker-grid {
+            max-width: 100% !important;
+        }
+
+        .block-header {
+            background: linear-gradient(to right, #1a6b8a, #3e8cb1) !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        .checkbox {
+            border: 2px solid #3e8cb1 !important;
+            background: white !important;
+        }
+    }
+</style>
