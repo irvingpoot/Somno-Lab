@@ -1,0 +1,141 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import ReturnButton from '../../components/ReturnButton.astro';
+import StopBangComponent from '../../components/StopBang.astro';
+---
+
+<Layout title="Cuestionario STOP-BANG | SomnoLab">
+    <ReturnButton href="/herramientas" />
+    <div class="flex p-5 justify-end">
+        <a href="/" class="flex items-center gap-3 group">
+            <img src="/logoSomno.webp" alt="SomnoLab Logo" class="h-10 w-auto rounded-lg group-hover:scale-105 transition-transform" />
+            <span class="pr-1 font-black tracking-tighter text-2xl bg-clip-text text-transparent bg-linear-to-r from-somno-light to-somno">
+                SomnoLab
+            </span>
+        </a>
+    </div>
+
+    <section class="relative min-h-dvh bg-slate-50 pt-10 pb-24 overflow-x-clip">
+        <div class="absolute top-[10%] left-[-5%] w-96 h-96 bg-somno-light/20 rounded-full blur-[120px] pointer-events-none"></div>
+        <div class="absolute bottom-[20%] right-[-10%] w-120 h-120 bg-somno/10 rounded-full blur-[100px] pointer-events-none"></div>
+
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <div class="mb-12 animate-fade-in-up">
+                <span class="inline-block text-somno font-bold tracking-wider uppercase text-sm mb-2">
+                    Herramienta Interactiva
+                </span>
+                <h1 class="text-4xl sm:text-5xl font-black tracking-tighter text-slate-900 leading-[1.1] mb-4">
+                    Cuestionario STOP-BANG
+                </h1>
+                <p class="text-lg text-slate-600 max-w-2xl font-light leading-relaxed">
+                    Herramienta de tamizaje clínico para evaluar el riesgo de Apnea Obstructiva del Sueño (AOS). Responde las 8 preguntas y obtén tu resultado al instante.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8">
+
+                <div class="lg:col-span-7 xl:col-span-8 animate-fade-in-up" style="animation-delay: 0.1s;">
+                    <div class="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm">
+                        <h2 class="text-2xl font-bold text-slate-800 mb-2 tracking-tight">Responde las siguientes preguntas</h2>
+                        <p class="text-sm text-slate-400 font-light mb-6">Todas las preguntas son obligatorias. Selecciona <strong class="text-somno">Sí</strong> o <strong class="text-somno">No</strong> para cada una.</p>
+                        <StopBangComponent />
+                    </div>
+                </div>
+
+                <div class="lg:col-span-5 xl:col-span-4 animate-fade-in-up" style="animation-delay: 0.2s;">
+                    <div class="space-y-6 sticky top-5">
+
+                        <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
+                            <h3 class="text-base font-black text-slate-800 tracking-tight mb-3 flex items-center gap-2">
+                                <i class="fas fa-circle-info text-somno text-sm"></i>
+                                ¿Qué es el STOP-BANG?
+                            </h3>
+                            <p class="text-sm text-slate-500 leading-relaxed font-light">
+                                Es un cuestionario validado clínicamente para identificar pacientes con riesgo de Apnea Obstructiva del Sueño. Su nombre es el acrónimo de los ocho factores que evalúa.
+                            </p>
+                        </div>
+
+                        <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
+                            <h3 class="text-base font-black text-slate-800 tracking-tight mb-4 flex items-center gap-2">
+                                <i class="fas fa-spell-check text-somno text-sm"></i>
+                                El acrónimo
+                            </h3>
+                            <div class="space-y-2">
+                                {[
+                                    { letra: 'S', texto: 'Snoring — Ronquido' },
+                                    { letra: 'T', texto: 'Tiredness — Cansancio' },
+                                    { letra: 'O', texto: 'Observed apnea — Apnea observada' },
+                                    { letra: 'P', texto: 'Pressure — Presión arterial' },
+                                    { letra: 'B', texto: 'BMI — Índice de masa corporal' },
+                                    { letra: 'A', texto: 'Age — Edad' },
+                                    { letra: 'N', texto: 'Neck — Circunferencia del cuello' },
+                                    { letra: 'G', texto: 'Gender — Género' },
+                                ].map(item => (
+                                    <div class="flex items-center gap-3">
+                                        <span class="w-7 h-7 rounded-lg bg-somno/5 border border-somno/20 flex items-center justify-center text-somno font-black text-xs shrink-0">
+                                            {item.letra}
+                                        </span>
+                                        <span class="text-sm text-slate-600">{item.texto}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
+                            <h3 class="text-base font-black text-slate-800 tracking-tight mb-4 flex items-center gap-2">
+                                <i class="fas fa-chart-bar text-somno text-sm"></i>
+                                Criterios de calificación
+                            </h3>
+                            <div class="space-y-3">
+                                <div class="flex items-start gap-3 p-3 rounded-xl bg-emerald-50 border border-emerald-100">
+                                    <i class="fas fa-circle-check text-emerald-500 mt-0.5 text-sm"></i>
+                                    <div>
+                                        <p class="text-xs font-bold text-emerald-700">Bajo riesgo</p>
+                                        <p class="text-xs text-emerald-600 font-light">Sí a 0–2 preguntas</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-3 p-3 rounded-xl bg-amber-50 border border-amber-100">
+                                    <i class="fas fa-circle-exclamation text-amber-500 mt-0.5 text-sm"></i>
+                                    <div>
+                                        <p class="text-xs font-bold text-amber-700">Riesgo intermedio</p>
+                                        <p class="text-xs text-amber-600 font-light">Sí a 3–4 preguntas</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-3 p-3 rounded-xl bg-red-50 border border-red-100">
+                                    <i class="fas fa-triangle-exclamation text-red-500 mt-0.5 text-sm"></i>
+                                    <div>
+                                        <p class="text-xs font-bold text-red-700">Alto riesgo</p>
+                                        <p class="text-xs text-red-600 font-light leading-relaxed">Sí a 5–8 preguntas, o ≥2 de las primeras 4 combinado con: género masculino, IMC &gt;35 kg/m², o cuello ≥43 cm (hombre) / 41 cm (mujer)</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-somno/5 border-l-4 border-somno p-4 rounded-r-2xl">
+                            <div class="flex gap-3">
+                                <i class="fas fa-shield-halved text-somno mt-0.5 text-sm shrink-0"></i>
+                                <p class="text-xs text-slate-600 leading-relaxed font-light">
+                                    Este cuestionario es una herramienta de <strong class="text-slate-700">tamizaje</strong>, no un diagnóstico. Los resultados deben ser interpretados por un profesional de la salud.
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+</Layout>
+
+<style>
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in-up {
+        animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        opacity: 0;
+    }
+</style>

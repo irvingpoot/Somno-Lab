@@ -1,110 +1,139 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import ReturnButton from '../../components/ReturnButton.astro';
+
+const recomendaciones = [
+    { num: '01', titulo: 'Horarios de Sueño', descripcion: 'Establece horarios regulares para mantener tu reloj biológico estable.' },
+    { num: '02', titulo: 'Cena Saludable', descripcion: 'Consume una cena ligera y rica en triptófano antes de dormir.' },
+    { num: '03', titulo: 'Ajuste de Sustancias', descripcion: 'Evita el alcohol y el tabaco cerca de la hora de dormir.' },
+    { num: '04', titulo: 'Ropa Cómoda', descripcion: 'Usa ropa holgada y transpirable para descansar mejor.' },
+    { num: '05', titulo: 'Bloqueo de Luz y Ruido', descripcion: 'Minimiza la luz y el ruido en tu habitación.' },
+    { num: '06', titulo: 'Siestas Estratégicas', descripcion: 'Permite siestas cortas de 20 min para combatir el cansancio.' },
+    { num: '07', titulo: 'Consumo de Cafeína', descripcion: 'Limita la cafeína a las mañanas y evítala por las tardes.' },
+    { num: '08', titulo: 'Rutina de Ejercicio', descripcion: 'Mantén una rutina de ejercicio regular, preferiblemente por la mañana.' },
+    { num: '09', titulo: 'Ventilación y Temperatura', descripcion: 'Asegura una temperatura fresca y buena ventilación en tu habitación.' },
+    { num: '10', titulo: 'Uso de la Cama', descripcion: 'Reserva la cama únicamente para dormir y actividades íntimas.' },
+];
 ---
 
 <Layout title="Hábitos para mejorar mi sueño | SomnoLab" showFooter={false}>
 
     <div class="no-print fixed left-0 right-0 z-40 bg-slate-50/90 backdrop-blur-sm border-b border-slate-200">
-        <div class="max-w-2xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-center gap-4">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-center gap-4">
             <ReturnButton href="/herramientas" />
-
-            <button
-                onclick="window.print()"
-                class="shrink-0 flex items-center gap-2 bg-somno hover:bg-somno-dark transition-colors text-white text-sm font-bold px-5 py-2 rounded-full shadow-sm shadow-somno/20"
-            >
+            <button onclick="window.print()" class="shrink-0 flex items-center gap-2 bg-somno hover:bg-somno-dark transition-colors text-white text-sm font-bold px-5 py-2 rounded-full shadow-sm shadow-somno/20">
                 <i class="fas fa-print"></i>
                 Imprimir
             </button>
         </div>
     </div>
 
-    <main class="bg-white min-h-screen pt-20 pb-20 px-6 sm:px-10">
+    <div class="no-print max-w-3xl mx-auto pt-24 pb-8 px-6 text-center space-y-2">
+        <span class="inline-block text-somno font-bold tracking-wider uppercase text-xs">Plantilla imprimible</span>
+        <h1 class="text-4xl font-black tracking-tighter text-slate-900">Hábitos para mejorar mi sueño</h1>
+        <p class="text-slate-500 font-light">Todo en una sola hoja: tracker, compromiso y recomendaciones.</p>
+    </div>
 
-        <div class="no-print max-w-2xl mx-auto mb-10 text-center space-y-2">
-            <span class="inline-block text-somno font-bold tracking-wider uppercase text-xs">Plantilla</span>
-            <h1 class="text-4xl font-black tracking-tighter text-slate-900">Hábitos para mejorar mi sueño</h1>
-            <p class="text-slate-500 font-light">
-                Escribe un hábito en cada campo, imprime la hoja y marca un casillero por cada día que lo cumplas.
-            </p>
+    <main class="print-sheet bg-white px-6 sm:px-10 pb-10">
+
+        <div class="flex items-center gap-3 mt-4 mb-4">
+            <div class="h-px flex-1 bg-linear-to-r from-transparent to-somno/20"></div>
+            <p class="text-md font-black uppercase tracking-[0.2em] text-somno">Diario de compromiso de hábitos de sueño</p>
+            <div class="h-px flex-1 bg-linear-to-l from-transparent to-somno/20"></div>
         </div>
 
-        <div class="tracker-grid max-w-2xl mx-auto space-y-10">
+        
+        <div class="sheet-inner max-w-3xl mx-auto space-y-7">
+            <p class="text-sm text-slate-900 text-center">Existen 10 habitos para cambiar tu sueño. Elige uno que quieras mejorar, escribelo y marca los dias de la semana que lo consguiste. Al terminar la semana escoge otro habito. Repite el proceso hasta completar la plantilla.</p>
+            <div class="tracker-block rounded-2xl border-2 border-somno/20 overflow-hidden">
+                <div class="block-header px-5 py-3 flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 text-white/80">
+                            <path fill-rule="evenodd" d="M9.528 1.718a.75.75 0 01.162.819A8.97 8.97 0 009 6a9 9 0 009 9 8.97 8.97 0 003.463-.69.75.75 0 01.981.98 10.503 10.503 0 01-9.694 6.46c-5.799 0-10.5-4.701-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 01.818.162z" clip-rule="evenodd"/>
+                        </svg>
+                        <span class="text-white font-black text-xs uppercase tracking-widest">Compromiso de hábitos para mejorar mi sueño</span>
+                    </div>
+                    <span class="text-white/50 font-black text-xs tracking-tighter">SomnoLab</span>
+                </div>
 
-            {[1, 2, 3].map((_) => (
-                <div class="tracker-block rounded-3xl border-2 border-somno/20 overflow-hidden shadow-sm">
-
-                    <!-- Header del bloque -->
-                    <div class="block-header px-6 py-4 flex items-center justify-between">
-                        <div class="flex items-center gap-3">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-white/80">
-                                <path fill-rule="evenodd" d="M9.528 1.718a.75.75 0 01.162.819A8.97 8.97 0 009 6a9 9 0 009 9 8.97 8.97 0 003.463-.69.75.75 0 01.981.98 10.503 10.503 0 01-9.694 6.46c-5.799 0-10.5-4.701-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 01.818.162z" clip-rule="evenodd" />
-                            </svg>
-                            <span class="text-white font-black tracking-tight text-sm uppercase">
-                                Compromiso de hábitos para mejorar mi sueño
-                            </span>
+                <div class="px-5 py-3 bg-white grid grid-cols-2 gap-x-5 gap-y-3">
+                    {[
+                        { label: 'Semana 1', border: true },
+                        { label: 'Semana 2', border: true },
+                        { label: 'Semana 3', border: false },
+                        { label: 'Semana 4', border: false },
+                    ].map((semana) => (
+                        <div class={semana.border ? 'pb-3 border-b border-slate-100' : ''}>
+                            <div class="flex items-center gap-2 mt-1.5">
+                                <span class="text-somno font-black text-[9px] uppercase tracking-widest shrink-0">{semana.label}</span>
+                            </div>
+                            <div class="flex items-baseline gap-1.5 mb-1">
+                                <span class="text-slate-400 font-bold text-[10px] uppercase tracking-wider shrink-0">Hábito:</span>
+                                <div class="flex-1 border-b-2 border-slate-200 min-w-0"></div>
+                            </div>
+                            <div class="flex flex-row gap-3">
+                                {Array(7).fill(0).map(() => (
+                                    <div class="rounded border-2 border-somno w-full" style="aspect-ratio:1;max-width:18px;max-height:18px"></div>
+                                ))}
+                            </div>
                         </div>
-                        <span class="text-white/60 font-black text-xs tracking-tighter">SomnoLab</span>
+                    ))}
+                </div>
+            </div>
+
+            <div>
+                <div class="flex items-center gap-3 mb-8">
+                    <div class="h-px flex-1 bg-linear-to-r from-transparent to-somno/20"></div>
+                    <p class="text-md font-black uppercase tracking-[0.2em] text-somno">10 recomendaciones para dormir mejor</p>
+                    <div class="h-px flex-1 bg-linear-to-l from-transparent to-somno/20"></div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-x-6 gap-y-3">
+                    {recomendaciones.map((r) => (
+                        <div class="flex items-start gap-3">
+                            <span class="reco-num shrink-0">{r.num}</span>
+                            <div class="min-w-0">
+                                <p class="reco-titulo">{r.titulo}</p>
+                                <p class="reco-desc">{r.descripcion}</p>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            <div class="compromiso-block rounded-2xl overflow-hidden border border-somno/15">
+                <div class="compromiso-bg px-6 py-5">
+                    <div class="flex gap-5 items-start">
+                        <div class="shrink-0 w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center mt-0.5">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-white">
+                                <path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z"/>
+                            </svg>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-white/80 text-[10px] font-bold uppercase tracking-widest mb-1">Mi compromiso</p>
+                            <p class="text-white font-semibold text-sm leading-relaxed">
+                                Hoy decido hacer del buen sueño una prioridad. Me comprometo a practicar estos hábitos con constancia, sabiendo que cada noche de descanso es una inversión en mi salud, mi energía y mi bienestar.
+                            </p>
+                        </div>
                     </div>
 
-                    <div class="px-6 py-5 space-y-5 bg-white">
-
-                        <div class="habit-row space-y-1.5">
-                            <div class="flex items-baseline gap-2">
-                                <span class="text-somno font-bold text-xs uppercase tracking-wider shrink-0">Hábito:</span>
-                                <div class="flex-1 border-b-2 border-slate-200"></div>
-                            </div>
-                            <div class="grid grid-cols-2 gap-4">
-                                <div>
-                                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Semana 1</p>
-                                    <div class="flex gap-1.5">
-                                        {Array(7).fill(0).map(() => (
-                                            <div class="checkbox w-6 h-6 rounded border-2 border-somno/40 shrink-0"></div>
-                                        ))}
-                                    </div>
-                                </div>
-                                <div>
-                                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Semana 2</p>
-                                    <div class="flex gap-1.5">
-                                        {Array(7).fill(0).map(() => (
-                                            <div class="checkbox w-6 h-6 rounded border-2 border-slate-200 shrink-0"></div>
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
+                    <div class="mt-4 grid grid-cols-2 gap-6">
+                        <div>
+                            <p class="text-white/60 text-[9px] font-bold uppercase tracking-widest mb-1">Nombre</p>
+                            <div class="border-b border-white/40 h-5"></div>
                         </div>
-
-                        <div class="border-t border-slate-100"></div>
-
-                        <div class="habit-row space-y-1.5">
-                            <div class="flex items-baseline gap-2">
-                                <span class="text-somno font-bold text-xs uppercase tracking-wider shrink-0">Hábito:</span>
-                                <div class="flex-1 border-b-2 border-slate-200"></div>
-                            </div>
-                            <div class="grid grid-cols-2 gap-4">
-                                <div>
-                                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Semana 3</p>
-                                    <div class="flex gap-1.5">
-                                        {Array(7).fill(0).map(() => (
-                                            <div class="checkbox w-6 h-6 rounded border-2 border-slate-200 shrink-0"></div>
-                                        ))}
-                                    </div>
-                                </div>
-                                <div>
-                                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Semana 4</p>
-                                    <div class="flex gap-1.5">
-                                        {Array(7).fill(0).map(() => (
-                                            <div class="checkbox w-6 h-6 rounded border-2 border-slate-200 shrink-0"></div>
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
+                        <div>
+                            <p class="text-white/60 text-[9px] font-bold uppercase tracking-widest mb-1">Firma</p>
+                            <div class="border-b border-white/40 h-5"></div>
                         </div>
-
                     </div>
                 </div>
-            ))}
+            </div>
 
+            <div class="mt-5 pt-4 border-slate-100 flex items-center justify-between">
+                <p class="text-[9px] text-slate-300 font-medium">SomnoLab</p>
+                <p class="text-[9px] text-slate-300 font-medium">somnolab.mx</p>
+            </div>
         </div>
     </main>
 </Layout>
@@ -114,16 +143,44 @@ import ReturnButton from '../../components/ReturnButton.astro';
         background: linear-gradient(to right, #1a6b8a, #3e8cb1);
     }
 
+    .compromiso-bg {
+        background: linear-gradient(135deg, #1a6b8a 0%, #3e8cb1 60%, #5ba3c9 100%);
+    }
+
+    .reco-num {
+        font-size: 16px;
+        font-weight: 900;
+        color: #3e8cb1;
+        line-height: 1;
+        min-width: 1.5rem;
+        padding-top: 1px;
+    }
+
+    .reco-titulo {
+        font-size: 15px;
+        font-weight: 800;
+        color: #1e293b;
+        line-height: 1.2;
+        margin-bottom: 1px;
+    }
+
+    .reco-desc {
+        font-size: 12px;
+        color: #94a3b8;
+        line-height: 1.5;
+    }
+
+    main.print-sheet {
+        padding-top: 1.5rem;
+    }
+
     @media print {
         .no-print,
-        nav,
-        header,
-        #main-nav,
-        #scroll-to-top {
+        nav, header, #main-nav, #scroll-to-top {
             display: none !important;
         }
 
-        main {
+        main.print-sheet {
             padding-top: 0 !important;
             padding-bottom: 0 !important;
         }
@@ -138,19 +195,21 @@ import ReturnButton from '../../components/ReturnButton.astro';
             print-color-adjust: exact;
         }
 
-        .tracker-block {
-            page-break-inside: avoid;
-            break-inside: avoid;
+        .sheet-inner {
+            max-width: 100% !important;
         }
 
-        .tracker-grid {
-            max-width: 100% !important;
+        .block-header, .compromiso-bg {
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
         }
 
         .block-header {
             background: linear-gradient(to right, #1a6b8a, #3e8cb1) !important;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
+        }
+
+        .compromiso-bg {
+            background: linear-gradient(135deg, #1a6b8a 0%, #3e8cb1 60%, #5ba3c9 100%) !important;
         }
 
         .checkbox {
