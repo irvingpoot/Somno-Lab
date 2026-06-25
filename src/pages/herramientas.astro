@@ -2,7 +2,15 @@
 import Layout from '../layouts/Layout.astro';
 import Navbar from '../components/Navbar.astro';
 
-const herramientas = [
+type Herramienta = {
+    slug: string;
+    titulo: string;
+    descripcion: string;
+    icono: string;
+    etiqueta: "Plantilla descargable" | "Herramienta interactiva" | "Cuestionario de evaluación";
+};
+
+const herramientas: Herramienta[] = [
     {
         slug: '/herramientas/habitos-sueno',
         titulo: 'Hábitos para mejorar mi sueño',
