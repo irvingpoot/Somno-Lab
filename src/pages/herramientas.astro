@@ -2,15 +2,53 @@
 import Layout from '../layouts/Layout.astro';
 import Navbar from '../components/Navbar.astro';
 
-const herramientas = [
+type Herramienta = {
+    slug: string;
+    titulo: string;
+    descripcion: string;
+    icono: string;
+    etiqueta: "Plantilla descargable" | "Herramienta interactiva" | "Cuestionario de evaluación";
+};
+
+const herramientas: Herramienta[] = [
     {
         slug: '/herramientas/habitos-sueno',
         titulo: 'Hábitos para mejorar mi sueño',
         descripcion: 'Registra y da seguimiento a tus hábitos de sueño durante cuatro semanas. Imprimible y fácil de usar.',
         icono: 'fa-moon',
-        etiqueta: 'Plantilla',
+        etiqueta: 'Plantilla descargable',
+    },
+    {
+        slug: '/herramientas/diario-sueno',
+        titulo: 'Diario de sueño clínico',
+        descripcion: 'Registra de manera precisa tus horas de sueño, despertares y hábitos diarios con nomenclatura especializada.',
+        icono: 'fa-book-medical',
+        etiqueta: 'Plantilla descargable',
+    },
+    {
+        slug: '/#calculadora',
+        titulo: 'Semáforo de sueño',
+        descripcion: 'Calculadora de sueño para conocer tu hora de descanso adecuada.',
+        icono: 'fa-solid fa-calculator',
+        etiqueta: 'Herramienta interactiva',
+    },
+    {
+        slug: '/cronograma',
+        titulo: 'Cronograma de sueño',
+        descripcion: 'Ajuste su reloj biológico paso a paso.',
+        icono: 'fa-solid fa-clock',
+        etiqueta: 'Herramienta interactiva',
+    },
+    {
+        slug: '/herramientas/stop-bang',
+        titulo: 'Cuestionario STOP-BANG',
+        descripcion: 'Evalúa tu riesgo de Apnea Obstructiva del Sueño respondiendo 8 preguntas clínicas validadas. Obtén tu resultado al instante.',
+        icono: 'fa-solid fa-stethoscope',
+        etiqueta: 'Cuestionario de evaluación',
     },
 ];
+
+const etiquetas = ['Todas', ...new Set(herramientas.map(h => h.etiqueta))];
 ---
 
 <Layout title="Herramientas | SomnoLab">
@@ -23,7 +61,7 @@ const herramientas = [
 
         <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-            <div class="text-center mb-16 space-y-4 animate-fade-in-up">
+            <div class="text-center mb-12 space-y-4 animate-fade-in-up">
                 <span class="inline-block text-somno font-bold tracking-wider uppercase text-sm">
                     Recursos gratuitos
                 </span>
@@ -38,12 +76,25 @@ const herramientas = [
                 </p>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {herramientas.map((h) => (
-                    <a
-                        href={h.slug}
-                        class="group bg-white rounded-3xl border border-slate-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 p-8 flex flex-col gap-6"
+            <div class="flex flex-wrap justify-center gap-3 mb-8 animate-fade-in-up" style="animation-delay:0.15s; opacity:0; animation-fill-mode:forwards;">
+                {etiquetas.map((etiqueta) => (
+                    <button
+                        data-filtro={etiqueta}
+                        class:list={[
+                            'filtro-btn px-5 py-2 rounded-full text-sm font-bold tracking-wide border transition-all duration-300 cursor-pointer select-none',
+                            etiqueta === 'Todas'
+                                ? 'activo bg-somno text-white border-somno shadow-sm shadow-somno/30'
+                                : 'bg-white text-slate-500 border-slate-200 hover:border-somno/40 hover:text-somno'
+                        ]}
                     >
+                        {etiqueta}
+                    </button>
+                ))}
+            </div>
+
+            <div id="grid-herramientas" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {herramientas.map((h) => (
+                    <a href={h.slug} data-etiqueta={h.etiqueta} class="herramienta-card group bg-white rounded-3xl border border-slate-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 p-8 flex flex-col gap-6">
                         <div class="w-14 h-14 rounded-2xl bg-somno/10 flex items-center justify-center text-somno border border-somno/10">
                             <i class={`fas ${h.icono} text-2xl`}></i>
                         </div>
@@ -64,6 +115,17 @@ const herramientas = [
                 ))}
             </div>
 
+            <p id="contador" class="text-center text-slate-400 text-sm mt-8 transition-opacity duration-300">
+                Mostrando <span id="num-visible" class="font-bold text-somno">{herramientas.length}</span> de {herramientas.length} herramientas en total
+            </p>
+
+            <div id="estado-vacio" class="hidden flex-col items-center justify-center py-24 gap-4 text-center">
+                <div class="w-16 h-16 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-300">
+                    <i class="fas fa-search text-2xl"></i>
+                </div>
+                <p class="text-slate-400 font-medium">No hay herramientas en esta categoría todavía.</p>
+            </div>
+
         </div>
     </section>
 </Layout>
@@ -76,4 +138,113 @@ const herramientas = [
     .animate-fade-in-up {
         animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
     }
+
+    .herramienta-card {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        transition:
+            opacity 0.35s ease,
+            transform 0.35s ease,
+            box-shadow 0.3s ease;
+        will-change: opacity, transform;
+    }
+
+    .herramienta-card.saliendo {
+        opacity: 0;
+        transform: translateY(16px) scale(0.96);
+        pointer-events: none;
+    }
+
+    @keyframes cardEntrada {
+        from { opacity: 0; transform: translateY(24px) scale(0.97); }
+        to   { opacity: 1; transform: translateY(0)  scale(1); }
+    }
+    .herramienta-card.entrando {
+        animation: cardEntrada 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    }
+
+    .filtro-btn.activo {
+        background-color: var(--color-somno, #6366f1);
+        color: #fff;
+        border-color: var(--color-somno, #6366f1);
+        box-shadow: 0 2px 12px -2px color-mix(in srgb, var(--color-somno, #6366f1) 40%, transparent);
+    }
 </style>
+
+<script>
+    const DURACION_SALIDA = 320;
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const botones   = document.querySelectorAll<HTMLButtonElement>('.filtro-btn');
+        const tarjetas  = document.querySelectorAll<HTMLElement>('.herramienta-card');
+        const numVisible = document.getElementById('num-visible')!;
+        const estadoVacio = document.getElementById('estado-vacio')!;
+        const grid       = document.getElementById('grid-herramientas')!;
+
+        let filtroActual = 'Todas';
+
+        botones.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const filtro = btn.dataset.filtro!;
+                if (filtro === filtroActual) return;
+                filtroActual = filtro;
+
+                botones.forEach(b => b.classList.remove('activo'));
+                btn.classList.add('activo');
+
+                aplicarFiltro(filtro);
+            });
+        });
+
+        function aplicarFiltro(filtro: string) {
+            const visibles: HTMLElement[] = [];
+            const ocultas:  HTMLElement[] = [];
+
+            tarjetas.forEach(card => {
+                const etiqueta = card.dataset.etiqueta!;
+                const mostrar  = filtro === 'Todas' || etiqueta === filtro;
+                mostrar ? visibles.push(card) : ocultas.push(card);
+            });
+
+            ocultas.forEach(card => {
+                card.classList.remove('entrando');
+                card.classList.add('saliendo');
+            });
+
+            setTimeout(() => {
+                ocultas.forEach(card => {
+                    card.style.display = 'none';
+                    card.classList.remove('saliendo');
+                });
+
+                visibles.forEach((card, i) => {
+                    card.style.display = '';
+                    card.classList.remove('saliendo');
+                    card.classList.remove('entrando');
+
+                    void card.offsetWidth;
+
+                    card.style.animationDelay = `${i * 60}ms`;
+                    card.classList.add('entrando');
+                });
+
+                visibles.forEach(card => {
+                    card.addEventListener('animationend', () => {
+                        card.classList.remove('entrando');
+                        card.style.animationDelay = '';
+                    }, { once: true });
+                });
+
+                numVisible.textContent = String(visibles.length);
+
+                if (visibles.length === 0) {
+                    grid.style.display = 'none';
+                    estadoVacio.style.display = 'flex';
+                } else {
+                    grid.style.display = '';
+                    estadoVacio.style.display = 'none';
+                }
+            }, DURACION_SALIDA);
+        }
+    });
+</script>

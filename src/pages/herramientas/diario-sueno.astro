@@ -1,0 +1,142 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import ReturnButton from '../../components/ReturnButton.astro';
+
+const simbolos = [
+    { letra: 'A', desc: 'Alcohol' },
+    { letra: 'AF', desc: 'Actividad Física' },
+    { letra: 'B', desc: 'Botana (2 hrs antes)' },
+    { letra: 'C', desc: 'Cena' },
+    { letra: 'D', desc: 'Desayuno' },
+    { letra: 'CF', desc: 'Cafeína' },
+    { letra: 'M', desc: 'Medicamentos' },
+    { letra: 'N', desc: 'Nicotina' },
+    { letra: 'P', desc: 'Pantallas' },
+    { letra: 'S', desc: 'Somnolencia' },
+    { letra: 'T', desc: 'Té' },
+];
+---
+
+<Layout title="Diario de Sueño | SomnoLab">
+    <ReturnButton href="/herramientas" />
+    <div class="flex p-5 justify-end">
+        <a href="/" class="flex items-center gap-3 group">
+            <img src="/logoSomno.webp" alt="SomnoLab Logo" class="h-10 w-auto rounded-lg group-hover:scale-105 transition-transform" />
+            <span class="pr-1 font-black tracking-tighter text-2xl bg-clip-text text-transparent bg-linear-to-r from-somno-light to-somno">
+                SomnoLab
+            </span>
+        </a>
+    </div>
+
+    <section class="relative min-h-dvh bg-slate-50 pt-10 pb-24 overflow-x-clip">
+        <div class="absolute top-[10%] left-[-5%] w-96 h-96 bg-somno-light/20 rounded-full blur-[120px] pointer-events-none"></div>
+        <div class="absolute bottom-[20%] right-[-10%] w-120 h-120 bg-somno/10 rounded-full blur-[100px] pointer-events-none"></div>
+
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <div class="mb-12 animate-fade-in-up">
+                <span class="inline-block text-somno font-bold tracking-wider uppercase text-sm mb-2">
+                    Herramienta Clínica
+                </span>
+                <h1 class="text-4xl sm:text-5xl font-black tracking-tighter text-slate-900 leading-[1.1] mb-4">
+                    Diario de Sueño
+                </h1>
+                <p class="text-lg text-slate-600 max-w-2xl font-light leading-relaxed">
+                    Registra de manera precisa tus patrones de descanso y actividades diarias para que nuestros especialistas puedan analizar la calidad de tu sueño.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8">
+                
+                <div class="lg:col-span-7 xl:col-span-8 space-y-8 animate-fade-in-up" style="animation-delay: 0.1s;">
+                    
+                    <div class="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm">
+                        <h2 class="text-2xl font-bold text-slate-800 mb-6 tracking-tight">¿Cómo llenar tu diario?</h2>
+                        
+                        <div class="space-y-6">
+                            <div class="flex flex-col sm:flex-row gap-4">
+                                <div class="flex-1 bg-slate-50 rounded-2xl p-4 border border-slate-100 flex items-center gap-4">
+                                    <div class="w-10 h-10 rounded-xl bg-somno/10 flex items-center justify-center text-somno font-black text-xl">↓</div>
+                                    <div>
+                                        <p class="text-sm font-bold text-slate-700">Hora de acostarse</p>
+                                        <p class="text-xs text-slate-500 mt-0.5">Coloca la flecha en la hora exacta.</p>
+                                    </div>
+                                </div>
+                                <div class="flex-1 bg-slate-50 rounded-2xl p-4 border border-slate-100 flex items-center gap-4">
+                                    <div class="w-10 h-10 rounded-xl bg-somno/10 flex items-center justify-center text-somno font-black text-xl">↑</div>
+                                    <div>
+                                        <p class="text-sm font-bold text-slate-700">Hora de levantarse</p>
+                                        <p class="text-xs text-slate-500 mt-0.5">Aplica también para siestas.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-slate-50 rounded-2xl p-4 border border-slate-100 flex items-center gap-4">
+                                <div class="w-10 h-10 rounded-xl bg-somno/10 flex items-center justify-center text-somno font-bold tracking-widest text-sm">---</div>
+                                <div>
+                                    <p class="text-sm font-bold text-slate-700">Periodo de sueño</p>
+                                    <p class="text-xs text-slate-500 mt-0.5">Traza una línea desde que te duermes hasta que te despiertas.</p>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h3 class="text-sm font-bold uppercase tracking-widest text-slate-400 mb-4 mt-8 border-b border-slate-100 pb-2">Nomenclatura de Actividades</h3>
+                                <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                                    {simbolos.map((s) => (
+                                        <div class="flex items-center gap-2">
+                                            <span class="w-8 h-8 rounded-lg bg-somno/5 border border-somno/20 flex items-center justify-center text-somno font-bold text-xs">
+                                                {s.letra}
+                                            </span>
+                                            <span class="text-sm text-slate-600">{s.desc}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div class="bg-somno/5 border-l-4 border-somno p-4 rounded-r-2xl mt-8">
+                                <div class="flex gap-3">
+                                    <i class="fas fa-info-circle text-somno mt-1"></i>
+                                    <p class="text-sm text-slate-600 leading-relaxed font-light">
+                                        <strong class="text-slate-800">Ejemplo:</strong> Si el Lunes tomaste café a las 6pm, anota <strong>CF</strong> a esa hora. Si te acostaste a las 11pm (<strong>↓</strong>) pero te dormiste a las 12am, la línea (<strong>---</strong>) inicia a las 12am.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-5 xl:col-span-4 animate-fade-in-up" style="animation-delay: 0.2s;">
+                    <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-lg sticky top-32">
+                        
+                        <div class="aspect-3/4 bg-slate-100 rounded-2xl mb-6 overflow-hidden border border-slate-200 relative group">
+                            <img src="/herramientas/vistaprevia_diario.png" alt="" srcset="">
+                        </div>
+
+                        <div class="space-y-4">
+                            <a href="/descargas/diario_de_sueno.pdf" download class="w-full bg-somno hover:bg-somno-dark text-white font-bold py-4 px-6 rounded-2xl flex items-center justify-center gap-3 transition-all duration-300 shadow-md shadow-somno/20 hover:-translate-y-1 hover:shadow-lg hover:shadow-somno/30">
+                                <i class="fas fa-download"></i>
+                                Descargar Formato PDF
+                            </a>
+                            
+                            <p class="text-xs text-center text-slate-400 font-light px-4">
+                                Imprime este documento y llénalo diariamente. Recuerda llevarlo a tu próxima consulta.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+</Layout>
+
+<style>
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in-up {
+        animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        opacity: 0;
+    }
+</style>
