@@ -87,9 +87,27 @@ document.getElementById('edad-hora').addEventListener('submit', function(event) 
         return calcularHoraAcostarse(mediaHoras);
     }
 
-    const horaIdealMin = calcularHoraAcostarse(idealMax); 
-    const horaIdealMax = calcularHoraAcostarse(idealMin); 
-    const horaMediaIdeal = calcularHoraMedia(idealMin, idealMax); 
+    function restarHoras(fecha, horas) {
+        return new Date(fecha.getTime() - horas * 60 * 60 * 1000);
+    }
+
+    function sumarMinutos(fecha, minutos) {
+        return new Date(fecha.getTime() + minutos * 60 * 1000);
+    }
+
+    function formatearHora(fecha) {
+        return fecha.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    const horasIdealMedia = (idealMin + idealMax) / 2;
+    const fechaMediaIdeal = restarHoras(despertar, horasIdealMedia);
+    const horaMediaIdeal = formatearHora(fechaMediaIdeal);
+
+    const horaIdealMin = formatearHora(sumarMinutos(fechaMediaIdeal, -30));
+    const horaIdealMax = formatearHora(sumarMinutos(fechaMediaIdeal, 30));
+
+    const horaCercaMin = formatearHora(sumarMinutos(fechaMediaIdeal, -60));
+    const horaCercaMax = formatearHora(sumarMinutos(fechaMediaIdeal, 60));
 
     const horaPosibleMin = calcularHoraAcostarse(posibleMax); 
     const horaPosibleMax = calcularHoraAcostarse(posibleMin); 
@@ -97,8 +115,8 @@ document.getElementById('edad-hora').addEventListener('submit', function(event) 
 
     
     document.getElementById('mensaje-ideal').innerText = `Hora ideal: entre ${horaIdealMin} y ${horaIdealMax}. Sugerencia: ${horaMediaIdeal}`;
-    document.getElementById('mensaje-cerca').innerText = `Hora cerca del rango ideal: entre ${horaPosibleMin} y ${horaPosibleMax}. Sugerencia: ${horaMediaPosible}`;
-    document.getElementById('mensaje-fuera').innerText = `Hora fuera del rango: antes de ${horaPosibleMin} o después de ${horaPosibleMax}`;
+    document.getElementById('mensaje-cerca').innerText = `Hora cerca del rango ideal: entre ${horaCercaMin} y ${horaCercaMax}. Sugerencia: ${horaMediaIdeal}`;
+    document.getElementById('mensaje-fuera').innerText = `Hora fuera del rango ideal: entre ${horaPosibleMin} y ${horaPosibleMax}. Sugerencia: ${horaMediaPosible}`;
     
     document.getElementById('pie-semaforo').classList.add('bg-slate-100/75');
     document.getElementById('pie-semaforo').innerHTML = `Las horas sugeridas de sueño para un <span class="font-bold text-somno">${grupo}</span> es entre <span class="font-bold text-somno">${idealMin}</span> y <span class="font-bold text-somno">${idealMax}</span>, idealmente dormir a las <span class="font-bold text-somno">${horaMediaIdeal}</span>`;
