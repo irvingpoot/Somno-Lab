@@ -6,6 +6,16 @@ import { getCollection } from 'astro:content';
 import TrafficLightIcon from '../components/icons/TrafficLightIcon.astro';
 import ClockIcon from '../components/icons/ClockIcon.astro';
 import CertificateIcon from '../components/icons/CertificateIcon.astro';
+import QRCode from 'qrcode';
+
+const qrSvg = await QRCode.toString('https://somnolab.com.mx', {
+    type: 'svg',
+    margin: 0,
+    color: {
+        dark: '#0f172a',
+        light: '#00000000'
+    }
+});
 
 const allPosts = await getCollection('blog');
 
@@ -84,6 +94,11 @@ const proximosEventos = (eventosRaw || []).map(e => {
                             Crea tu propio Cronograma de Sueño
                         </a>
                     </div>
+
+                    <button id="open-qr-btn" type="button" class="mt-8 inline-flex items-center gap-2 px-4 py-2.5 bg-white text-slate-500 border border-slate-200 rounded-full text-sm font-semibold hover:border-somno-light hover:text-somno-dark hover:bg-slate-50 transition-all duration-300 shadow-sm cursor-pointer">
+                        <i class="fas fa-qrcode text-base"></i>
+                        Ver código QR
+                    </button>
                 </div>
 
                 <div class="hidden lg:flex relative justify-center items-center animate-fade-in-up" style="animation-delay: 0.2s;">
@@ -491,6 +506,35 @@ const proximosEventos = (eventosRaw || []).map(e => {
         </div>
     </div>
 
+    <div id="qr-modal" class="hidden fixed inset-0 z-100 items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 transition-all duration-300">
+        <div class="flex flex-col lg:flex-row h-auto lg:h-1/2 bg-white rounded-3xl shadow-2xl w-1/2 overflow-hidden animate-fade-in-up">
+            <button id="close-qr-btn" class="absolute top-4 right-4 z-20 w-10 h-10 bg-white/80 backdrop-blur rounded-full flex items-center justify-center text-slate-400 hover:bg-slate-100 hover:text-red-500 transition-colors">
+                <i class="fas fa-times text-lg"></i>
+            </button>
+
+            <div class="flex flex-col items-center justify-center bg-linear-to-br from-somno-dark to-somno px-8 pt-10 pb-8 text-center border-r border-somno">
+                <div class="absolute -top-8 -right-8 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
+                <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
+
+                <div class="relative mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/15 backdrop-blur-sm">
+                    <i class="fas fa-mobile-screen-button text-2xl text-white"></i>
+                </div>
+
+                <h3 class="relative text-2xl font-black text-white tracking-tight">Escanea con tu celular</h3>
+                <p class="relative text-sm text-white/80 mt-1 font-light">Apunta la cámara al código para acceder</p>
+            </div>
+
+            <div class="flex flex-col w-full justify-center items-center text-center py-5">
+                <div class="mx-auto w-1/2 md:w-56 p-3 rounded-2xl border border-slate-100 shadow-[0_10px_30px_rgba(8,112,184,0.08)]" set:html={qrSvg} />
+
+                <div class="bg-slate-50 py-4 flex gap-2 border-t border-slate-100">
+                    <i class="fas fa-link text-somno text-xs"></i>
+                    <span class="text-xs font-semibold text-slate-500 tracking-wide">somnolab.com.mx</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="event-detail-modal" class="fixed inset-0 z-100 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
         
         <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity opacity-0" id="detail-backdrop"></div>
@@ -605,6 +649,33 @@ const proximosEventos = (eventosRaw || []).map(e => {
     window.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
             closeEventModal();
+        }
+    });
+
+    const qrModal = document.getElementById('qr-modal');
+    const openQrBtn = document.getElementById('open-qr-btn');
+    const closeQrBtn = document.getElementById('close-qr-btn');
+
+    const openQrModal = () => {
+        qrModal.classList.remove('hidden');
+        qrModal.classList.add('flex');
+    };
+
+    const closeQrModal = () => {
+        qrModal.classList.add('hidden');
+        qrModal.classList.remove('flex');
+    };
+
+    openQrBtn.addEventListener('click', openQrModal);
+    closeQrBtn.addEventListener('click', closeQrModal);
+
+    qrModal.addEventListener('click', (e) => {
+        if (e.target === qrModal) closeQrModal();
+    });
+
+    window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !qrModal.classList.contains('hidden')) {
+            closeQrModal();
         }
     });
 </script>

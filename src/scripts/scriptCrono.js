@@ -77,8 +77,6 @@ document.getElementById('submit-btn').addEventListener('click', function(event) 
     };
 
     function obtenerRangoDeSueño(edad) {
-        if (edad <= 3) return rangosDeSueño['0-3'];
-        if (edad <= 11) return rangosDeSueño['4-11'];
         if (edad <= 2) return rangosDeSueño['1-2'];
         if (edad <= 5) return rangosDeSueño['3-5'];
         if (edad <= 13) return rangosDeSueño['6-13'];
@@ -116,16 +114,16 @@ document.getElementById('submit-btn').addEventListener('click', function(event) 
         const minutosDormirDeseado = (minutosDeseados - horasIdeales * 60 + 1440) % 1440;
         
         let dia = 1;
-        let minutosAjuste = minutosDormirDeseado;
+        let minutosAjuste = minutosDormirActual;
 
-        while (minutosAjuste !== minutosDormirActual) {
+        while (minutosAjuste !== minutosDormirDeseado) {
             dias.push({ dia: `Día ${dia}`, hora: convertirMinutosAHora(minutosAjuste) });
             
-            minutosAjuste = (minutosAjuste - 30 + 1440) % 1440;
+            minutosAjuste = (minutosAjuste + 30 + 1440) % 1440;
             
             dia++;
         }
-        dias.push({ dia: `Día ${dia}`, hora: convertirMinutosAHora(minutosDormirActual) });
+        dias.push({ dia: `Día ${dia}`, hora: convertirMinutosAHora(minutosDormirDeseado) });
         
         tituloTexto = 'Usted debe acostarse a las siguientes horas:';
 
