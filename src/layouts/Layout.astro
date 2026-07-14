@@ -1,26 +1,61 @@
 ---
 import '../styles/global.css';
 import ScrollToTop from '../components/ScrollToTop.astro';
+import QrModal from '../components/QRModal.astro';
 
 const year = new Date().getFullYear();
 
 interface Props {
 	title: string;
-	showFooter?: boolean; 
+	description?: string;
+	image?: string;
+	noindex?: boolean;
+	showFooter?: boolean;
 }
-const { title, showFooter = true } = Astro.props;
+
+const {
+	title,
+	description = 'SomnoLab es una clínica de sueño especializada en diagnóstico y tratamiento de trastornos del sueño, con atención clínica certificada en Mérida, Yucatán.',
+	image = '/og-somnolab.webp',
+	noindex = false,
+	showFooter = true,
+} = Astro.props;
+
+const siteName = 'SomnoLab';
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const ogImageURL = new URL(image, Astro.site);
 ---
 
 <!doctype html>
 <html lang="es" class="scroll-smooth">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="description" content="Somnomid - Clínica de sueño" />
-		<meta name="viewport" content="width=device-width" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+		<title>{title}</title>
+		<meta name="description" content={description} />
+		<link rel="canonical" href={canonicalURL} />
+		{noindex && <meta name="robots" content="noindex, nofollow" />}
+
+		<meta property="og:type" content="website" />
+		<meta property="og:site_name" content={siteName} />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:image" content={ogImageURL} />
+		<meta property="og:url" content={canonicalURL} />
+		<meta property="og:locale" content="es_MX" />
+
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={ogImageURL} />
+
 		<link rel="icon" type="image/webp" href="/IconSomno.webp" />
+		<link rel="apple-touch-icon" href="/IconSomno.webp" />
+		<meta name="theme-color" content="#3E8CB1" />
+
 		<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-		<title>{title}</title>
 	</head>
 	<body class="font-['Poppins'] bg-slate-50 flex flex-col min-h-screen">
 		
@@ -42,10 +77,13 @@ const { title, showFooter = true } = Astro.props;
 							<p class="text-white/80 text-sm mt-1">Recupera tus sueños, recupera tu vida.</p>
 						</div>
 						
-						<div class="flex gap-4">
+						<div class="flex flex-col items-end gap-4">
 							<a href="#" class="bg-white/20 hover:bg-white hover:text-somno px-4 py-2 rounded-full backdrop-blur-sm transition-all text-sm font-bold">
 								<i class="fab fa-whatsapp mr-2"></i> Contactar
 							</a>
+							<button id="open-qr-btn" type="button" class="bg-white/20 hover:bg-white hover:text-somno px-4 py-2 rounded-full backdrop-blur-sm transition-all text-sm font-bold cursor-pointer">
+								<i class="fas fa-qrcode mr-2"></i> Comparte esta página
+							</button>
 						</div>
 					</div>
 
@@ -62,5 +100,7 @@ const { title, showFooter = true } = Astro.props;
 				</div>
 			</footer>
 		)}
+
+		<QrModal />
 	</body>
 </html>

@@ -1,0 +1,158 @@
+---
+import QRCode from 'qrcode';
+
+interface Ruta {
+	label: string;
+	path: string;
+}
+
+interface Props {
+	rutas?: Ruta[];
+}
+
+const {
+	rutas = [
+		{ label: 'Somnolab', path: '/' },
+		{ label: 'Cronograma de sueño', path: '/cronograma' },
+		{ label: 'Semáforo del sueño', path: '/#calculadora' },
+		{ label: 'Herramientas', path: '/herramientas' },
+		{ label: 'Habitos de sueño', path: '/herramientas/habitos-sueno' },
+		{ label: 'Diario del sueño', path: '/herramientas/diario-sueno' },
+		{ label: 'Cuestionario STOP-BANG', path: '/herramientas/stop-bang' }
+	]
+} = Astro.props;
+
+const siteBase = Astro.site ?? new URL(Astro.url.origin);
+
+const rutasConQr = await Promise.all(
+	rutas.map(async (ruta, index) => {
+		const url = new URL(ruta.path, siteBase).toString();
+		const svg = await QRCode.toString(url, {
+			type: 'svg',
+			margin: 1,
+			color: { dark: '#0f172a', light: '#00000000' },
+		});
+		return { ...ruta, url, svg, id: `qr-opcion-${index}` };
+	})
+);
+---
+
+<div
+	id="qr-modal"
+	class="hidden fixed inset-0 z-100 items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 transition-all duration-300"
+>
+	<div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm md:max-w-3xl overflow-hidden animate-fade-in-up relative flex flex-col md:flex-row">
+		<button
+			id="close-qr-btn"
+			type="button"
+			class="absolute top-4 right-4 z-20 w-10 h-10 bg-white/80 backdrop-blur rounded-full flex items-center justify-center text-slate-400 hover:bg-slate-100 hover:text-red-500 transition-colors"
+		>
+			<i class="fas fa-times text-lg"></i>
+		</button>
+
+		<div class="md:w-1/2 flex flex-col">
+			<div class="bg-linear-to-br from-somno-dark to-somno px-8 pt-10 pb-8 md:pb-10 md:h-full md:flex md:flex-col md:justify-center text-center relative overflow-hidden">
+				<div class="absolute -top-8 -right-8 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
+				<div class="absolute -bottom-10 -left-10 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
+
+				<div class="relative mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/15 backdrop-blur-sm">
+					<i class="fas fa-mobile-screen-button text-2xl text-white"></i>
+				</div>
+
+				<h3 class="relative text-2xl font-black text-white tracking-tight">Escanea con tu celular</h3>
+				<p class="relative text-sm text-white/80 mt-1 font-light">Elige la página que quieres compartir</p>
+
+				{rutasConQr.length > 1 && (
+					<div class="relative flex flex-wrap gap-2 justify-center mt-6">
+						{rutasConQr.map((ruta, index) => (
+							<button
+								type="button"
+								class={`qr-opcion-btn px-4 py-2 rounded-full text-xs font-bold border transition-all ${
+									index === 0
+										? 'bg-white text-somno-dark border-white'
+										: 'bg-white/10 text-white border-white/30 hover:bg-white/20'
+								}`}
+								data-target={ruta.id}
+								data-url={ruta.url}
+							>
+								{ruta.label}
+							</button>
+						))}
+					</div>
+				)}
+			</div>
+		</div>
+
+		<div class="md:w-1/2 flex flex-col">
+			<div class="px-8 pt-10 md:pt-8 pb-6 text-center flex-1 flex flex-col items-center justify-center">
+				<div class="w-full max-w-64 md:max-w-56 aspect-square p-3 rounded-2xl border border-slate-100 shadow-[0_10px_30px_rgba(8,112,184,0.08)]">
+					{rutasConQr.map((ruta, index) => (
+						<div class="qr-opcion-panel" id={ruta.id} style={index === 0 ? '' : 'display:none'} set:html={ruta.svg} />
+					))}
+				</div>
+
+				<div class="flex items-center justify-center gap-2 mt-6 text-xs text-slate-400">
+					<i class="fas fa-lock text-[10px]"></i>
+					<span>Enlace directo y seguro a SomnoLab</span>
+				</div>
+			</div>
+
+			<div class="bg-slate-50 px-8 py-4 flex items-center justify-center gap-2 border-t border-slate-100">
+				<i class="fas fa-link text-somno text-xs"></i>
+				<span class="text-xs font-semibold text-slate-500 tracking-wide truncate" id="qr-url-actual">{rutasConQr[0]?.url}</span>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	const qrModal = document.getElementById('qr-modal');
+	const openQrBtn = document.getElementById('open-qr-btn');
+	const closeQrBtn = document.getElementById('close-qr-btn');
+	const botones = document.querySelectorAll<HTMLButtonElement>('.qr-opcion-btn');
+	const paneles = document.querySelectorAll<HTMLElement>('.qr-opcion-panel');
+	const urlActual = document.getElementById('qr-url-actual');
+
+	const activarBoton = (btn: HTMLButtonElement) => {
+		botones.forEach((b) => {
+			b.classList.remove('bg-white', 'text-somno-dark', 'border-white');
+			b.classList.add('bg-white/10', 'text-white', 'border-white/30');
+		});
+		btn.classList.remove('bg-white/10', 'text-white', 'border-white/30');
+		btn.classList.add('bg-white', 'text-somno-dark', 'border-white');
+
+		paneles.forEach((p) => (p.style.display = 'none'));
+		const target = btn.dataset.target;
+		if (target) {
+			const panel = document.getElementById(target);
+			if (panel) panel.style.display = '';
+		}
+
+		if (urlActual && btn.dataset.url) urlActual.textContent = btn.dataset.url;
+	};
+
+	botones.forEach((btn) => btn.addEventListener('click', () => activarBoton(btn)));
+
+	const openQrModal = () => {
+		qrModal?.classList.remove('hidden');
+		qrModal?.classList.add('flex');
+	};
+
+	const closeQrModal = () => {
+		qrModal?.classList.add('hidden');
+		qrModal?.classList.remove('flex');
+	};
+
+	openQrBtn?.addEventListener('click', openQrModal);
+	closeQrBtn?.addEventListener('click', closeQrModal);
+
+	qrModal?.addEventListener('click', (e) => {
+		if (e.target === qrModal) closeQrModal();
+	});
+
+	window.addEventListener('keydown', (e) => {
+		if (e.key === 'Escape' && qrModal && !qrModal.classList.contains('hidden')) {
+			closeQrModal();
+		}
+	});
+</script>

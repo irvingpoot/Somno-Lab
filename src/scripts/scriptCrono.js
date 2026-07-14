@@ -65,8 +65,6 @@ document.getElementById('submit-btn').addEventListener('click', function(event) 
     }
 
     const rangosDeSueño = {
-        '0-3': { idealMin: 14, idealMax: 17 },
-        '4-11': { idealMin: 12, idealMax: 15 },
         '1-2': { idealMin: 11, idealMax: 14 },
         '3-5': { idealMin: 10, idealMax: 13 },
         '6-13': { idealMin: 9, idealMax: 11 },
