@@ -4,8 +4,10 @@ import clerk from "@clerk/astro";
 import tailwindcss from '@tailwindcss/vite';
 import { esMX } from '@clerk/localizations';
 import vercel from '@astrojs/vercel';
+import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
+  site: 'https://somnolab.com.mx',
   integrations: [clerk({
     domain: "somnolab.com.mx",
     isSatellite: false,
@@ -20,7 +22,7 @@ export default defineConfig({
     },
     signInForceRedirectUrl: "/citas",
     localization: esMX
-  })],
+  }), sitemap()],
   vite: {
     plugins: [tailwindcss()]
   },

@@ -52,7 +52,6 @@ document.getElementById('edad-hora').addEventListener('submit', function(event) 
     };
 
     function obtenerRangoDeSueño(edad) {
-        if (edad <= 3) return rangosDeSueño['0'];
         if (edad <= 2) return rangosDeSueño['1-2'];
         if (edad <= 5) return rangosDeSueño['3-5'];
         if (edad <= 13) return rangosDeSueño['6-13'];
@@ -63,7 +62,6 @@ document.getElementById('edad-hora').addEventListener('submit', function(event) 
     }
 
     function obtenerGrupoEdad(edad) {
-        if (edad <= 3) return grupo_edad['0'];
         if (edad <= 2) return grupo_edad['1-2'];
         if (edad <= 5) return grupo_edad['3-5'];
         if (edad <= 13) return grupo_edad['6-13'];
