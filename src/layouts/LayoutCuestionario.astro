@@ -36,6 +36,12 @@ const themes = {
         blobColor1: "text-emerald-300",
         blobColor2: "text-teal-200",
     },
+    habitos: {
+        bgGradient: "bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50",
+        accentTitle: "from-somno-dark via-somno to-somno-light",
+        blobColor1: "text-somno-dark",
+        blobColor2: "text-somno-light",
+    },
     default: {
         bgGradient: "bg-gradient-to-br from-slate-50 via-gray-50 to-zinc-50",
         accentTitle: "from-blue-600 via-blue-400 to-blue-800",
@@ -52,7 +58,7 @@ const theme = themes[tipo as keyof typeof themes] || themes.default;
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/logo.svg" />
+		<link rel="icon" type="image/webp" href="/logoSomno.webp" />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
 	</head>
@@ -70,7 +76,7 @@ const theme = themes[tipo as keyof typeof themes] || themes.default;
 
         <div class="relative z-10 flex flex-col items-center justify-center p-6 md:pt-12 md:pb-8">
             <h1 class="text-4xl md:text-6xl font-extrabold text-center leading-tight text-gray-800 drop-shadow-sm">
-                <span class={`bg-clip-text text-transparent bg-gradient-to-r ${theme.accentTitle}`}>
+                <span class={`bg-clip-text text-transparent bg-linear-to-r ${theme.accentTitle}`}>
                     SomnoLab
                 </span>
             </h1>
