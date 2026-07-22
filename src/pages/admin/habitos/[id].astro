@@ -1,0 +1,137 @@
+---
+
+/**
+ * @file [id].astro (Informe de seguimiento de hábitos)
+ * @description Muestra el enlace único (token) para que el paciente conteste
+ * el diario de hábitos, y un resumen de lo que ha llenado hasta ahora.
+ */
+
+import Layout from "../../../layouts/Layout.astro"
+import Icon from "../../../components/Icon.astro"
+import ReturnButton from "../../../components/ReturnButton.astro"
+import { createClient } from "@supabase/supabase-js"
+
+const { id } = Astro.params;
+const supabase = createClient(
+    import.meta.env.PUBLIC_SUPABASE_URL,
+    import.meta.env.SUPABASE_KEY
+);
+
+if (!id) return Astro.redirect("/admin/habitos/lista");
+
+const { data: paciente, error } = await supabase
+    .from("habitos_pacientes")
+    .select("id, nombre, edad, genero, diagnostico, token_cuestionarios, created_at")
+    .eq("id", id)
+    .single();
+
+if (error || !paciente) {
+    return Astro.redirect("/admin/habitos/lista");
+}
+
+const { data: progreso } = await supabase
+    .from("habitos_progreso")
+    .select("semanas, updated_at")
+    .eq("paciente_id", id)
+    .single();
+
+const semanas: { habito: string; dias: boolean[] }[] = progreso?.semanas || [];
+
+const baseUrl = Astro.url.origin;
+const linkHabitos = `${baseUrl}/habitos/${paciente.token_cuestionarios}`;
+
+const mensajeWhatsApp = `Buen día. Este es el diario de hábitos de sueño para dar seguimiento a tu progreso semana a semana. Puedes contestarlo y actualizarlo las veces que necesites:
+
+${linkHabitos}`;
+---
+
+<Layout title={`Hábitos: ${paciente.nombre} | SomnoLab`} showFooter={false}>
+    <Icon />
+    <ReturnButton href="/admin/habitos/lista" text="Volver al listado" />
+
+    <main class="max-w-3xl mx-auto pt-10 pb-28 px-4">
+
+        <div class="mt-6 mb-8 text-center">
+            <h1 class="text-3xl md:text-4xl font-extrabold text-gray-900 capitalize">{paciente.nombre}</h1>
+            <p class="font-bold text-somno mt-1">
+                {paciente.edad != null ? `${paciente.edad} años` : ""} {paciente.genero ? `· ${paciente.genero === "male" ? "Masculino" : "Femenino"}` : ""}
+            </p>
+            {paciente.diagnostico && (
+                <p class="text-gray-500 text-sm mt-3 max-w-xl mx-auto"><span class="font-bold text-somno">Diagnóstico:</span> {paciente.diagnostico}</p>
+            )}
+        </div>
+
+        <div class="relative overflow-hidden bg-white rounded-3xl shadow-xl shadow-somno/5 border border-somno/10 p-6 md:p-8 mb-8">
+            <div class="absolute top-0 right-0 -mt-10 -mr-10 w-64 h-64 bg-somno/10 rounded-full blur-3xl pointer-events-none"></div>
+
+            <h2 class="text-lg font-bold text-gray-900 mb-1 relative z-10">Enlace de seguimiento</h2>
+            <p class="text-sm text-gray-500 mb-4 relative z-10">
+                Copie este enlace para que el paciente pueda contestar su diario de hábitos de sueño. También puede enviarlo por WhatsApp haciendo clic en el botón de abajo.
+            </p>
+
+            <div class="flex gap-2 relative z-10">
+                <input id="link-habitos" type="text" readonly value={linkHabitos} class="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-600 font-mono" />
+                <button onclick="copiarLink()" class="shrink-0 px-4 py-2.5 bg-somno hover:bg-somno-dark text-white text-sm font-bold rounded-lg transition-colors cursor-pointer">
+                    Copiar
+                </button>
+            </div>
+
+            <a
+                href={`https://wa.me/?text=${encodeURIComponent(mensajeWhatsApp)}`}
+                target="_blank"
+                class="mt-4 inline-flex items-center gap-2 text-sm font-bold text-emerald-600 hover:text-emerald-700 relative z-10"
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-4">
+                    <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21h.01c5.46 0 9.9-4.45 9.9-9.91C21.96 6.45 17.5 2 12.04 2z"/>
+                </svg>
+                Enviar por WhatsApp
+            </a>
+        </div>
+
+        <div class="relative overflow-hidden bg-white rounded-3xl shadow-sm border border-gray-200/80 p-6 md:p-8">
+            <h2 class="text-lg font-bold text-gray-900 mb-4">Progreso actual</h2>
+
+            {progreso?.updated_at && (
+                <p class="text-xs text-gray-400 mb-4">Última actualización: {new Date(progreso.updated_at).toLocaleString("es-MX")}</p>
+            )}
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {semanas.map((semana, i) => {
+                    const completados = semana.dias.filter(Boolean).length;
+                    return (
+                        <div class="border border-gray-100 rounded-xl p-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-xs font-bold text-somno uppercase tracking-wider">Semana {i + 1}</span>
+                                <span class="text-xs text-gray-400">{completados}/7 días</span>
+                            </div>
+                            <p class="text-sm text-gray-700 font-medium">
+                                {semana.habito ? semana.habito : <span class="text-gray-300 italic">Sin hábito asignado aún</span>}
+                            </p>
+                            <div class="flex gap-1.5 mt-3">
+                                {semana.dias.map((completado) => (
+                                    <div class={`w-5 h-5 rounded border-2 flex items-center justify-center ${completado ? "bg-somno border-somno" : "border-gray-200"}`}>
+                                        {completado && (
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="size-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                            </svg>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
+        </div>
+    </main>
+</Layout>
+
+<script define:vars={{ linkHabitos }}>
+    window.copiarLink = () => {
+        navigator.clipboard.writeText(linkHabitos);
+        const btn = event.target.closest('button');
+        const original = btn.textContent;
+        btn.textContent = '¡Copiado!';
+        setTimeout(() => btn.textContent = original, 1500);
+    };
+</script>

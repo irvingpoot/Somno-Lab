@@ -1,8 +1,8 @@
-export const currentVersion = "3.7.0";
+export const currentVersion = "3.8.0";
 
 export const isMajorUpdate = true;
 
-export const updateDate = "21 de Abril del 2026";
+export const updateDate = "21 de Julio del 2026";
 
 type Changes = {
     title: string;
@@ -12,8 +12,8 @@ type Changes = {
 
 export const changes: Changes[] = [
     {
-        title: "Semaforo de sueño",
-        description: "Se agregó el selector de genero para controlar las imagenes dinamicas al momento de mostrar los resultados.",
+        title: "Seguimiento de hábitos de sueño",
+        description: "Ahora los pacientes pueden contestar un diario de hábitos de sueño a través de un enlace que se genera en la sección de hábitos del panel de administración.",
         type: "feature"
     }
 ];

@@ -1,0 +1,192 @@
+---
+
+/**
+ * @file [token].astro
+ * @description Versión interactiva y persistente del diario de hábitos de
+ * sueño (basado en la plantilla imprimible habitos-sueno.astro).
+ * A diferencia de los demás cuestionarios ([token].astro en /cuestionarios),
+ * este NO se bloquea después de contestar: el paciente puede escribir su
+ * hábito, palomear los días y volver después a seguir llenándolo.
+ * * Persistencia: cada cambio (texto de hábito o día palomeado) se guarda
+ * automáticamente vía /api/habitos/guardar.ts, que llama a la función
+ * segura guardar_habitos_seguro (RPC) validando el token en la base de datos.
+ */
+
+import LayoutCuestionario from "../../layouts/LayoutCuestionario.astro"
+import { createClient } from "@supabase/supabase-js"
+
+const supabase = createClient(
+    import.meta.env.PUBLIC_SUPABASE_URL,
+    import.meta.env.SUPABASE_KEY
+);
+
+const { token } = Astro.params;
+
+if (!token) return Astro.redirect('/404');
+
+const { data: infoAcceso, error: errorAcceso } = await supabase
+    .rpc('validar_acceso_habitos', { token_input: token });
+
+if (errorAcceso || !infoAcceso || infoAcceso.length === 0) {
+    console.error("Error acceso hábitos:", errorAcceso);
+    return Astro.redirect('/404');
+}
+
+const paciente = { id: infoAcceso[0].paciente_id, nombre: infoAcceso[0].nombre };
+const semanasIniciales = infoAcceso[0].semanas;
+
+const recomendaciones = [
+    { num: '01', titulo: 'Horarios de Sueño', descripcion: 'Establece horarios regulares para mantener tu reloj biológico estable.' },
+    { num: '02', titulo: 'Cena Saludable', descripcion: 'Consume una cena ligera y rica en triptófano antes de dormir.' },
+    { num: '03', titulo: 'Ajuste de Sustancias', descripcion: 'Evita el alcohol y el tabaco cerca de la hora de dormir.' },
+    { num: '04', titulo: 'Ropa Cómoda', descripcion: 'Usa ropa holgada y transpirable para descansar mejor.' },
+    { num: '05', titulo: 'Bloqueo de Luz y Ruido', descripcion: 'Minimiza la luz y el ruido en tu habitación.' },
+    { num: '06', titulo: 'Siestas Estratégicas', descripcion: 'Permite siestas cortas de 20 min para combatir el cansancio.' },
+    { num: '07', titulo: 'Consumo de Cafeína', descripcion: 'Limita la cafeína a las mañanas y evítala por las tardes.' },
+    { num: '08', titulo: 'Rutina de Ejercicio', descripcion: 'Mantén una rutina de ejercicio regular, preferiblemente por la mañana.' },
+    { num: '09', titulo: 'Ventilación y Temperatura', descripcion: 'Asegura una temperatura fresca y buena ventilación en tu habitación.' },
+    { num: '10', titulo: 'Uso de la Cama', descripcion: 'Reserva la cama únicamente para dormir y actividades íntimas.' },
+];
+
+const diasSemana = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
+---
+<LayoutCuestionario title="Diario de hábitos de sueño" tipo="habitos">
+
+    <div class="max-w-3xl mx-auto px-4 pt-6 pb-24">
+
+        <div class="text-center mb-8">
+            <div class="flex items-center gap-3 mt-4 mb-4">
+                <div class="h-px flex-1 bg-linear-to-r from-transparent to-somno/20"></div>
+                <p class="text-lg font-black uppercase tracking-[0.2em] text-somno">Diario de compromiso de hábitos de sueño</p>
+                <div class="h-px flex-1 bg-linear-to-l from-transparent to-somno/20"></div>
+            </div>
+            <p class="text-md text-slate-900 text-center">Existen 10 habitos para cambiar tu sueño. Elige uno que quieras mejorar, escribelo y marca los dias de la semana que lo consguiste. Al terminar la semana escoge otro habito. Repite el proceso hasta completar la plantilla.</p>
+            <p id="estado-guardado" class="text-xs text-emerald-600 font-bold mt-2 h-4 transition-opacity opacity-0">Guardado</p>
+        </div>
+
+        <div id="semanas-container" class="space-y-5">
+            {semanasIniciales.map((semana: any, i: number) => (
+                <div class="rounded-2xl border-2 border-somno/20 overflow-hidden bg-white" data-semana={i}>
+                    <div class="px-5 py-3 flex items-center justify-between" style="background: linear-gradient(to right, #1a6b8a, #3e8cb1);">
+                        <span class="text-white font-black text-xs uppercase tracking-widest">Semana {i + 1}</span>
+                    </div>
+                    <div class="px-5 py-4 bg-white space-y-3">
+                        <div>
+                            <label class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block mb-1">Hábito que voy a practicar</label>
+                            <input
+                                type="text"
+                                class="input-habito w-full border-b-2 border-slate-200 focus:border-somno outline-none py-1 text-slate-900 font-medium"
+                                placeholder="Ej. Dormir antes de las 11pm"
+                                value={semana.habito}
+                                data-semana={i}
+                            />
+                        </div>
+                        <div class="flex gap-2 md:gap-3">
+                            {diasSemana.map((letra, d) => (
+                                <button
+                                    type="button"
+                                    class={`btn-dia flex-1 aspect-square rounded-lg border-2 flex items-center justify-center text-xs font-bold transition-colors cursor-pointer ${semana.dias[d] ? "bg-somno border-somno text-white" : "border-slate-200 text-slate-400 hover:border-somno/50"}`}
+                                    data-semana={i}
+                                    data-dia={d}
+                                    data-letra={letra}
+                                >
+                                    {semana.dias[d] ? (
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                        </svg>
+                                    ) : (
+                                        letra
+                                    )}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            ))}
+        </div>
+
+        <div class="mt-10">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="h-px flex-1 bg-linear-to-r from-transparent to-somno/20"></div>
+                <p class="text-sm font-black uppercase tracking-[0.2em] text-somno">10 recomendaciones para dormir mejor</p>
+                <div class="h-px flex-1 bg-linear-to-l from-transparent to-somno/20"></div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-3">
+                {recomendaciones.map((r) => (
+                    <div class="flex items-start gap-3">
+                        <span class="text-somno font-black text-base shrink-0">{r.num}</span>
+                        <div>
+                            <p class="font-extrabold text-slate-800 text-sm">{r.titulo}</p>
+                            <p class="text-slate-400 text-xs">{r.descripcion}</p>
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </div>
+    </div>
+
+</LayoutCuestionario>
+
+<script define:vars={{ token, semanasIniciales }}>
+    const estado = document.getElementById('estado-guardado');
+    let semanas = JSON.parse(JSON.stringify(semanasIniciales));
+    let timeoutGuardado = null;
+
+    const mostrarEstado = (texto, esError = false) => {
+        estado.textContent = texto;
+        estado.classList.remove('opacity-0', 'text-emerald-600', 'text-red-500');
+        estado.classList.add(esError ? 'text-red-500' : 'text-emerald-600');
+        setTimeout(() => estado.classList.add('opacity-0'), 1500);
+    };
+
+    const guardar = () => {
+        clearTimeout(timeoutGuardado);
+        timeoutGuardado = setTimeout(async () => {
+            try {
+                const res = await fetch('/api/habitos/guardar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ token, semanas })
+                });
+                const json = await res.json();
+                if (json.ok) {
+                    mostrarEstado('Guardado');
+                } else {
+                    mostrarEstado('No se pudo guardar', true);
+                }
+            } catch (e) {
+                mostrarEstado('Sin conexión', true);
+            }
+        }, 500);
+    };
+
+    document.querySelectorAll('.input-habito').forEach((input) => {
+        input.addEventListener('input', (e) => {
+            const i = parseInt(e.target.dataset.semana);
+            semanas[i].habito = e.target.value;
+            guardar();
+        });
+    });
+
+    const svgCheck = '<svg xmlns="http://www.w3.org/2000/svg" class="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>';
+
+    document.querySelectorAll('.btn-dia').forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+            const target = e.currentTarget;
+            const i = parseInt(target.dataset.semana);
+            const d = parseInt(target.dataset.dia);
+            semanas[i].dias[d] = !semanas[i].dias[d];
+
+            if (semanas[i].dias[d]) {
+                target.classList.remove('border-slate-200', 'text-slate-400');
+                target.classList.add('bg-somno', 'border-somno', 'text-white');
+                target.innerHTML = svgCheck;
+            } else {
+                target.classList.remove('bg-somno', 'border-somno', 'text-white');
+                target.classList.add('border-slate-200', 'text-slate-400');
+                target.textContent = target.dataset.letra;
+            }
+            guardar();
+        });
+    });
+</script>
