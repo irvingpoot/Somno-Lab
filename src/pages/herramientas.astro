@@ -2,12 +2,15 @@
 import Layout from '../layouts/Layout.astro';
 import Navbar from '../components/Navbar.astro';
 
+type Etiqueta = 'Plantilla descargable' | 'Herramienta interactiva' | 'Cuestionario de evaluación';
+
 type Herramienta = {
     slug: string;
     titulo: string;
     descripcion: string;
     icono: string;
-    etiqueta: "Plantilla descargable" | "Herramienta interactiva" | "Cuestionario de evaluación";
+    etiqueta: Etiqueta;
+    meta?: string;
 };
 
 const herramientas: Herramienta[] = [
@@ -29,26 +32,51 @@ const herramientas: Herramienta[] = [
         slug: '/#calculadora',
         titulo: 'Semáforo de sueño',
         descripcion: 'Calculadora de sueño para conocer tu hora de descanso adecuada.',
-        icono: 'fa-solid fa-calculator',
+        icono: 'fa-calculator',
         etiqueta: 'Herramienta interactiva',
     },
     {
         slug: '/cronograma',
         titulo: 'Cronograma de sueño',
         descripcion: 'Ajuste su reloj biológico paso a paso.',
-        icono: 'fa-solid fa-clock',
+        icono: 'fa-clock',
         etiqueta: 'Herramienta interactiva',
     },
     {
         slug: '/herramientas/stop-bang',
         titulo: 'Cuestionario STOP-BANG',
         descripcion: 'Evalúa tu riesgo de Apnea Obstructiva del Sueño respondiendo 8 preguntas clínicas validadas. Obtén tu resultado al instante.',
-        icono: 'fa-solid fa-stethoscope',
+        icono: 'fa-stethoscope',
         etiqueta: 'Cuestionario de evaluación',
+        meta: '8 preguntas',
+    },
+    {
+        slug: '/herramientas/isi',
+        titulo: 'Índice de Gravedad del Insomnio (ISI)',
+        descripcion: 'Evalúa la gravedad de tu insomnio respondiendo 7 preguntas clínicas validadas. Obtén tu resultado al instante.',
+        icono: 'fa-bed',
+        etiqueta: 'Cuestionario de evaluación',
+        meta: '7 preguntas',
+    },
+    {
+        slug: '/herramientas/insomnio',
+        titulo: 'Cuestionario de Insomnio',
+        descripcion: 'Evalúa tu riesgo de insomnio respondiendo 13 preguntas clínicas validadas. Obtén tu resultado al instante.',
+        icono: 'fa-moon',
+        etiqueta: 'Cuestionario de evaluación',
+        meta: '13 preguntas',
     },
 ];
 
-const etiquetas = ['Todas', ...new Set(herramientas.map(h => h.etiqueta))];
+const iconoEtiqueta: Record<Etiqueta | 'Todas', string> = {
+    Todas: 'fa-table-cells-large',
+    'Plantilla descargable': 'fa-file-arrow-down',
+    'Herramienta interactiva': 'fa-sliders',
+    'Cuestionario de evaluación': 'fa-clipboard-list',
+};
+
+const etiquetas = ['Todas', ...new Set(herramientas.map((h) => h.etiqueta))] as (Etiqueta | 'Todas')[];
+const conteo = (e: string) => (e === 'Todas' ? herramientas.length : herramientas.filter((h) => h.etiqueta === e).length);
 ---
 
 <Layout title="Herramientas | SomnoLab">
@@ -76,46 +104,72 @@ const etiquetas = ['Todas', ...new Set(herramientas.map(h => h.etiqueta))];
                 </p>
             </div>
 
-            <div class="flex flex-wrap justify-center gap-3 mb-8 animate-fade-in-up" style="animation-delay:0.15s; opacity:0; animation-fill-mode:forwards;">
-                {etiquetas.map((etiqueta) => (
-                    <button
-                        data-filtro={etiqueta}
-                        class:list={[
-                            'filtro-btn px-5 py-2 rounded-full text-sm font-bold tracking-wide border transition-all duration-300 cursor-pointer select-none',
-                            etiqueta === 'Todas'
-                                ? 'activo bg-somno text-white border-somno shadow-sm shadow-somno/30'
-                                : 'bg-white text-slate-500 border-slate-200 hover:border-somno/40 hover:text-somno'
-                        ]}
-                    >
-                        {etiqueta}
-                    </button>
-                ))}
+            <div class="flex justify-center mb-10 animate-fade-in-up" style="animation-delay:0.15s; opacity:0; animation-fill-mode:forwards;">
+                <div
+                    id="filtro-track"
+                    role="group"
+                    aria-label="Filtrar herramientas por tipo"
+                    class="no-scrollbar relative flex max-w-full gap-1 overflow-x-auto rounded-full border border-slate-200 bg-white p-1.5 shadow-sm"
+                >
+                    <span
+                        id="filtro-indicador"
+                        aria-hidden="true"
+                        class="absolute left-0 top-1.5 bottom-1.5 w-0 rounded-full bg-linear-to-r from-somno to-somno-light shadow-md shadow-somno/30 transition-[transform,width] duration-300 ease-out"
+                    ></span>
+
+                    {
+                        etiquetas.map((etiqueta) => (
+                            <button
+                                type="button"
+                                data-filtro={etiqueta}
+                                aria-pressed={etiqueta === 'Todas' ? 'true' : 'false'}
+                                class="filtro-btn relative z-10 inline-flex shrink-0 cursor-pointer select-none items-center gap-2 whitespace-nowrap rounded-full px-4 py-2.5 text-sm font-semibold text-slate-500 transition-colors duration-300 hover:text-somno-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-somno aria-pressed:text-white aria-pressed:hover:text-white"
+                            >
+                                <i class={`fas ${iconoEtiqueta[etiqueta]} text-xs`}></i>
+                                {etiqueta}
+                                <span class="filtro-conteo grid min-w-5 place-items-center rounded-full bg-somno/10 px-1.5 py-0.5 text-[11px] font-bold leading-none text-somno-dark tabular-nums transition-colors duration-300">
+                                    {conteo(etiqueta)}
+                                </span>
+                            </button>
+                        ))
+                    }
+                </div>
             </div>
 
             <div id="grid-herramientas" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {herramientas.map((h) => (
-                    <a href={h.slug} data-etiqueta={h.etiqueta} class="herramienta-card group bg-white rounded-3xl border border-slate-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 p-8 flex flex-col gap-6">
-                        <div class="w-14 h-14 rounded-2xl bg-somno/10 flex items-center justify-center text-somno border border-somno/10">
-                            <i class={`fas ${h.icono} text-2xl`}></i>
-                        </div>
+                {
+                    herramientas.map((h) => (
+                        <a
+                            href={h.slug}
+                            data-etiqueta={h.etiqueta}
+                            class="herramienta-card group relative isolate flex flex-col overflow-hidden rounded-lg border border-slate-200/70 bg-white p-7 shadow-sm hover:-translate-y-1 hover:border-somno/40 hover:shadow-xl hover:shadow-somno/10 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-somno"
+                        >
+                            <div class="pointer-events-none absolute -top-20 -right-20 -z-10 h-52 w-52 rounded-full bg-somno-light/25 opacity-0 blur-3xl transition-opacity duration-500 group-hover:opacity-100"></div>
 
-                        <div class="flex flex-col gap-2 grow">
-                            <span class="text-[10px] font-bold uppercase tracking-wider text-somno bg-somno/10 px-2.5 py-1 rounded-full w-fit">
-                                {h.etiqueta}
-                            </span>
-                            <h2 class="text-xl font-black text-slate-800 tracking-tight">{h.titulo}</h2>
-                            <p class="text-slate-500 text-sm leading-relaxed font-light">{h.descripcion}</p>
-                        </div>
+                            <div class="flex grow flex-col items-start">
+                                <h2 class="text-xl font-black leading-snug tracking-tight text-slate-900">{h.titulo}</h2>
+                                <p class="mt-2 text-sm font-light leading-relaxed text-slate-500">{h.descripcion}</p>
+                                {h.meta && (
+                                    <span class="mt-3 inline-flex items-center gap-1.5 text-xs font-medium text-slate-400">
+                                        <i class="fas fa-list-check text-[10px]"></i>
+                                        {h.meta}
+                                    </span>
+                                )}
+                            </div>
 
-                        <div class="flex items-center gap-2 text-somno font-bold text-sm group-hover:gap-3 transition-all duration-300">
-                            Ver herramienta
-                            <i class="fas fa-arrow-right text-xs"></i>
-                        </div>
-                    </a>
-                ))}
+                            <div class="mt-6 flex items-center justify-between border-t border-slate-100 pt-5 text-sm">
+                                <span class="inline-flex items-center gap-1.5 rounded-full bg-somno/10 px-2.5 py-1 text-xs font-semibold text-somno-dark">
+                                    <i class={`fas ${iconoEtiqueta[h.etiqueta]} text-[10px]`}></i>
+                                    {h.etiqueta}
+                                </span>
+                                <span class="font-bold text-somno">Ver herramienta</span>
+                            </div>
+                        </a>
+                    ))
+                }
             </div>
 
-            <p id="contador" class="text-center text-slate-400 text-sm mt-8 transition-opacity duration-300">
+            <p id="contador" aria-live="polite" class="mt-8 text-center text-sm text-slate-400">
                 Mostrando <span id="num-visible" class="font-bold text-somno">{herramientas.length}</span> de {herramientas.length} herramientas en total
             </p>
 
@@ -139,13 +193,21 @@ const etiquetas = ['Todas', ...new Set(herramientas.map(h => h.etiqueta))];
         animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
     }
 
+    .no-scrollbar { scrollbar-width: none; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+
+    .filtro-btn[aria-pressed='true'] .filtro-conteo {
+        background-color: rgb(255 255 255 / 0.25);
+        color: #fff;
+    }
+
     .herramienta-card {
         opacity: 1;
-        transform: translateY(0) scale(1);
         transition:
             opacity 0.35s ease,
             transform 0.35s ease,
-            box-shadow 0.3s ease;
+            box-shadow 0.3s ease,
+            border-color 0.3s ease;
         will-change: opacity, transform;
     }
 
@@ -163,11 +225,10 @@ const etiquetas = ['Todas', ...new Set(herramientas.map(h => h.etiqueta))];
         animation: cardEntrada 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
     }
 
-    .filtro-btn.activo {
-        background-color: var(--color-somno, #6366f1);
-        color: #fff;
-        border-color: var(--color-somno, #6366f1);
-        box-shadow: 0 2px 12px -2px color-mix(in srgb, var(--color-somno, #6366f1) 40%, transparent);
+    @media (prefers-reduced-motion: reduce) {
+        .animate-fade-in-up { animation: none; opacity: 1 !important; }
+        .herramienta-card { transition: none; }
+        .herramienta-card.entrando { animation: none; }
     }
 </style>
 
@@ -175,75 +236,87 @@ const etiquetas = ['Todas', ...new Set(herramientas.map(h => h.etiqueta))];
     const DURACION_SALIDA = 320;
 
     document.addEventListener('DOMContentLoaded', () => {
-        const botones   = document.querySelectorAll<HTMLButtonElement>('.filtro-btn');
-        const tarjetas  = document.querySelectorAll<HTMLElement>('.herramienta-card');
-        const numVisible = document.getElementById('num-visible')!;
+        const track       = document.getElementById('filtro-track')!;
+        const indicador   = document.getElementById('filtro-indicador')!;
+        const botones     = document.querySelectorAll<HTMLButtonElement>('.filtro-btn');
+        const tarjetas    = document.querySelectorAll<HTMLElement>('.herramienta-card');
+        const numVisible  = document.getElementById('num-visible')!;
         const estadoVacio = document.getElementById('estado-vacio')!;
-        const grid       = document.getElementById('grid-herramientas')!;
+        const grid        = document.getElementById('grid-herramientas')!;
 
+        const reducirMovimiento = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         let filtroActual = 'Todas';
 
-        botones.forEach(btn => {
+        function moverIndicador(btn: HTMLElement, animar = true) {
+            indicador.style.transition = animar && !reducirMovimiento() ? '' : 'none';
+            indicador.style.width = `${btn.offsetWidth}px`;
+            indicador.style.transform = `translateX(${btn.offsetLeft}px)`;
+            btn.scrollIntoView({ inline: 'center', block: 'nearest', behavior: animar && !reducirMovimiento() ? 'smooth' : 'auto' });
+        }
+
+        const botonActivo = () =>
+            Array.from(botones).find((b) => b.getAttribute('aria-pressed') === 'true')!;
+
+        moverIndicador(botonActivo(), false);
+        window.addEventListener('resize', () => moverIndicador(botonActivo(), false));
+        document.fonts?.ready.then(() => moverIndicador(botonActivo(), false));
+
+        botones.forEach((btn) => {
             btn.addEventListener('click', () => {
                 const filtro = btn.dataset.filtro!;
                 if (filtro === filtroActual) return;
                 filtroActual = filtro;
 
-                botones.forEach(b => b.classList.remove('activo'));
-                btn.classList.add('activo');
-
+                botones.forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+                moverIndicador(btn);
                 aplicarFiltro(filtro);
             });
         });
 
         function aplicarFiltro(filtro: string) {
             const visibles: HTMLElement[] = [];
-            const ocultas:  HTMLElement[] = [];
+            const ocultas: HTMLElement[] = [];
 
-            tarjetas.forEach(card => {
-                const etiqueta = card.dataset.etiqueta!;
-                const mostrar  = filtro === 'Todas' || etiqueta === filtro;
-                mostrar ? visibles.push(card) : ocultas.push(card);
+            tarjetas.forEach((card) => {
+                const mostrar = filtro === 'Todas' || card.dataset.etiqueta === filtro;
+                (mostrar ? visibles : ocultas).push(card);
             });
 
-            ocultas.forEach(card => {
+            ocultas.forEach((card) => {
                 card.classList.remove('entrando');
                 card.classList.add('saliendo');
             });
 
             setTimeout(() => {
-                ocultas.forEach(card => {
+                ocultas.forEach((card) => {
                     card.style.display = 'none';
                     card.classList.remove('saliendo');
                 });
 
                 visibles.forEach((card, i) => {
                     card.style.display = '';
-                    card.classList.remove('saliendo');
-                    card.classList.remove('entrando');
+                    card.classList.remove('saliendo', 'entrando');
 
                     void card.offsetWidth;
 
                     card.style.animationDelay = `${i * 60}ms`;
                     card.classList.add('entrando');
-                });
 
-                visibles.forEach(card => {
-                    card.addEventListener('animationend', () => {
-                        card.classList.remove('entrando');
-                        card.style.animationDelay = '';
-                    }, { once: true });
+                    card.addEventListener(
+                        'animationend',
+                        () => {
+                            card.classList.remove('entrando');
+                            card.style.animationDelay = '';
+                        },
+                        { once: true },
+                    );
                 });
 
                 numVisible.textContent = String(visibles.length);
 
-                if (visibles.length === 0) {
-                    grid.style.display = 'none';
-                    estadoVacio.style.display = 'flex';
-                } else {
-                    grid.style.display = '';
-                    estadoVacio.style.display = 'none';
-                }
+                const hayResultados = visibles.length > 0;
+                grid.style.display = hayResultados ? '' : 'none';
+                estadoVacio.style.display = hayResultados ? 'none' : 'flex';
             }, DURACION_SALIDA);
         }
     });

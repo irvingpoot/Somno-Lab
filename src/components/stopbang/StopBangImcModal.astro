@@ -1,0 +1,146 @@
+---
+const inputClass =
+    'flex-1 min-w-0 border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-700 font-semibold focus:outline-none focus:border-somno focus:ring-2 focus:ring-somno/20 transition';
+const unitClass =
+    'flex items-center px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-400';
+---
+
+<dialog
+    id="modal-imc"
+    class="m-auto rounded-3xl shadow-2xl w-full max-w-sm p-7 border-0 backdrop:bg-slate-900/50 backdrop:backdrop-blur-sm animate-modal-in"
+    aria-labelledby="modal-imc-titulo"
+>
+    <div class="flex items-start justify-between mb-6">
+        <div>
+            <p class="text-sm font-semibold text-somno">Calculadora</p>
+            <h2 id="modal-imc-titulo" class="text-2xl font-black text-slate-900 tracking-tighter mt-0.5">Índice de Masa Corporal</h2>
+        </div>
+        <button
+            id="btn-cerrar-imc"
+            type="button"
+            aria-label="Cerrar calculadora"
+            class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-400 hover:text-slate-600 transition-colors shrink-0 ml-3 focus-visible:outline-2 focus-visible:outline-somno"
+        >
+            <i class="fas fa-xmark text-sm"></i>
+        </button>
+    </div>
+
+    <div class="space-y-4 mb-5">
+        <div>
+            <label for="imc-peso" class="block text-sm font-semibold text-slate-600 mb-1.5">Peso</label>
+            <div class="flex gap-2">
+                <input id="imc-peso" type="number" min="20" max="300" placeholder="Ej. 80" class={inputClass} />
+                <span class={unitClass}>kg</span>
+            </div>
+        </div>
+        <div>
+            <label for="imc-altura" class="block text-sm font-semibold text-slate-600 mb-1.5">Estatura</label>
+            <div class="flex gap-2">
+                <input id="imc-altura" type="number" min="100" max="250" placeholder="Ej. 170" class={inputClass} />
+                <span class={unitClass}>cm</span>
+            </div>
+        </div>
+    </div>
+
+    <button
+        id="btn-calcular-imc"
+        type="button"
+        class="w-full bg-somno hover:bg-somno-dark text-white font-bold py-3.5 px-5 rounded-2xl text-sm flex items-center justify-center gap-2 transition-colors shadow-lg shadow-somno/25 mb-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-somno"
+    >
+        <i class="fas fa-calculator text-xs"></i>
+        Calcular IMC
+    </button>
+
+    <div id="imc-resultado" hidden class="rounded-2xl p-5 text-center">
+        <p id="imc-resultado-cat" class="text-sm font-bold mb-1"></p>
+        <p id="imc-resultado-valor" class="text-5xl font-black tracking-tighter mb-1"></p>
+        <p class="text-xs text-slate-400 mb-4">kg/m²</p>
+        <div class="w-full bg-white/70 rounded-full h-2 overflow-hidden mb-4">
+            <div id="imc-barra" class="h-2 rounded-full transition-all duration-700 ease-out" style="width:0%"></div>
+        </div>
+        <p id="imc-resultado-msg" class="text-xs text-slate-600 leading-relaxed"></p>
+    </div>
+
+    <p id="imc-error" role="alert" hidden class="text-xs text-red-500 font-semibold text-center mt-1">
+        Por favor ingresa valores válidos de peso y estatura.
+    </p>
+</dialog>
+
+<style>
+    @keyframes modalIn {
+        from { opacity: 0; transform: translateY(16px) scale(0.97); }
+        to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .animate-modal-in {
+        animation: modalIn 0.25s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .animate-modal-in { animation: none; }
+    }
+</style>
+
+<script>
+    import { getImcInfo } from '../../data/stopbang';
+
+    const modal = document.getElementById('modal-imc') as HTMLDialogElement;
+    const openBtn = document.getElementById('btn-abrir-imc');
+    const closeBtn = document.getElementById('btn-cerrar-imc')!;
+    const calcBtn = document.getElementById('btn-calcular-imc')!;
+    const weightInput = document.getElementById('imc-peso') as HTMLInputElement;
+    const heightInput = document.getElementById('imc-altura') as HTMLInputElement;
+    const resultBox = document.getElementById('imc-resultado')!;
+    const catEl = document.getElementById('imc-resultado-cat')!;
+    const valueEl = document.getElementById('imc-resultado-valor')!;
+    const msgEl = document.getElementById('imc-resultado-msg')!;
+    const barEl = document.getElementById('imc-barra')!;
+    const errorEl = document.getElementById('imc-error')!;
+
+    openBtn?.addEventListener('click', () => {
+        modal.showModal();
+        weightInput.focus();
+    });
+
+    closeBtn.addEventListener('click', () => modal.close());
+
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) modal.close();
+    });
+
+    calcBtn.addEventListener('click', () => {
+        const weight = parseFloat(weightInput.value);
+        const height = parseFloat(heightInput.value);
+
+        if (!weight || !height || weight < 20 || weight > 300 || height < 100 || height > 250) {
+            errorEl.hidden = false;
+            resultBox.hidden = true;
+            return;
+        }
+
+        errorEl.hidden = true;
+
+        const meters = height / 100;
+        const imc = weight / (meters * meters);
+        const info = getImcInfo(imc);
+
+        resultBox.className = `rounded-2xl p-5 text-center ${info.bg}`;
+        catEl.className = `text-sm font-bold mb-1 ${info.color}`;
+        catEl.textContent = info.cat;
+        valueEl.className = `text-5xl font-black tracking-tighter mb-1 ${info.color}`;
+        valueEl.textContent = String(Math.round(imc * 10) / 10);
+        msgEl.textContent = info.msg;
+
+        barEl.className = `h-2 rounded-full transition-all duration-700 ease-out ${info.bar}`;
+        barEl.style.width = '0%';
+        resultBox.hidden = false;
+        requestAnimationFrame(() => {
+            barEl.style.width = `${info.pct}%`;
+        });
+    });
+
+    [weightInput, heightInput].forEach((input) => {
+        input.addEventListener('input', () => {
+            resultBox.hidden = true;
+            errorEl.hidden = true;
+        });
+    });
+</script>

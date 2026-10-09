@@ -1,0 +1,49 @@
+---
+interface Props {
+    name: string;
+    letter: string;
+    text: string;
+}
+
+const { name, letter, text } = Astro.props;
+---
+
+<div class="py-8 first:pt-0 border-t border-slate-100 first:border-t-0">
+    <fieldset class="min-w-0 border-0 p-0 m-0">
+        <legend class="w-full p-0 mb-5">
+            <span class="flex items-start gap-4">
+                <span class="w-10 h-10 shrink-0 rounded-xl bg-somno/10 border border-somno/20 text-somno-dark grid place-items-center font-black text-lg">
+                    {letter}
+                </span>
+                <span class="pt-1.5 text-base sm:text-lg font-bold text-slate-800 tracking-tight leading-snug">
+                    {text}
+                </span>
+            </span>
+        </legend>
+
+        <div class="sm:pl-14">
+            <slot />
+
+            <div
+                data-sb-item={name}
+                role="radiogroup"
+                aria-label={text}
+                class="grid grid-cols-2 gap-2.5 max-w-xs rounded-2xl transition-colors data-[invalid=true]:bg-red-500/70 data-[invalid=true]:ring-4 data-[invalid=true]:ring-red-500"
+            >
+                {
+                    [
+                        { value: 'si', label: 'Sí' },
+                        { value: 'no', label: 'No' },
+                    ].map((opt) => (
+                        <label class="cursor-pointer">
+                            <input type="radio" name={name} value={opt.value} class="peer sr-only" />
+                            <span class="w-full h-12 sm:h-14 grid place-items-center rounded-xl border border-slate-200 bg-slate-50 text-base font-black text-slate-400 transition-all duration-200 hover:border-somno/50 hover:text-somno peer-checked:bg-somno peer-checked:border-somno peer-checked:text-white peer-checked:shadow-lg peer-checked:shadow-somno/30 peer-focus-visible:ring-2 peer-focus-visible:ring-somno peer-focus-visible:ring-offset-2">
+                                {opt.label}
+                            </span>
+                        </label>
+                    ))
+                }
+            </div>
+        </div>
+    </fieldset>
+</div>

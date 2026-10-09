@@ -1,0 +1,111 @@
+---
+import { BANDS, CTA_URL, MAX_SCORE, SCORE_VALUES } from '../../data/isi';
+---
+
+<section id="isi-result" hidden tabindex="-1" aria-live="polite" class="scroll-mt-6 outline-none">
+    <div class="rounded-3xl overflow-hidden border border-slate-100 shadow-sm bg-white">
+
+        <div class="relative bg-linear-to-br from-white via-somno/5 to-somno-light/20 px-6 sm:px-10 pt-10 pb-12 overflow-hidden">
+            <div class="absolute -top-24 -right-16 w-80 h-80 bg-somno-light/25 rounded-full blur-[110px] pointer-events-none"></div>
+            <div class="absolute -bottom-32 -left-10 w-72 h-72 bg-somno/10 rounded-full blur-[100px] pointer-events-none"></div>
+
+            <div class="relative">
+                <p class="text-sm font-semibold text-somno-dark mb-3">Tu resultado</p>
+
+                <div class="flex items-end gap-3">
+                    <span id="isi-score" class="text-8xl sm:text-9xl font-black tracking-tighter leading-none tabular-nums text-somno">0</span>
+                    <span class="pb-2 sm:pb-4 text-2xl text-slate-400 font-light">de {MAX_SCORE}</span>
+                </div>
+
+                <p id="isi-band-name" class="mt-4 text-2xl sm:text-3xl font-black tracking-tight text-slate-900"></p>
+
+                <div class="mt-10" role="img" aria-label="Posición de tu puntuación en la escala de 0 a 28">
+                    <div class="relative">
+                        <div class="flex gap-1">
+                            {
+                                BANDS.map((b) => (
+                                    <div
+                                        data-seg={b.id}
+                                        class={`h-3 rounded-full transition-opacity duration-700 opacity-40 ${b.solid}`}
+                                        style={`width:${((b.max - b.min + 1) / SCORE_VALUES) * 100}%`}
+                                    />
+                                ))
+                            }
+                        </div>
+                        <div
+                            id="isi-marker"
+                            class="absolute -top-2 -bottom-2 w-1.5 -translate-x-1/2 rounded-full bg-slate-800 shadow-[0_0_0_3px_white,0_4px_14px_rgba(15,23,42,0.35)] transition-[left] duration-1000 ease-out"
+                            style="left:0%"
+                        >
+                        </div>
+                    </div>
+
+                    <div class="mt-3 flex gap-1 text-xs text-slate-400 font-light">
+                        {
+                            BANDS.map((b) => (
+                                <span style={`width:${((b.max - b.min + 1) / SCORE_VALUES) * 100}%`}>
+                                    {b.min}–{b.max}
+                                </span>
+                            ))
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {
+            BANDS.map((b) => (
+                <div data-band-panel={b.id} hidden class="p-6 sm:p-10">
+                    <h3 class="text-2xl sm:text-3xl font-black tracking-tighter text-slate-900 leading-tight max-w-2xl">
+                        {b.headline}
+                    </h3>
+                    <p class="mt-4 text-base text-slate-600 font-light leading-relaxed max-w-2xl">
+                        {b.recommendation}
+                    </p>
+
+                    <ul class="mt-8 space-y-3 max-w-2xl">
+                        {b.tips.map((tip) => (
+                            <li class="flex items-start gap-3 text-sm text-slate-600 leading-relaxed">
+                                <i class="fas fa-moon text-somno text-xs mt-1.5 shrink-0"></i>
+                                <span>{tip}</span>
+                            </li>
+                        ))}
+                    </ul>
+
+                    <p class="mt-10 text-base font-bold text-slate-800 tracking-tight max-w-2xl">{b.ctaLead}</p>
+                </div>
+            ))
+        }
+
+        <div class="px-6 sm:px-10 pb-10">
+            <div class="flex flex-col sm:flex-row gap-3">
+                <a
+                    href={CTA_URL}
+                    target="_blank"
+                    rel="noopener"
+                    class="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-2xl bg-linear-to-r from-somno to-somno-light text-white font-bold shadow-xl shadow-somno/30 hover:-translate-y-0.5 hover:shadow-2xl hover:shadow-somno/40 transition-all focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-somno"
+                >
+                    <i class="fas fa-calendar-check"></i>
+                    Agendar una cita
+                </a>
+                <button
+                    type="button"
+                    id="isi-reset"
+                    class="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-2xl cursor-pointer border border-slate-200 bg-white text-slate-600 font-semibold hover:border-somno/40 hover:text-somno transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-somno"
+                >
+                    <i class="fas fa-rotate-left"></i>
+                    Volver a responder
+                </button>
+            </div>
+
+            <div class="mt-8 bg-somno/5 border-l-4 border-somno p-4 rounded-r-2xl">
+                <div class="flex gap-3">
+                    <i class="fas fa-shield-halved text-somno mt-0.5 text-sm shrink-0"></i>
+                    <p class="text-xs text-slate-600 leading-relaxed font-light">
+                        Este resultado es una herramienta de <strong class="text-slate-700">tamizaje</strong>, no un diagnóstico. Solo un especialista puede interpretarlo junto con tu historia clínica.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

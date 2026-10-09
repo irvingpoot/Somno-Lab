@@ -1,11 +1,12 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import ReturnButton from '../../components/ReturnButton.astro';
-import StopBangComponent from '../../components/stopbang/StopBang.astro';
-import StopBangInfoPanel from '../../components/stopbang/StopBangInfoPanel.astro';
+import ISIQuestionnaire from '../../components/isi/ISIQuestionnaire.astro';
+import ISIInfoPanel from '../../components/isi/ISIInfoPanel.astro';
+import { BANDS } from '../../data/isi';
 ---
 
-<Layout title="Cuestionario STOP-BANG | SomnoLab">
+<Layout title="Índice de Gravedad del Insomnio (ISI) | SomnoLab">
     <ReturnButton href="/herramientas" />
     <div class="flex p-5 justify-end">
         <a href="/" class="flex items-center gap-1 group">
@@ -31,7 +32,7 @@ import StopBangInfoPanel from '../../components/stopbang/StopBangInfoPanel.astro
                     class="pointer-events-none select-none absolute -right-4 sm:right-8 top-1/2 -translate-y-1/2 text-[9rem] sm:text-[16rem] lg:text-[20rem] font-black tracking-tighter leading-none text-transparent"
                     style="-webkit-text-stroke: 2px color-mix(in srgb, var(--color-somno) 28%, transparent);"
                 >
-                    SAOS
+                    ISI
                 </span>
 
                 <div class="relative max-w-2xl">
@@ -39,10 +40,10 @@ import StopBangInfoPanel from '../../components/stopbang/StopBangInfoPanel.astro
                         Cuestionario de evaluación de SomnoLab
                     </span>
                     <h1 class="text-4xl sm:text-6xl font-black tracking-tighter text-slate-900 leading-[1.05] mb-5">
-                        Cuestionario STOP-BANG
+                        Índice de Gravedad del Insomnio
                     </h1>
                     <p class="text-lg text-slate-600 font-light leading-relaxed mb-8">
-                        Herramienta de tamizaje clínico para evaluar el riesgo de Apnea Obstructiva del Sueño (AOS). Responde las 8 preguntas y obtén tu resultado al instante.
+                        Evalúa qué tanto está afectando el insomnio a tu descanso y a tu día a día. Responde 5 preguntas y recibe tu resultado con una recomendación al instante.
                     </p>
                 </div>
             </header>
@@ -50,11 +51,11 @@ import StopBangInfoPanel from '../../components/stopbang/StopBangInfoPanel.astro
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8">
 
                 <div class="lg:col-span-7 xl:col-span-8 animate-fade-in-up" style="animation-delay: 0.1s;">
-                    <StopBangComponent />
+                    <ISIQuestionnaire />
                 </div>
 
                 <aside class="lg:col-span-5 xl:col-span-4 animate-fade-in-up" style="animation-delay: 0.2s;">
-                    <StopBangInfoPanel />
+                    <ISIInfoPanel />
                 </aside>
 
             </div>

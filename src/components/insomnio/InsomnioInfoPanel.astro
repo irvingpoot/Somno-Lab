@@ -1,0 +1,27 @@
+---
+import AlertIcon from "../icons/AlertIcon.astro";
+
+---
+
+<div class="space-y-6 sticky top-5">
+
+    <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
+        <h3 class="text-base font-black text-slate-800 tracking-tight mb-3 flex items-center gap-2">
+            <i class="fas fa-circle-info text-somno text-sm"></i>
+            ¿Qué es este cuestionario?
+        </h3>
+        <p class="text-sm text-slate-500 leading-relaxed font-light">
+            Es una herramienta breve para identificar si tus dificultades para dormir podrían corresponder a un insomnio. Considera lo que has vivido durante el último mes.
+        </p>
+    </div>
+
+    <div class="bg-somno/5 p-4 rounded-2xl">
+        <div class="flex flex-col gap-3">
+            <span class="flex font-bold gap-1 text-md text-somno"><AlertIcon class="size-5"/> Nota:</span>
+            <p class="text-xs text-slate-600 leading-relaxed font-light">
+                Este cuestionario es una herramienta de <strong class="text-slate-700">tamizaje</strong>, no un diagnóstico. Los resultados deben ser interpretados por un especialista.
+            </p>
+        </div>
+    </div>
+
+</div>

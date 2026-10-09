@@ -1,0 +1,201 @@
+---
+import ISIQuestion from './ISIQuestion.astro';
+import ISIRating from './ISIRating.astro';
+import ISIResult from './ISIResult.astro';
+import { INTENSITY_LABELS, SATISFACTION_LABELS, SEVERITY_ITEMS, SEVERITY_LABELS, TOTAL_ITEMS } from '../../data/isi';
+---
+
+<div id="isi-root">
+    <div id="isi-form-card" class="bg-white rounded-3xl p-6 sm:p-10 border border-slate-100 shadow-sm">
+        <h2 class="text-2xl font-bold text-slate-800 mb-2 tracking-tight">Responde las siguientes preguntas</h2>
+        <p class="text-sm text-slate-800 font-light mb-6">
+            Todas las preguntas son obligatorias. Elige <strong class="text-somno">un valor del 0 al 4</strong> en cada una.
+        </p>
+
+        <div class="sticky top-3 z-20 mb-8 rounded-2xl border border-slate-100 bg-white/90 backdrop-blur px-4 py-3 shadow-sm">
+            <div class="flex items-center justify-between text-xs mb-2">
+                <span class="font-semibold text-slate-600">Progreso</span>
+                <span class="text-slate-400 tabular-nums"><span id="isi-answered">0</span> de {TOTAL_ITEMS} respuestas</span>
+            </div>
+            <div class="h-1.5 rounded-full bg-slate-100 overflow-hidden">
+                <div id="isi-bar" class="h-full w-0 rounded-full bg-linear-to-r from-somno to-somno-light transition-[width] duration-300"></div>
+            </div>
+        </div>
+
+        <form id="isi-form" novalidate>
+            <ISIQuestion number={1} title="Indica la gravedad de tu actual problema(s) de sueño">
+                <div class="space-y-8">
+                    {
+                        SEVERITY_ITEMS.map((item) => (
+                            <div>
+                                <p class="text-sm font-semibold text-slate-600 mb-3">{item.label}</p>
+                                <ISIRating name={item.name} labels={SEVERITY_LABELS} ariaLabel={item.label} />
+                            </div>
+                        ))
+                    }
+                </div>
+            </ISIQuestion>
+
+            <ISIQuestion number={2} title="¿Cómo estás de satisfecho/a en la actualidad con tu sueño?">
+                <ISIRating name="q2" labels={SATISFACTION_LABELS} ariaLabel="Satisfacción con tu sueño" />
+            </ISIQuestion>
+
+            <ISIQuestion
+                number={3}
+                title="¿En qué medida consideras que tu problema de sueño interfiere con tu funcionamiento diario?"
+            >
+                <p class="text-xs text-slate-400 font-light mb-4 -mt-2">
+                    Por ejemplo: fatiga durante el día, capacidad para las tareas cotidianas o el trabajo, concentración, memoria, estado de ánimo.
+                </p>
+                <ISIRating name="q3" labels={INTENSITY_LABELS} ariaLabel="Interferencia con tu funcionamiento diario" />
+            </ISIQuestion>
+
+            <ISIQuestion
+                number={4}
+                title="¿En qué medida crees que los demás se dan cuenta de tu problema de sueño por lo que afecta a tu calidad de vida?"
+            >
+                <ISIRating name="q4" labels={INTENSITY_LABELS} ariaLabel="Qué tanto lo notan los demás" />
+            </ISIQuestion>
+
+            <ISIQuestion number={5} title="¿Cómo estás de preocupado/a por tu actual problema de sueño?">
+                <ISIRating name="q5" labels={INTENSITY_LABELS} ariaLabel="Preocupación por tu problema de sueño" />
+            </ISIQuestion>
+
+            <div class="pt-8 border-t border-slate-100">
+                <p id="isi-error" role="alert" hidden class="mb-4 flex items-start gap-2 text-sm font-medium text-red-600">
+                    <i class="fas fa-circle-exclamation mt-0.5"></i>
+                    <span></span>
+                </p>
+                <button
+                    type="submit"
+                    class="w-full inline-flex items-center justify-center gap-3 px-10 py-4 rounded-2xl cursor-pointer bg-somno text-white font-bold shadow-xl shadow-somno/25 hover:bg-somno-dark hover:shadow-somno-dark/30 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-somno"
+                >
+                    <i class="fas fa-chart-simple"></i>
+                    Calcular mi resultado
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <ISIResult />
+</div>
+
+<script>
+    import { MAX_SCORE, SCORE_VALUES, TOTAL_ITEMS, getBand } from '../../data/isi';
+
+    const $ = <T extends HTMLElement>(selector: string) => document.querySelector<T>(selector)!;
+
+    const formCard = $('#isi-form-card');
+    const form = $<HTMLFormElement>('#isi-form');
+    const result = $('#isi-result');
+    const errorBox = $('#isi-error');
+    const answeredLabel = $('#isi-answered');
+    const bar = $('#isi-bar');
+    const scoreEl = $('#isi-score');
+    const bandName = $('#isi-band-name');
+    const marker = $('#isi-marker');
+
+    const names = [...new Set([...form.querySelectorAll<HTMLInputElement>('input[type="radio"]')].map((i) => i.name))];
+    const prefersReducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const getValue = (name: string) => {
+        const checked = form.querySelector<HTMLInputElement>(`input[name="${name}"]:checked`);
+        return checked ? Number(checked.value) : null;
+    };
+
+    function updateProgress() {
+        const answered = names.filter((n) => getValue(n) !== null).length;
+        answeredLabel.textContent = String(answered);
+        bar.style.width = `${(answered / TOTAL_ITEMS) * 100}%`;
+    }
+
+    function setInvalid(name: string, invalid: boolean) {
+        const item = form.querySelector<HTMLElement>(`[data-isi-item="${name}"]`);
+        if (item) item.dataset.invalid = String(invalid);
+    }
+
+    function countUp(target: number) {
+        if (prefersReducedMotion() || target === 0) {
+            scoreEl.textContent = String(target);
+            return;
+        }
+        const duration = 900;
+        const start = performance.now();
+        const tick = (now: number) => {
+            const progress = Math.min((now - start) / duration, 1);
+            const eased = 1 - Math.pow(1 - progress, 3);
+            scoreEl.textContent = String(Math.round(target * eased));
+            if (progress < 1) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+    }
+
+    function showResult(score: number) {
+        const band = getBand(score);
+
+        bandName.textContent = band.short;
+
+        result.querySelectorAll<HTMLElement>('[data-band-panel]').forEach((panel) => {
+            panel.hidden = panel.dataset.bandPanel !== band.id;
+        });
+        result.querySelectorAll<HTMLElement>('[data-seg]').forEach((seg) => {
+            seg.classList.toggle('opacity-100', seg.dataset.seg === band.id);
+            seg.classList.toggle('opacity-40', seg.dataset.seg !== band.id);
+        });
+
+        formCard.hidden = true;
+        result.hidden = false;
+
+        marker.style.transition = 'none';
+        marker.style.left = '0%';
+        void marker.offsetWidth;
+        marker.style.transition = prefersReducedMotion() ? 'none' : '';
+        marker.style.left = `${((score + 0.5) / SCORE_VALUES) * 100}%`;
+
+        countUp(score);
+        result.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth', block: 'start' });
+        result.focus({ preventScroll: true });
+    }
+
+    form.addEventListener('change', (event) => {
+        const target = event.target as HTMLInputElement;
+        setInvalid(target.name, false);
+        if (!form.querySelector('[data-invalid="true"]')) errorBox.hidden = true;
+        updateProgress();
+    });
+
+    form.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        const missing = names.filter((n) => getValue(n) === null);
+        names.forEach((n) => setInvalid(n, missing.includes(n)));
+
+        if (missing.length > 0) {
+            errorBox.querySelector('span')!.textContent =
+                missing.length === 1
+                    ? 'Falta 1 respuesta. Revisa la pregunta marcada en rojo.'
+                    : `Faltan ${missing.length} respuestas. Revisa las preguntas marcadas en rojo.`;
+            errorBox.hidden = false;
+
+            const first = form.querySelector<HTMLElement>(`[data-isi-item="${missing[0]}"]`)!;
+            first.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth', block: 'center' });
+            first.querySelector<HTMLInputElement>('input')?.focus({ preventScroll: true });
+            return;
+        }
+
+        errorBox.hidden = true;
+        const score = names.reduce((total, n) => total + (getValue(n) ?? 0), 0);
+        showResult(Math.min(score, MAX_SCORE));
+    });
+
+    $('#isi-reset').addEventListener('click', () => {
+        form.reset();
+        names.forEach((n) => setInvalid(n, false));
+        updateProgress();
+        result.hidden = true;
+        formCard.hidden = false;
+        formCard.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth', block: 'start' });
+    });
+
+    updateProgress();
+</script>
