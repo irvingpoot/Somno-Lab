@@ -1,0 +1,181 @@
+---
+import StopBangQuestion from './StopBangQuestion.astro';
+import StopBangResult from './StopBangResult.astro';
+import StopBangImcModal from './StopBangImcModal.astro';
+import { QUESTIONS, TOTAL_QUESTIONS } from '../../data/stopbang';
+---
+
+<div id="stopbang-cuestionario">
+    <div id="sb-form-card" class="bg-white rounded-3xl p-6 sm:p-10 border border-slate-100 shadow-sm">
+        <h2 class="text-2xl font-bold text-slate-800 mb-2 tracking-tight">Responde las siguientes preguntas</h2>
+        <p class="text-sm text-slate-800 font-light mb-6">
+            Todas las preguntas son obligatorias. Selecciona <strong class="text-somno">Sí</strong> o <strong class="text-somno">No</strong> para cada una.
+        </p>
+
+        <div class="sticky top-3 z-20 mb-8 rounded-2xl border border-slate-100 bg-white/90 backdrop-blur px-4 py-3 shadow-sm">
+            <div class="flex items-center justify-between text-xs mb-2">
+                <span class="font-semibold text-slate-600">Progreso</span>
+                <span class="text-slate-400 tabular-nums"><span id="sb-answered">0</span> de {TOTAL_QUESTIONS} respuestas</span>
+            </div>
+            <div class="h-1.5 rounded-full bg-slate-100 overflow-hidden">
+                <div id="sb-bar" class="h-full w-0 rounded-full bg-linear-to-r from-somno to-somno-light transition-[width] duration-300"></div>
+            </div>
+        </div>
+
+        <form id="sb-form" novalidate>
+            {
+                QUESTIONS.map((q) => (
+                    <StopBangQuestion name={q.name} letter={q.letter} text={q.text}>
+                        {q.imc && (
+                            <button
+                                id="btn-abrir-imc"
+                                type="button"
+                                class="mb-4 inline-flex items-center gap-2 text-sm text-somno font-semibold hover:underline cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-somno rounded"
+                            >
+                                <i class="fas fa-calculator text-xs" />
+                                ¿No sabe su IMC? Calcúlelo aquí
+                            </button>
+                        )}
+                    </StopBangQuestion>
+                ))
+            }
+
+            <div class="pt-8 border-t border-slate-100">
+                <p id="sb-error" role="alert" hidden class="mb-4 flex items-start gap-2 text-sm font-medium text-red-600">
+                    <i class="fas fa-circle-exclamation mt-0.5"></i>
+                    <span></span>
+                </p>
+                <button
+                    type="submit"
+                    class="w-full inline-flex items-center justify-center gap-3 px-10 py-4 rounded-2xl cursor-pointer bg-somno text-white font-bold shadow-xl shadow-somno/25 hover:bg-somno-dark hover:shadow-somno-dark/30 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-somno"
+                >
+                    Calcular mi resultado
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <StopBangResult />
+    <StopBangImcModal />
+</div>
+
+<script>
+    import { SCORE_VALUES, TOTAL_QUESTIONS, classify } from '../../data/stopbang';
+
+    const $ = <T extends HTMLElement>(selector: string) => document.querySelector<T>(selector)!;
+
+    const formCard = $('#sb-form-card');
+    const form = $<HTMLFormElement>('#sb-form');
+    const result = $('#sb-result');
+    const errorBox = $('#sb-error');
+    const answeredLabel = $('#sb-answered');
+    const bar = $('#sb-bar');
+    const scoreEl = $('#sb-score');
+    const levelName = $('#sb-level-name');
+    const marker = $('#sb-marker');
+    const combinedNote = $('#sb-combined-note');
+
+    const names = Array.from({ length: TOTAL_QUESTIONS }, (_, i) => `p${i + 1}`);
+    const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const getValue = (name: string) =>
+        form.querySelector<HTMLInputElement>(`input[name="${name}"]:checked`)?.value ?? null;
+
+    function updateProgress() {
+        const answered = names.filter((n) => getValue(n) !== null).length;
+        answeredLabel.textContent = String(answered);
+        bar.style.width = `${(answered / TOTAL_QUESTIONS) * 100}%`;
+    }
+
+    function setInvalid(name: string, invalid: boolean) {
+        const item = form.querySelector<HTMLElement>(`[data-sb-item="${name}"]`);
+        if (item) item.dataset.invalid = String(invalid);
+    }
+
+    function countUp(target: number) {
+        if (reducedMotion() || target === 0) {
+            scoreEl.textContent = String(target);
+            return;
+        }
+        const duration = 800;
+        const start = performance.now();
+        const tick = (now: number) => {
+            const progress = Math.min((now - start) / duration, 1);
+            scoreEl.textContent = String(Math.round(target * (1 - Math.pow(1 - progress, 3))));
+            if (progress < 1) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+    }
+
+    function showResult(answers: number[]) {
+        const { score, level, combinedOnly } = classify(answers);
+
+        levelName.textContent = level.label;
+        combinedNote.hidden = !combinedOnly;
+
+        result.querySelectorAll<HTMLElement>('[data-level-panel]').forEach((panel) => {
+            panel.hidden = panel.dataset.levelPanel !== level.id;
+        });
+        result.querySelectorAll<HTMLElement>('[data-desc]').forEach((el) => {
+            el.textContent = el.dataset.desc!.replace('{puntaje}', String(score));
+        });
+        result.querySelectorAll<HTMLElement>('[data-seg]').forEach((seg) => {
+            seg.classList.toggle('opacity-100', seg.dataset.seg === level.id);
+            seg.classList.toggle('opacity-40', seg.dataset.seg !== level.id);
+        });
+
+        formCard.hidden = true;
+        result.hidden = false;
+
+        marker.style.transition = 'none';
+        marker.style.left = '0%';
+        void marker.offsetWidth;
+        marker.style.transition = reducedMotion() ? 'none' : '';
+        marker.style.left = `${((score + 0.5) / SCORE_VALUES) * 100}%`;
+
+        countUp(score);
+        result.scrollIntoView({ behavior: reducedMotion() ? 'auto' : 'smooth', block: 'start' });
+        result.focus({ preventScroll: true });
+    }
+
+    form.addEventListener('change', (event) => {
+        const target = event.target as HTMLInputElement;
+        setInvalid(target.name, false);
+        if (!form.querySelector('[data-invalid="true"]')) errorBox.hidden = true;
+        updateProgress();
+    });
+
+    form.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        const missing = names.filter((n) => getValue(n) === null);
+        names.forEach((n) => setInvalid(n, missing.includes(n)));
+
+        if (missing.length > 0) {
+            errorBox.querySelector('span')!.textContent =
+                missing.length === 1
+                    ? 'Falta 1 respuesta. Revisa la pregunta marcada en rojo.'
+                    : `Faltan ${missing.length} respuestas. Revisa las preguntas marcadas en rojo.`;
+            errorBox.hidden = false;
+
+            const first = form.querySelector<HTMLElement>(`[data-sb-item="${missing[0]}"]`)!;
+            first.scrollIntoView({ behavior: reducedMotion() ? 'auto' : 'smooth', block: 'center' });
+            first.querySelector<HTMLInputElement>('input')?.focus({ preventScroll: true });
+            return;
+        }
+
+        errorBox.hidden = true;
+        showResult(names.map((n) => (getValue(n) === 'si' ? 1 : 0)));
+    });
+
+    $('#sb-reset').addEventListener('click', () => {
+        form.reset();
+        names.forEach((n) => setInvalid(n, false));
+        updateProgress();
+        result.hidden = true;
+        formCard.hidden = false;
+        formCard.scrollIntoView({ behavior: reducedMotion() ? 'auto' : 'smooth', block: 'start' });
+    });
+
+    updateProgress();
+</script>

@@ -1,0 +1,71 @@
+---
+import {CTA_URL, MAX_SCORE, OUTCOMES } from '../../data/insomnio';
+---
+
+<section id="in-result" hidden tabindex="-1" aria-live="polite" class="scroll-mt-6 outline-none">
+    <div class="rounded-3xl overflow-hidden border border-slate-100 shadow-sm bg-white">
+
+        <div class="relative px-6 sm:px-10 pt-10 pb-10 overflow-hidden bg-linear-to-br from-white via-somno/5 to-somno-light/20">
+            <div class="absolute -top-24 -right-16 w-80 h-80 bg-somno-light/25 rounded-full blur-[110px] pointer-events-none"></div>
+
+            <div class="relative">
+                <p class="text-sm font-semibold text-somno-dark mb-3">Tu resultado</p>
+
+                <div class="flex items-end gap-3">
+                    <span id="in-score" class="text-8xl sm:text-9xl font-black tracking-tighter leading-none tabular-nums text-somno">0</span>
+                    <span class="pb-2 sm:pb-4 text-2xl text-slate-400 font-light">de {MAX_SCORE} puntos</span>
+                </div>
+
+                <p id="in-outcome-name" class="mt-4 text-2xl sm:text-3xl font-black tracking-tight text-slate-900"></p>
+            </div>
+        </div>
+
+        {
+            OUTCOMES.map((o) => (
+                <div data-outcome-panel={o.id} hidden class="p-6 sm:p-10">
+                    <h3 class="text-2xl sm:text-3xl font-black tracking-tighter text-slate-900 leading-tight max-w-2xl">
+                        {o.headline}
+                    </h3>
+                    <p class="mt-4 text-base text-slate-600 font-light leading-relaxed max-w-2xl">{o.message}</p>
+
+                    <p class="mt-8 text-base font-bold text-slate-800 tracking-tight max-w-2xl">{o.ctaLead}</p>
+
+                    <a
+                        href={CTA_URL}
+                        target="_blank"
+                        rel="noopener"
+                        class:list={[
+                            'mt-4 inline-flex items-center justify-center gap-3 px-8 py-4 rounded-2xl font-bold transition-all focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-somno',
+                            o.id === 'probable'
+                                ? 'bg-linear-to-r from-somno to-somno-light text-white shadow-xl shadow-somno/30 hover:-translate-y-0.5 hover:shadow-2xl hover:shadow-somno/40'
+                                : 'border border-somno/40 bg-white text-somno-dark hover:bg-somno/5 hover:border-somno',
+                        ]}
+                    >
+                        <i class="fas fa-calendar-check"></i>
+                        {o.ctaText}
+                    </a>
+                </div>
+            ))
+        }
+
+        <div class="px-6 sm:px-10 pb-10">
+            <button
+                type="button"
+                id="in-reset"
+                class="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-2xl cursor-pointer border border-slate-200 bg-white text-slate-600 font-semibold hover:border-somno/40 hover:text-somno transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-somno"
+            >
+                <i class="fas fa-rotate-left"></i>
+                Volver a responder
+            </button>
+
+            <div class="mt-8 bg-somno/5 border-l-4 border-somno p-4 rounded-r-2xl">
+                <div class="flex gap-3">
+                    <i class="fas fa-shield-halved text-somno mt-0.5 text-sm shrink-0"></i>
+                    <p class="text-xs text-slate-600 leading-relaxed font-light">
+                        Este resultado es una herramienta de <strong class="text-slate-700">tamizaje</strong>, no un diagnóstico. Solo un especialista puede interpretarlo junto con tu historia clínica.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

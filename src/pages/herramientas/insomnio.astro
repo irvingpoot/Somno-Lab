@@ -1,11 +1,12 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import ReturnButton from '../../components/ReturnButton.astro';
-import StopBangComponent from '../../components/stopbang/StopBang.astro';
-import StopBangInfoPanel from '../../components/stopbang/StopBangInfoPanel.astro';
+import InsomnioQuestionnaire from '../../components/insomnio/InsomnioQuestionnaire.astro';
+import InsomnioInfoPanel from '../../components/insomnio/InsomnioInfoPanel.astro';
+import { MAX_SCORE, TOTAL_QUESTIONS } from '../../data/insomnio';
 ---
 
-<Layout title="Cuestionario STOP-BANG | SomnoLab">
+<Layout title="Cuestionario de Insomnio | SomnoLab">
     <ReturnButton href="/herramientas" />
     <div class="flex p-5 justify-end">
         <a href="/" class="flex items-center gap-1 group">
@@ -31,18 +32,18 @@ import StopBangInfoPanel from '../../components/stopbang/StopBangInfoPanel.astro
                     class="pointer-events-none select-none absolute -right-4 sm:right-8 top-1/2 -translate-y-1/2 text-[9rem] sm:text-[16rem] lg:text-[20rem] font-black tracking-tighter leading-none text-transparent"
                     style="-webkit-text-stroke: 2px color-mix(in srgb, var(--color-somno) 28%, transparent);"
                 >
-                    SAOS
+                    Zzz
                 </span>
 
                 <div class="relative max-w-2xl">
                     <span class="inline-block text-somno font-bold tracking-wider uppercase text-sm mb-3">
-                        Cuestionario de evaluación de SomnoLab
+                        Herramienta Interactiva
                     </span>
                     <h1 class="text-4xl sm:text-6xl font-black tracking-tighter text-slate-900 leading-[1.05] mb-5">
-                        Cuestionario STOP-BANG
+                        Cuestionario de Insomnio
                     </h1>
                     <p class="text-lg text-slate-600 font-light leading-relaxed mb-8">
-                        Herramienta de tamizaje clínico para evaluar el riesgo de Apnea Obstructiva del Sueño (AOS). Responde las 8 preguntas y obtén tu resultado al instante.
+                        Identifica si tus dificultades para dormir podrían ser insomnio. Responde {TOTAL_QUESTIONS} preguntas sobre tu último mes y recibe tu resultado al instante.
                     </p>
                 </div>
             </header>
@@ -50,11 +51,11 @@ import StopBangInfoPanel from '../../components/stopbang/StopBangInfoPanel.astro
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8">
 
                 <div class="lg:col-span-7 xl:col-span-8 animate-fade-in-up" style="animation-delay: 0.1s;">
-                    <StopBangComponent />
+                    <InsomnioQuestionnaire />
                 </div>
 
                 <aside class="lg:col-span-5 xl:col-span-4 animate-fade-in-up" style="animation-delay: 0.2s;">
-                    <StopBangInfoPanel />
+                    <InsomnioInfoPanel />
                 </aside>
 
             </div>

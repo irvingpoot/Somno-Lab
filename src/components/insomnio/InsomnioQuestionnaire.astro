@@ -1,0 +1,182 @@
+---
+import InsomnioQuestion from './InsomnioQuestion.astro';
+import InsomnioSection from './InsomnioSection.astro';
+import InsomnioResult from './InsomnioResult.astro';
+import {
+    INTRO,
+    SECTION_BASE,
+    SECTION_FREQUENCY,
+    SECTION_SYMPTOMS,
+    SYMPTOMS_TITLE,
+    TOTAL_QUESTIONS,
+} from '../../data/insomnio';
+---
+
+<div id="in-root">
+    <div id="in-form-card" class="bg-white rounded-3xl p-6 sm:p-10 border border-slate-100 shadow-sm">
+        <h2 class="text-2xl font-bold text-slate-800 mb-2 tracking-tight">Responde las siguientes preguntas</h2>
+        <p class="text-sm text-slate-800 font-light leading-relaxed mb-1 max-w-xl">{INTRO}</p>
+        <p class="text-sm text-slate-800 font-light mb-6">
+            Todas las preguntas son obligatorias. Selecciona <strong class="text-somno">Sí</strong> o <strong class="text-somno">No</strong> en cada una.
+        </p>
+
+        <div class="sticky top-3 z-20 mb-8 rounded-2xl border border-slate-100 bg-white/90 backdrop-blur px-4 py-3 shadow-sm">
+            <div class="flex items-center justify-between text-xs mb-2">
+                <span class="font-semibold text-slate-600">Progreso</span>
+                <span class="text-slate-400 tabular-nums"><span id="in-answered">0</span> de {TOTAL_QUESTIONS} respuestas</span>
+            </div>
+            <div class="h-1.5 rounded-full bg-slate-100 overflow-hidden">
+                <div id="in-bar" class="h-full w-0 rounded-full bg-linear-to-r from-somno to-somno-light transition-[width] duration-300"></div>
+            </div>
+        </div>
+
+        <form id="in-form" novalidate>
+            <InsomnioSection title="En el último mes:">
+                {SECTION_BASE.map((q) => <InsomnioQuestion name={q.name} number={q.number} text={q.text} />)}
+            </InsomnioSection>
+
+            <InsomnioSection title={SYMPTOMS_TITLE}>
+                {SECTION_SYMPTOMS.map((q) => <InsomnioQuestion name={q.name} number={q.number} text={q.text} compact />)}
+            </InsomnioSection>
+
+            <InsomnioSection title="Frecuencia">
+                {SECTION_FREQUENCY.map((q) => <InsomnioQuestion name={q.name} number={q.number} text={q.text} />)}
+            </InsomnioSection>
+
+            <div class="mt-10 pt-8 border-t border-slate-100">
+                <p id="in-error" role="alert" hidden class="mb-4 flex items-start gap-2 text-sm font-medium text-red-600">
+                    <i class="fas fa-circle-exclamation mt-0.5"></i>
+                    <span></span>
+                </p>
+                <button
+                    type="submit"
+                    class="w-full inline-flex items-center justify-center gap-3 px-10 py-4 rounded-2xl cursor-pointer bg-somno text-white font-bold shadow-xl shadow-somno/25 hover:bg-somno-dark hover:shadow-somno-dark/30 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-somno"
+                >
+                    Calcular mi resultado
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <InsomnioResult />
+</div>
+
+<script>
+    import { MAX_SCORE, SYMPTOMS_REQUIRED, TOTAL_QUESTIONS, evaluate } from '../../data/insomnio';
+
+    const $ = <T extends HTMLElement>(selector: string) => document.querySelector<T>(selector)!;
+
+    const formCard = $('#in-form-card');
+    const form = $<HTMLFormElement>('#in-form');
+    const result = $('#in-result');
+    const errorBox = $('#in-error');
+    const answeredLabel = $('#in-answered');
+    const bar = $('#in-bar');
+    const scoreEl = $('#in-score');
+    const outcomeName = $('#in-outcome-name');
+
+    const names = Array.from({ length: TOTAL_QUESTIONS }, (_, i) => `q${i + 1}`);
+    const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const getValue = (name: string) =>
+        form.querySelector<HTMLInputElement>(`input[name="${name}"]:checked`)?.value ?? null;
+
+    function updateProgress() {
+        const answered = names.filter((n) => getValue(n) !== null).length;
+        answeredLabel.textContent = String(answered);
+        bar.style.width = `${(answered / TOTAL_QUESTIONS) * 100}%`;
+    }
+
+    function setInvalid(name: string, invalid: boolean) {
+        const item = form.querySelector<HTMLElement>(`[data-item="${name}"]`);
+        if (item) item.dataset.invalid = String(invalid);
+    }
+
+    function countUp(target: number) {
+        if (reducedMotion() || target === 0) {
+            scoreEl.textContent = String(target);
+            return;
+        }
+        const duration = 700;
+        const start = performance.now();
+        const tick = (now: number) => {
+            const progress = Math.min((now - start) / duration, 1);
+            scoreEl.textContent = String(Math.round(target * (1 - Math.pow(1 - progress, 3))));
+            if (progress < 1) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+    }
+
+    function showResult(answers: boolean[]) {
+        const { score, met, symptomCount, outcome } = evaluate(answers);
+
+        outcomeName.textContent = outcome.label;
+
+        result.querySelectorAll<HTMLElement>('[data-outcome-panel]').forEach((panel) => {
+            panel.hidden = panel.dataset.outcomePanel !== outcome.id;
+        });
+
+        result.querySelectorAll<HTMLElement>('[data-crit]').forEach((row) => {
+            const id = row.dataset.crit as 'base' | 'symptoms' | 'frequency';
+            const isMet = met[id];
+            row.dataset.met = String(isMet);
+            row.querySelector<HTMLElement>('[data-icon-met]')!.hidden = !isMet;
+            row.querySelector<HTMLElement>('[data-icon-unmet]')!.hidden = isMet;
+            row.querySelector<HTMLElement>('[data-crit-status]')!.textContent = isMet ? 'Cumple' : 'No cumple';
+
+            const detail = row.querySelector<HTMLElement>('[data-crit-detail]')!;
+            if (id === 'symptoms') {
+                detail.hidden = false;
+                detail.textContent = `Marcaste ${symptomCount} de 10 (se requieren al menos ${SYMPTOMS_REQUIRED}).`;
+            }
+        });
+
+        formCard.hidden = true;
+        result.hidden = false;
+
+        countUp(Math.min(score, MAX_SCORE));
+        result.scrollIntoView({ behavior: reducedMotion() ? 'auto' : 'smooth', block: 'start' });
+        result.focus({ preventScroll: true });
+    }
+
+    form.addEventListener('change', (event) => {
+        const target = event.target as HTMLInputElement;
+        setInvalid(target.name, false);
+        if (!form.querySelector('[data-invalid="true"]')) errorBox.hidden = true;
+        updateProgress();
+    });
+
+    form.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        const missing = names.filter((n) => getValue(n) === null);
+        names.forEach((n) => setInvalid(n, missing.includes(n)));
+
+        if (missing.length > 0) {
+            errorBox.querySelector('span')!.textContent =
+                missing.length === 1
+                    ? 'Falta 1 respuesta. Revisa la pregunta marcada en rojo.'
+                    : `Faltan ${missing.length} respuestas. Revisa las preguntas marcadas en rojo.`;
+            errorBox.hidden = false;
+
+            const first = form.querySelector<HTMLElement>(`[data-item="${missing[0]}"]`)!;
+            first.scrollIntoView({ behavior: reducedMotion() ? 'auto' : 'smooth', block: 'center' });
+            first.querySelector<HTMLInputElement>('input')?.focus({ preventScroll: true });
+            return;
+        }
+
+        errorBox.hidden = true;
+        showResult(names.map((n) => getValue(n) === 'si'));
+    });
+
+    $('#in-reset').addEventListener('click', () => {
+        form.reset();
+        names.forEach((n) => setInvalid(n, false));
+        updateProgress();
+        result.hidden = true;
+        formCard.hidden = false;
+        formCard.scrollIntoView({ behavior: reducedMotion() ? 'auto' : 'smooth', block: 'start' });
+    });
+
+    updateProgress();
+</script>

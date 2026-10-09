@@ -1,0 +1,46 @@
+---
+import { ACRONYM } from '../../data/stopbang';
+import AlertIcon from '../icons/AlertIcon.astro';
+---
+
+<div class="space-y-6 sticky top-5">
+
+    <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
+        <h3 class="text-base font-black text-slate-800 tracking-tight mb-3 flex items-center gap-2">
+            <i class="fas fa-circle-info text-somno text-sm"></i>
+            ¿Qué es el STOP-BANG?
+        </h3>
+        <p class="text-sm text-slate-500 leading-relaxed font-light">
+            Es un cuestionario validado clínicamente para identificar pacientes con riesgo de Apnea Obstructiva del Sueño. Su nombre es el acrónimo de los ocho factores que evalúa.
+        </p>
+    </div>
+
+    <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
+        <h3 class="text-base font-black text-slate-800 tracking-tight mb-4 flex items-center gap-2">
+            <i class="fas fa-spell-check text-somno text-sm"></i>
+            El acrónimo
+        </h3>
+        <div class="space-y-2.5">
+            {
+                ACRONYM.map((item) => (
+                    <div class="flex items-center gap-3">
+                        <span class="w-7 h-7 rounded-lg bg-somno/10 border border-somno/20 flex items-center justify-center text-somno-dark font-black text-xs shrink-0">
+                            {item.letra}
+                        </span>
+                        <span class="text-sm text-slate-600">{item.texto}</span>
+                    </div>
+                ))
+            }
+        </div>
+    </div>
+
+    <div class="bg-somno/5 p-4 rounded-2xl">
+        <div class="flex flex-col gap-3">
+            <span class="flex font-bold gap-1 text-md text-somno"><AlertIcon class="size-5"/> Nota:</span>
+            <p class="text-xs text-slate-600 leading-relaxed font-light">
+                Este cuestionario es una herramienta de <strong class="text-slate-700">tamizaje</strong>, no un diagnóstico. Los resultados deben ser interpretados por un especialista.
+            </p>
+        </div>
+    </div>
+
+</div>

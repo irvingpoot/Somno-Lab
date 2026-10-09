@@ -1,0 +1,26 @@
+---
+interface Props {
+    number: number;
+    title: string;
+}
+
+const { number, title } = Astro.props;
+---
+
+<div class="py-8 first:pt-0 border-t border-slate-100 first:border-t-0">
+    <fieldset class="min-w-0 border-0 p-0 m-0">
+        <legend class="w-full p-0 mb-6">
+            <span class="flex items-start gap-4">
+                <span class="w-10 h-10 shrink-0 rounded-xl bg-somno/10 border border-somno/20 text-somno-dark grid place-items-center font-black text-lg">
+                    {number}
+                </span>
+                <span class="pt-1.5 text-lg font-bold text-slate-800 tracking-tight leading-snug">
+                    {title}
+                </span>
+            </span>
+        </legend>
+        <div class="sm:pl-14">
+            <slot />
+        </div>
+    </fieldset>
+</div>
